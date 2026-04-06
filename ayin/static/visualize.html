@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayin — Tension Web</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #0a0c0f;
+    --surface:     #111418;
+    --border:      #1e2530;
+    --text:        #c8d0db;
+    --text-dim:    #5a6270;
+    --text-bright: #e8edf3;
+    --calm:        #2266bb;
+    --perturbed:   #c45c00;
+    --alarm:       #cc1f1f;
+    --alarm-glow:  rgba(204, 31, 31, 0.25);
+    --accent:      #3a8fb5;
+    --mono:        "JetBrains Mono", "Fira Mono", "Consolas", monospace;
+    --ctrl-bg:     #161b22;
+    --ctrl-border: #2a3545;
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.5;
+    overflow: hidden;
+  }
+
+  /* ---- Layout ---- */
+  #root {
+    display: grid;
+    grid-template-rows: 28px 36px 1fr 190px;
+    grid-template-columns: 1fr 280px;
+    grid-template-areas:
+      "header   header"
+      "controls controls"
+      "web      sidebar"
+      "chart    chart";
+    height: 100vh;
+    gap: 1px;
+    background: var(--border);
+  }
+
+  /* ---- Header ---- */
+  #header {
+    grid-area: header;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 0 16px;
+  }
+  #header .title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  #header .live-stat {
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+  #header .live-stat span {
+    color: var(--text-bright);
+    font-weight: bold;
+  }
+  #status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #444;
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  #status-dot.connected    { background: #2a9f5a; box-shadow: 0 0 6px #2a9f5a; }
+  #status-dot.disconnected { background: var(--alarm); }
+  #status-label { font-size: 10px; color: var(--text-dim); }
+
+  /* ---- Controls bar ---- */
+  #controls {
+    grid-area: controls;
+    background: var(--ctrl-bg);
+    border-bottom: 1px solid var(--ctrl-border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+  }
+
+  .ctrl-btn {
+    background: #1e2836;
+    border: 1px solid var(--ctrl-border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .ctrl-btn:hover { background: #2a3a50; border-color: #4a6080; }
+  .ctrl-btn:active { background: #1a2a40; }
+  .ctrl-btn.active {
+    background: #1a3a5a;
+    border-color: #3a8fb5;
+    color: #3a8fb5;
+  }
+  .ctrl-btn.danger { border-color: #3a2020; color: #aa4444; }
+  .ctrl-btn.danger:hover { background: #2a1a1a; border-color: #aa4444; color: #dd6666; }
+  .ctrl-btn.log-btn { border-color: #2a3a28; color: #7ab86a; }
+  .ctrl-btn.log-btn:hover { background: #1a2a18; border-color: #7ab86a; color: #9ad08a; }
+  .ctrl-btn.log-btn.logged {
+    border-color: #7ab86a;
+    color: #9ad08a;
+    background: #1a2a18;
+  }
+  .ctrl-btn.log-btn.error { border-color: #aa4444; color: #dd6666; }
+
+  /* Scenario selector buttons */
+  .scenario-btn {
+    background: #1e2836;
+    border: 1px solid var(--ctrl-border);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .scenario-btn:hover { background: #2a3a50; color: var(--text); }
+  .scenario-btn.active {
+    background: #1a2a3a;
+    border-color: #5588cc;
+    color: #88bbee;
+    font-weight: bold;
+  }
+  /* Stadium scenario gets a distinct amber active state
+     to signal its "unmapped / external" character */
+  .scenario-btn.stadium.active {
+    background: #2a1e10;
+    border-color: #cc8822;
+    color: #ffbb55;
+  }
+
+  /* Scenario name badge in header */
+  #scenario-badge {
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    padding: 1px 8px;
+    border-radius: 2px;
+    border: 1px solid #2a3545;
+    color: #88bbee;
+    background: #0e1520;
+    transition: color 0.4s, border-color 0.4s, background 0.4s;
+  }
+  #scenario-badge.stadium {
+    color: #ffbb55;
+    border-color: #553311;
+    background: #1a1005;
+  }
+
+  .ctrl-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--ctrl-border);
+    margin: 0 4px;
+  }
+
+  .ctrl-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.08em;
+  }
+
+  .speed-btn {
+    background: #1e2836;
+    border: 1px solid var(--ctrl-border);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .speed-btn:hover { background: #2a3a50; color: var(--text); }
+  .speed-btn.active {
+    background: #1a3040;
+    border-color: #3a8fb5;
+    color: #7fc8e8;
+    font-weight: bold;
+  }
+
+  /* Scenario progress bar inside controls */
+  #scenario-progress-wrap {
+    flex: 1;
+    height: 4px;
+    background: #1a2030;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-left: 8px;
+  }
+  #scenario-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2266bb, #3a8fb5);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.2s linear;
+  }
+
+  /* Paused overlay on the web panel */
+  #paused-overlay {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(200, 180, 80, 0.7);
+    pointer-events: none;
+    display: none;
+  }
+  #paused-overlay.visible { display: block; }
+
+  /* ---- Web canvas area ---- */
+  #web-panel {
+    grid-area: web;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  #web-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ---- Sidebar ---- */
+  #sidebar {
+    grid-area: sidebar;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    overflow: hidden;
+  }
+
+  .panel {
+    background: var(--surface);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-title {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  /* Node cards */
+  .node-card {
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    margin-bottom: 6px;
+    transition: border-color 0.4s, box-shadow 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+  .node-card:last-child { margin-bottom: 0; }
+  .node-card .node-name {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+  .node-card .node-tension {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--text-bright);
+    line-height: 1;
+    margin-bottom: 3px;
+    transition: color 0.3s;
+    font-variant-numeric: tabular-nums;
+  }
+  .node-card .node-meta {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  /* Recovery bar */
+  .recovery-track {
+    height: 3px;
+    background: var(--border);
+    border-radius: 1px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .recovery-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 1px;
+    transition: width 0.2s ease-out, background 0.4s;
+    width: 0%;
+  }
+  /* Incoherence alarm state */
+  .node-card.alarm {
+    border-color: var(--alarm);
+    box-shadow: 0 0 14px var(--alarm-glow), inset 0 0 22px var(--alarm-glow);
+    animation: alarm-pulse 0.7s ease-in-out infinite;
+  }
+  @keyframes alarm-pulse {
+    0%, 100% { box-shadow: 0 0 14px var(--alarm-glow), inset 0 0 22px var(--alarm-glow); }
+    50%       { box-shadow: 0 0 28px rgba(204,31,31,0.65), inset 0 0 32px rgba(204,31,31,0.38); }
+  }
+
+  /* Strand readouts */
+  .strand-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    transition: border-color 0.3s;
+  }
+  .strand-row:last-child { margin-bottom: 0; }
+  .strand-label { font-size: 9px; color: var(--text-dim); letter-spacing: 0.06em; }
+  .strand-value { font-size: 13px; font-weight: bold; color: var(--text-bright); font-variant-numeric: tabular-nums; }
+  .strand-row.high-tension { border-color: var(--perturbed); }
+
+  /* Energy readout */
+  .energy-value {
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--accent);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .energy-label {
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-top: 3px;
+  }
+
+  /* ---- Chart ---- */
+  #chart-panel {
+    grid-area: chart;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid var(--border);
+  }
+  #chart-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  #chart-label {
+    position: absolute;
+    top: 6px;
+    left: 10px;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div id="root">
+
+  <!-- Header -->
+  <div id="header">
+    <div class="title">Ayin / Tension Web</div>
+    <div id="status-dot"></div>
+    <div id="status-label">disconnected</div>
+    <div id="scenario-badge">accident_shock</div>
+    <div class="live-stat">tick <span id="stat-tick">-</span></div>
+    <div class="live-stat">t <span id="stat-time">-</span></div>
+    <div class="live-stat">E <span id="stat-energy">-</span></div>
+    <div class="live-stat">ST <span id="stat-total-tension">-</span></div>
+  </div>
+
+  <!-- Controls bar -->
+  <div id="controls">
+    <button class="ctrl-btn danger" id="btn-restart" title="Reset scenario from beginning">Restart</button>
+    <div class="ctrl-sep"></div>
+    <button class="ctrl-btn" id="btn-pause" title="Pause / Resume simulation">Pause</button>
+    <button class="ctrl-btn" id="btn-step" title="Advance one tick (while paused)" disabled>Step</button>
+    <div class="ctrl-sep"></div>
+    <span class="ctrl-label">Scenario</span>
+    <button class="scenario-btn accident active" id="btn-scenario-accident"
+            data-scenario="accident_shock" title="Accident shock scenario — road incident, congestion wave">accident</button>
+    <button class="scenario-btn stadium" id="btn-scenario-stadium"
+            data-scenario="stadium_shock" title="Stadium shock — unmapped external surge, incoherence diagnostic">stadium</button>
+    <div class="ctrl-sep"></div>
+    <span class="ctrl-label">Speed</span>
+    <button class="speed-btn" data-speed="0.25">0.25x</button>
+    <button class="speed-btn" data-speed="0.5">0.5x</button>
+    <button class="speed-btn active" data-speed="1">1x</button>
+    <button class="speed-btn" data-speed="2">2x</button>
+    <button class="speed-btn" data-speed="4">4x</button>
+    <div id="scenario-progress-wrap">
+      <div id="scenario-progress-fill"></div>
+    </div>
+    <div class="ctrl-sep"></div>
+    <button class="ctrl-btn log-btn" id="btn-log" title="Write current run data to logbook.md">Log Run</button>
+  </div>
+
+  <!-- Web topology canvas -->
+  <div id="web-panel">
+    <canvas id="web-canvas"></canvas>
+    <div id="paused-overlay">Paused</div>
+  </div>
+
+  <!-- Sidebar -->
+  <div id="sidebar">
+    <div class="panel">
+      <div class="panel-title">Nodes</div>
+      <div id="node-cards"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Strand Tension Gradient</div>
+      <div id="strand-rows"></div>
+    </div>
+    <div class="panel" style="margin-top: auto;">
+      <div class="panel-title">System Energy</div>
+      <div class="energy-value" id="energy-big">-</div>
+      <div class="energy-label">kinetic + potential (Lyapunov)</div>
+    </div>
+  </div>
+
+  <!-- Time series chart -->
+  <div id="chart-panel">
+    <canvas id="chart-canvas"></canvas>
+    <div id="chart-label">Node Tension - Last 200 Steps</div>
+  </div>
+
+</div>
+
+<script>
+"use strict";
+
+// ============================================================
+// Ayin Visualization — single-file vanilla JS
+// ============================================================
+// Key changes from prior version:
+//   1. Scenario controls: restart, pause/resume, step, speed — sent as WS messages
+//   2. Node color: calm blue (#2266bb) -> hot red (#ff3333) via smooth gradient
+//   3. Node breathing: size pulses at a rate proportional to tension magnitude
+//   4. Strand energy flow: continuous shimmer animation traveling along each strand
+//   5. Reduced decimals: 1dp in readouts
+//   6. Chart markers: vertical lines at perturbation phase boundaries
+// ============================================================
+
+// ---- Color palette ----
+// Node: calm blue -> hot red. Single hue arc avoids the green ambiguity.
+const NODE_CALM_COLOR   = { r: 34,  g: 102, b: 187 };  // #2266bb
+const NODE_HOT_COLOR    = { r: 255, g: 51,  b: 51  };  // #ff3333
+// Strand base: dark blue-gray. Energy shimmer is a lighter cyan-white.
+const STRAND_BASE_COLOR = { r: 30,  g: 45,  b: 65  };  // #1e2d41
+const STRAND_HOT_COLOR  = { r: 200, g: 120, b: 30  };  // amber
+const STRAND_ALARM_COLOR= { r: 204, g: 31,  b: 31  };  // #cc1f1f
+const CHART_COLORS      = ["#4488ee", "#44ccaa", "#cc66ff"];
+const HISTORY_LENGTH    = 200;
+const RECONNECT_DELAY   = 1500;
+
+// Node layout: equilateral triangle, fixed spatial positions
+const NODE_POS_NORM = [
+  { x: 0.20, y: 0.75 },  // 0: Intersection Throughput
+  { x: 0.50, y: 0.20 },  // 1: Signal Timing
+  { x: 0.80, y: 0.75 },  // 2: Approaching Traffic
+];
+const NODE_SHORT_LABELS = ["Throughput", "Signal", "Approach"];
+
+// ---- Shared mutable state ----
+let state = {
+  tick: 0, sim_time: 0, sim_step: 0, energy: 0, total_tension: 0,
+  paused: false, speed: 1.0, scenario_progress: 0,
+  active_scenario: "accident_shock",
+  total_sim_steps: 180,
+  nodes: [
+    { index: 0, label: "Intersection Throughput", tension: 0, velocity: 0, net_flux: 0 },
+    { index: 1, label: "Signal Timing",            tension: 0, velocity: 0, net_flux: 0 },
+    { index: 2, label: "Approaching Traffic",       tension: 0, velocity: 0, net_flux: 0 },
+  ],
+  strands: [
+    { i: 0, j: 1, coupling: 1, tension_gradient: 0, tension_i: 0, tension_j: 0 },
+    { i: 0, j: 2, coupling: 1, tension_gradient: 0, tension_i: 0, tension_j: 0 },
+    { i: 1, j: 2, coupling: 1, tension_gradient: 0, tension_i: 0, tension_j: 0 },
+  ],
+  scenario_markers: [],
+};
+
+// History for chart: each entry is [t0, t1, t2]
+let history = [];
+// Tick at which each history entry was recorded (for marker positioning)
+let historyTicks = [];
+
+// Wave packets: perturbation pulses traveling along strands
+// { strandIndex, fromNode, toNode, t, speed, amplitude, born }
+let waves = [];
+let lastTickProcessed = -1;
+let prevNodeTensions = [0, 0, 0];
+
+// Strand flow phase: each strand has a continuously advancing phase for
+// the energy-flow shimmer animation. Phase advances at a rate proportional
+// to tension magnitude on that strand.
+let strandFlowPhase = [0, 0, 0];  // one per strand
+
+// Canvas refs
+const webCanvas   = document.getElementById("web-canvas");
+const webCtx      = webCanvas.getContext("2d");
+const chartCanvas = document.getElementById("chart-canvas");
+const chartCtx    = chartCanvas.getContext("2d");
+
+// ---- WebSocket ----
+let ws = null;
+
+function connectWS() {
+  const proto = location.protocol === "https:" ? "wss" : "ws";
+  ws = new WebSocket(`${proto}://${location.host}/ws`);
+
+  ws.onopen = () => setStatus("connected");
+
+  ws.onmessage = (evt) => {
+    let data;
+    try { data = JSON.parse(evt.data); } catch (e) { return; }
+
+    // Route non-state messages to their handlers
+    if ("logged" in data) { onLogResponse(data); return; }
+    if ("scenario_switching" in data) {
+      // Server acknowledged scenario switch — clear history now if not already done
+      history = [];
+      historyTicks = [];
+      waves = [];
+      strandFlowPhase = [0, 0, 0];
+      prevNodeTensions = [0, 0, 0];
+      return;
+    }
+    // Error responses and other control acks — ignore (not state updates)
+    if (!data.nodes) return;
+
+    onStateUpdate(data);
+  };
+
+  ws.onclose = () => {
+    setStatus("disconnected");
+    setTimeout(connectWS, RECONNECT_DELAY);
+  };
+
+  ws.onerror = () => ws.close();
+}
+
+function sendCmd(msg) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(msg));
+  }
+}
+
+function setStatus(s) {
+  document.getElementById("status-dot").className = s;
+  document.getElementById("status-label").textContent = s;
+}
+
+// ---- Controls wiring ----
+document.getElementById("btn-restart").addEventListener("click", () => {
+  sendCmd({ cmd: "restart" });
+  history = [];
+  historyTicks = [];
+  waves = [];
+  strandFlowPhase = [0, 0, 0];
+  prevNodeTensions = [0, 0, 0];
+});
+
+const pauseBtn = document.getElementById("btn-pause");
+const stepBtn  = document.getElementById("btn-step");
+
+pauseBtn.addEventListener("click", () => {
+  const willPause = !state.paused;
+  sendCmd({ cmd: willPause ? "pause" : "resume" });
+  // Optimistically update local state so button feels instant
+  state.paused = willPause;
+  updatePauseButtonState(willPause);
+});
+
+stepBtn.addEventListener("click", () => {
+  sendCmd({ cmd: "step" });
+});
+
+// ---- Log Run button ----
+const logBtn = document.getElementById("btn-log");
+let _logFeedbackTimer = null;
+
+logBtn.addEventListener("click", () => {
+  logBtn.textContent = "Logging...";
+  logBtn.classList.remove("logged", "error");
+  sendCmd({ cmd: "log" });
+});
+
+function onLogResponse(data) {
+  if (_logFeedbackTimer) clearTimeout(_logFeedbackTimer);
+  if (data.logged) {
+    logBtn.textContent = `Logged (${data.entry_lines} lines)`;
+    logBtn.classList.add("logged");
+    logBtn.classList.remove("error");
+  } else {
+    logBtn.textContent = "Log Error";
+    logBtn.classList.add("error");
+    logBtn.classList.remove("logged");
+  }
+  // Reset button label after 4 seconds
+  _logFeedbackTimer = setTimeout(() => {
+    logBtn.textContent = "Log Run";
+    logBtn.classList.remove("logged", "error");
+  }, 4000);
+}
+
+function updatePauseButtonState(paused) {
+  pauseBtn.textContent = paused ? "Resume" : "Pause";
+  pauseBtn.classList.toggle("active", paused);
+  stepBtn.disabled = !paused;
+  document.getElementById("paused-overlay").classList.toggle("visible", paused);
+}
+
+document.querySelectorAll(".speed-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const val = parseFloat(btn.dataset.speed);
+    sendCmd({ cmd: "speed", value: val });
+    document.querySelectorAll(".speed-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+  });
+});
+
+// ---- Scenario selection ----
+document.querySelectorAll(".scenario-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const scenario = btn.dataset.scenario;
+    if (scenario === state.active_scenario) return;  // already active, no-op
+    sendCmd({ cmd: "scenario", value: scenario });
+    // Optimistically clear local history so the chart doesn't show
+    // stale data from the previous scenario while the server restarts.
+    history = [];
+    historyTicks = [];
+    waves = [];
+    strandFlowPhase = [0, 0, 0];
+    prevNodeTensions = [0, 0, 0];
+    // Badge update will happen once the server echoes back state with new scenario name.
+  });
+});
+
+function updateScenarioBadge(scenario) {
+  const badge = document.getElementById("scenario-badge");
+  const isStadium = scenario === "stadium_shock";
+  badge.textContent = isStadium ? "stadium_shock" : "accident_shock";
+  badge.classList.toggle("stadium", isStadium);
+
+  document.querySelectorAll(".scenario-btn").forEach(btn => {
+    const isActive = btn.dataset.scenario === scenario;
+    btn.classList.toggle("active", isActive);
+  });
+}
+
+// ---- State update handler ----
+function onStateUpdate(data) {
+  // Spawn wave packets on new tick before overwriting prev tensions
+  if (data.tick !== lastTickProcessed) {
+    spawnWaves(data);
+    lastTickProcessed = data.tick;
+  }
+
+  state = data;
+  prevNodeTensions = data.nodes.map(n => n.tension);
+
+  // History ring-buffer
+  history.push(data.nodes.map(n => n.tension));
+  historyTicks.push(data.tick);
+  if (history.length > HISTORY_LENGTH) {
+    history.shift();
+    historyTicks.shift();
+  }
+
+  // Header stats — minimal decimals
+  document.getElementById("stat-tick").textContent  = data.tick;
+  document.getElementById("stat-time").textContent  = data.sim_time.toFixed(1);
+  document.getElementById("stat-energy").textContent = data.energy.toExponential(1);
+  document.getElementById("stat-total-tension").textContent = data.total_tension.toFixed(1);
+  document.getElementById("energy-big").textContent = data.energy.toExponential(2);
+
+  // Scenario progress bar
+  document.getElementById("scenario-progress-fill").style.width =
+    (data.scenario_progress * 100).toFixed(1) + "%";
+
+  // Sync pause/speed state from server
+  updatePauseButtonState(data.paused);
+  // Match speed button by comparing numeric values (avoids "1" vs "1.0" string issues)
+  document.querySelectorAll(".speed-btn").forEach(b => {
+    b.classList.toggle("active", parseFloat(b.dataset.speed) === data.speed);
+  });
+
+  // Sync scenario badge and selector buttons on every update
+  if (data.active_scenario) {
+    updateScenarioBadge(data.active_scenario);
+  }
+
+  updateNodeCards(data.nodes);
+  updateStrandRows(data.strands);
+}
+
+// ---- Wave spawning ----
+function spawnWaves(data) {
+  const now = performance.now();
+  data.nodes.forEach((node, ni) => {
+    const delta = node.tension - prevNodeTensions[ni];
+    if (Math.abs(delta) < 0.005) return;
+
+    data.strands.forEach((strand, si) => {
+      let fromNode = -1, toNode = -1;
+      if (strand.i === ni)      { fromNode = ni; toNode = strand.j; }
+      else if (strand.j === ni) { fromNode = ni; toNode = strand.i; }
+      if (fromNode === -1) return;
+
+      waves.push({
+        strandIndex: si, fromNode, toNode,
+        t: 0.0,
+        speed: 0.055 + Math.abs(delta) * 0.07,
+        amplitude: Math.min(Math.abs(delta) * 2.5, 1.0),
+        born: now,
+        positive: delta > 0,
+      });
+    });
+  });
+  waves = waves.filter(w => w.t < 1.0 && (now - w.born) < 8000);
+}
+
+// ---- Sidebar: node cards ----
+function updateNodeCards(nodes) {
+  const container = document.getElementById("node-cards");
+
+  if (!container._init) {
+    container.innerHTML = "";
+    nodes.forEach((n, i) => {
+      const card = document.createElement("div");
+      card.className = "node-card";
+      card.id = `nc-${i}`;
+      card.innerHTML = `
+        <div class="node-name">${NODE_SHORT_LABELS[i] || n.label}</div>
+        <div class="node-tension" id="nt-${i}">0.0</div>
+        <div class="node-meta">v <span id="nv-${i}">0.0</span> &nbsp; flux <span id="nf-${i}">0.0</span></div>
+        <div class="recovery-track"><div class="recovery-fill" id="nr-${i}"></div></div>
+      `;
+      container.appendChild(card);
+    });
+    container._init = true;
+  }
+
+  nodes.forEach((n, i) => {
+    const card   = document.getElementById(`nc-${i}`);
+    const tensEl = document.getElementById(`nt-${i}`);
+    const velEl  = document.getElementById(`nv-${i}`);
+    const fluxEl = document.getElementById(`nf-${i}`);
+    const recEl  = document.getElementById(`nr-${i}`);
+    if (!card) return;
+
+    // 1 decimal place — the visual encoding carries the precision
+    tensEl.textContent = n.tension.toFixed(1);
+    velEl.textContent  = n.velocity.toFixed(1);
+    fluxEl.textContent = n.net_flux.toFixed(1);
+
+    // Color: calm blue -> hot red. Same mapping as canvas nodes.
+    const absT = Math.abs(n.tension);
+    tensEl.style.color = rgbStr(lerpRGB(NODE_CALM_COLOR, NODE_HOT_COLOR, Math.min(absT / 3.0, 1.0)));
+
+    // Recovery bar
+    if (!card._peak) card._peak = 0;
+    card._peak = Math.max(card._peak, absT);
+    card._peak *= 0.9997;
+    const recovPct = card._peak > 0.01
+      ? Math.max(0, 1.0 - absT / card._peak) * 100 : 100;
+    recEl.style.width = recovPct.toFixed(0) + "%";
+    recEl.style.background = recovPct > 75 ? "#2a9f5a" : recovPct > 40 ? "#c47000" : "#cc3030";
+
+    // Alarm
+    const isAlarm = Math.abs(n.velocity) > 0.5 && absT > 0.8;
+    card.classList.toggle("alarm", isAlarm);
+  });
+}
+
+// ---- Sidebar: strand rows ----
+function updateStrandRows(strands) {
+  const container = document.getElementById("strand-rows");
+
+  if (!container._init) {
+    container.innerHTML = "";
+    strands.forEach((s, i) => {
+      const row = document.createElement("div");
+      row.className = "strand-row";
+      row.id = `sr-${i}`;
+      row.innerHTML = `
+        <span class="strand-label">${NODE_SHORT_LABELS[s.i]} - ${NODE_SHORT_LABELS[s.j]}</span>
+        <span class="strand-value" id="sv-${i}">0.0</span>
+      `;
+      container.appendChild(row);
+    });
+    container._init = true;
+  }
+
+  strands.forEach((s, i) => {
+    const row   = document.getElementById(`sr-${i}`);
+    const valEl = document.getElementById(`sv-${i}`);
+    if (!row || !valEl) return;
+    valEl.textContent = s.tension_gradient.toFixed(1);
+    row.classList.toggle("high-tension", s.tension_gradient > 0.3);
+  });
+}
+
+// ---- Canvas utilities ----
+function resizeCanvas(canvas) {
+  const r = canvas.parentElement.getBoundingClientRect();
+  if (canvas.width !== Math.round(r.width) || canvas.height !== Math.round(r.height)) {
+    canvas.width  = Math.round(r.width);
+    canvas.height = Math.round(r.height);
+  }
+}
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+function lerpRGB(a, b, t) {
+  return {
+    r: Math.round(lerp(a.r, b.r, t)),
+    g: Math.round(lerp(a.g, b.g, t)),
+    b: Math.round(lerp(a.b, b.b, t)),
+  };
+}
+
+function rgbStr(c, alpha) {
+  return alpha !== undefined
+    ? `rgba(${c.r},${c.g},${c.b},${alpha})`
+    : `rgb(${c.r},${c.g},${c.b})`;
+}
+
+function lightenRGB(c, amount) {
+  return {
+    r: Math.round(Math.min(c.r + (255 - c.r) * amount, 255)),
+    g: Math.round(Math.min(c.g + (255 - c.g) * amount, 255)),
+    b: Math.round(Math.min(c.b + (255 - c.b) * amount, 255)),
+  };
+}
+
+function nodePixelPos(i, W, H) {
+  return { x: NODE_POS_NORM[i].x * W, y: NODE_POS_NORM[i].y * H };
+}
+
+// ---- Node radius with breathing ----
+// Base radius scales with canvas size.
+// A continuous sine oscillation (breathing) whose frequency scales with tension.
+// At calm (tension~0): very slow, barely perceptible.
+// At peak stress: rapid pulse visible to the eye.
+function nodeRadius(tension, baseRadius, timestamp) {
+  const absT = Math.abs(tension);
+  const staticR = baseRadius + Math.min(absT * baseRadius * 0.55, baseRadius * 1.1);
+  // Breathing: frequency proportional to tension magnitude (0.5 Hz calm -> 4 Hz stressed)
+  const freq = 0.5 + absT * 2.5;   // Hz
+  const breathAmp = baseRadius * (0.04 + absT * 0.07);
+  const breath = Math.sin(timestamp * 0.001 * freq * 2 * Math.PI) * breathAmp;
+  return staticR + breath;
+}
+
+// ---- Strand thickness ----
+function strandThickness(gradient) {
+  return 1.5 + Math.min(gradient * 7.0, 11.0);
+}
+
+// ---- Web topology renderer ----
+function drawWeb(timestamp) {
+  resizeCanvas(webCanvas);
+  const W = webCanvas.width, H = webCanvas.height;
+  const ctx = webCtx;
+
+  ctx.fillStyle = "#0a0c0f";
+  ctx.fillRect(0, 0, W, H);
+
+  const baseR = Math.min(W, H) * 0.055;
+  const positions = NODE_POS_NORM.map((_, i) => nodePixelPos(i, W, H));
+
+  // ---- Draw strands ----
+  state.strands.forEach((strand, si) => {
+    const pA = positions[strand.i];
+    const pB = positions[strand.j];
+    const grad = strand.tension_gradient;
+    const thickness = strandThickness(grad);
+
+    // Color: cool -> amber -> alarm red based on gradient
+    const tCol = Math.min(grad / 1.0, 1.0);
+    let baseCol;
+    if (tCol > 0.75) {
+      baseCol = STRAND_ALARM_COLOR;
+    } else if (tCol > 0.35) {
+      // amber zone
+      const sub = (tCol - 0.35) / 0.40;
+      baseCol = lerpRGB(STRAND_HOT_COLOR, STRAND_ALARM_COLOR, sub);
+    } else {
+      baseCol = lerpRGB(STRAND_BASE_COLOR, STRAND_HOT_COLOR, tCol / 0.35);
+    }
+
+    // Main strand
+    ctx.beginPath();
+    ctx.moveTo(pA.x, pA.y);
+    ctx.lineTo(pB.x, pB.y);
+    ctx.strokeStyle = rgbStr(baseCol);
+    ctx.lineWidth = thickness;
+    ctx.lineCap = "round";
+    ctx.stroke();
+
+    // Tension glow halo
+    if (grad > 0.10) {
+      ctx.beginPath();
+      ctx.moveTo(pA.x, pA.y);
+      ctx.lineTo(pB.x, pB.y);
+      ctx.strokeStyle = rgbStr(baseCol, Math.min(grad * 0.35, 0.30));
+      ctx.lineWidth = thickness + 8;
+      ctx.stroke();
+    }
+
+    // ---- Energy flow shimmer ----
+    // A bright highlight travels continuously along the strand.
+    // Speed of travel proportional to tension gradient (more disequilibrium = faster flow).
+    // Phase is maintained per-strand so the shimmer never snaps on a state update.
+    const flowSpeed = 0.3 + grad * 1.8;  // units/s along [0,1] strand
+    strandFlowPhase[si] = (strandFlowPhase[si] || 0);
+    // Phase is advanced in the animation loop (not here) — we just read it.
+    const phase = strandFlowPhase[si] % 1.0;
+
+    const shimmerW = 0.18;  // shimmer blob width as fraction of strand length
+    const shimmerAlpha = Math.min(0.10 + grad * 0.55, 0.70);
+
+    // Draw a bright oval segment centered at phase position along the strand
+    const shimX = lerp(pA.x, pB.x, phase);
+    const shimY = lerp(pA.y, pB.y, phase);
+    const strandLen = Math.sqrt((pB.x-pA.x)**2 + (pB.y-pA.y)**2);
+    const shimPixelHalf = strandLen * shimmerW * 0.5;
+    const shimAngle = Math.atan2(pB.y - pA.y, pB.x - pA.x);
+
+    ctx.save();
+    ctx.translate(shimX, shimY);
+    ctx.rotate(shimAngle);
+    const shimGrad = ctx.createLinearGradient(-shimPixelHalf, 0, shimPixelHalf, 0);
+    const shimColor = tCol > 0.5
+      ? { r: 255, g: 180, b: 100 }
+      : { r: 140, g: 200, b: 255 };
+    shimGrad.addColorStop(0,   rgbStr(shimColor, 0));
+    shimGrad.addColorStop(0.3, rgbStr(shimColor, shimmerAlpha));
+    shimGrad.addColorStop(0.5, rgbStr(shimColor, shimmerAlpha * 1.3 > 1 ? 1 : shimmerAlpha * 1.3));
+    shimGrad.addColorStop(0.7, rgbStr(shimColor, shimmerAlpha));
+    shimGrad.addColorStop(1,   rgbStr(shimColor, 0));
+    ctx.beginPath();
+    ctx.rect(-shimPixelHalf, -thickness * 1.5, shimPixelHalf * 2, thickness * 3);
+    ctx.fillStyle = shimGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // Gradient label at midpoint
+    const mx = (pA.x + pB.x) / 2;
+    const my = (pA.y + pB.y) / 2;
+    const dx = pB.x - pA.x, dy = pB.y - pA.y;
+    const len = Math.sqrt(dx*dx + dy*dy) || 1;
+    const nx = -dy / len, ny = dx / len;
+    ctx.fillStyle = grad > 0.3 ? "#e06040" : "#445566";
+    ctx.font = "10px 'JetBrains Mono', monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(grad.toFixed(1), mx + nx * 18, my + ny * 18);
+  });
+
+  // ---- Draw wave packets ----
+  waves.forEach((wave) => {
+    wave.t = Math.min(wave.t + wave.speed * 0.016, 1.0);
+    if (wave.t >= 1.0) return;
+
+    const pFrom = positions[wave.fromNode];
+    const pTo   = positions[wave.toNode];
+    const wx = lerp(pFrom.x, pTo.x, wave.t);
+    const wy = lerp(pFrom.y, pTo.y, wave.t);
+
+    const alpha = wave.t < 0.15 ? wave.t / 0.15
+      : wave.t > 0.80 ? (1.0 - wave.t) / 0.20 : 1.0;
+    const r = 4 + wave.amplitude * 5;
+
+    // Wave color: positive perturbation (load spike) = orange-yellow
+    //             negative perturbation (capacity drop) = cyan-blue
+    const waveInner = wave.positive ? { r: 255, g: 220, b: 80 } : { r: 80, g: 200, b: 255 };
+    const waveOuter = wave.positive ? { r: 220, g: 100, b: 20 } : { r: 20, g: 120, b: 220 };
+
+    const grd = webCtx.createRadialGradient(wx, wy, 0, wx, wy, r * 2.5);
+    grd.addColorStop(0,   rgbStr(waveInner, alpha * 0.9));
+    grd.addColorStop(0.5, rgbStr(waveOuter, alpha * 0.4));
+    grd.addColorStop(1,   rgbStr(waveOuter, 0));
+    ctx.beginPath();
+    ctx.arc(wx, wy, r * 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = grd;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(wx, wy, r * 0.45, 0, Math.PI * 2);
+    ctx.fillStyle = rgbStr(waveInner, alpha);
+    ctx.fill();
+  });
+
+  waves = waves.filter(w => w.t < 1.0);
+
+  // ---- Draw nodes ----
+  state.nodes.forEach((node, i) => {
+    const pos  = positions[i];
+    const absT = Math.abs(node.tension);
+    const r    = nodeRadius(node.tension, baseR, timestamp);
+
+    // Color: calm blue -> hot red
+    const tFrac = Math.min(absT / 3.0, 1.0);
+    const fillRGB = lerpRGB(NODE_CALM_COLOR, NODE_HOT_COLOR, tFrac);
+
+    // Outer glow: intensifies and shifts color as tension rises
+    if (absT > 0.05) {
+      const glowR = r + 8 + absT * 7;
+      const glowGrad = ctx.createRadialGradient(pos.x, pos.y, r * 0.7, pos.x, pos.y, glowR);
+      const glowColor = lerpRGB({ r: 20, g: 80, b: 180 }, { r: 255, g: 60, b: 20 }, tFrac);
+      glowGrad.addColorStop(0, rgbStr(glowColor, Math.min(absT * 0.25, 0.35)));
+      glowGrad.addColorStop(1, rgbStr(glowColor, 0));
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, glowR, 0, Math.PI * 2);
+      ctx.fillStyle = glowGrad;
+      ctx.fill();
+    }
+
+    // Alarm ring
+    const isAlarm = Math.abs(node.velocity) > 0.5 && absT > 0.8;
+    if (isAlarm) {
+      const flashAlpha = 0.5 + 0.5 * Math.sin(timestamp * 0.008);
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, r + 13, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(220, 30, 30, ${flashAlpha})`;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    }
+
+    // Node body: radial gradient gives depth
+    const bodyGrad = ctx.createRadialGradient(
+      pos.x - r * 0.28, pos.y - r * 0.28, r * 0.08,
+      pos.x, pos.y, r
+    );
+    const lightRGB = lightenRGB(fillRGB, 0.42);
+    bodyGrad.addColorStop(0, rgbStr(lightRGB));
+    bodyGrad.addColorStop(1, rgbStr(fillRGB));
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+    ctx.fillStyle = bodyGrad;
+    ctx.fill();
+
+    // Border
+    const borderCol = isAlarm ? "#cc2222" : rgbStr(lightenRGB(fillRGB, 0.55));
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+    ctx.strokeStyle = borderCol;
+    ctx.lineWidth = isAlarm ? 2.5 : 1.5;
+    ctx.stroke();
+
+    // Short label
+    ctx.fillStyle = "#e8edf3";
+    ctx.font = `bold ${Math.round(r * 0.36)}px 'JetBrains Mono', monospace`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(NODE_SHORT_LABELS[i], pos.x, pos.y - r * 0.20);
+
+    // Tension value (1dp) — color matches the node
+    ctx.font = `${Math.round(r * 0.28)}px 'JetBrains Mono', monospace`;
+    ctx.fillStyle = absT > 0.5 ? "#ffaa66" : "#8899aa";
+    ctx.fillText(node.tension.toFixed(1), pos.x, pos.y + r * 0.26);
+
+    // Velocity arc: small arc outside the node showing velocity direction/magnitude
+    if (Math.abs(node.velocity) > 0.005) {
+      const arcLen = Math.min(Math.abs(node.velocity) * 1.1, 1.0) * Math.PI;
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, r + 5, -Math.PI / 2, -Math.PI / 2 + arcLen);
+      ctx.strokeStyle = node.velocity > 0 ? "#e06020" : "#2090d0";
+      ctx.lineWidth = 2.5;
+      ctx.lineCap = "round";
+      ctx.stroke();
+    }
+  });
+
+  // External node index labels
+  state.nodes.forEach((node, i) => {
+    const pos = positions[i];
+    const r   = nodeRadius(node.tension, baseR, timestamp);
+    const cx = W * 0.5, cy = H * 0.5;
+    const dx = pos.x - cx, dy = pos.y - cy;
+    const dlen = Math.sqrt(dx*dx + dy*dy) || 1;
+    ctx.fillStyle = "#445566";
+    ctx.font = "9px 'JetBrains Mono', monospace";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(`N${i}`, pos.x + (dx/dlen)*(r+20), pos.y + (dy/dlen)*(r+20));
+  });
+}
+
+// ---- Chart renderer ----
+function drawChart() {
+  resizeCanvas(chartCanvas);
+  const W = chartCanvas.width, H = chartCanvas.height;
+  const ctx = chartCtx;
+
+  ctx.fillStyle = "#0a0c0f";
+  ctx.fillRect(0, 0, W, H);
+
+  if (history.length < 2) return;
+
+  const padLeft = 36, padRight = 8, padTop = 22, padBottom = 16;
+  const plotW = W - padLeft - padRight;
+  const plotH = H - padTop - padBottom;
+
+  // Tension range
+  let minT = Infinity, maxT = -Infinity;
+  history.forEach(row => row.forEach(v => {
+    if (v < minT) minT = v;
+    if (v > maxT) maxT = v;
+  }));
+  const range = Math.max(maxT - minT, 0.4);
+  const center = (maxT + minT) / 2;
+  const displayMin = center - range * 0.6;
+  const displayMax = center + range * 0.6;
+  const displayRange = displayMax - displayMin;
+
+  function toY(v) { return padTop + plotH * (1.0 - (v - displayMin) / displayRange); }
+  function toX(idx) {
+    // Right-align: most recent entry at right edge
+    const offset = HISTORY_LENGTH - history.length;
+    return padLeft + plotW * ((idx + offset) / (HISTORY_LENGTH - 1));
+  }
+
+  // Grid
+  ctx.strokeStyle = "#1e2530";
+  ctx.lineWidth = 1;
+  const gridCount = 4;
+  for (let g = 0; g <= gridCount; g++) {
+    const v = displayMin + displayRange * g / gridCount;
+    const y = toY(v);
+    ctx.beginPath(); ctx.moveTo(padLeft, y); ctx.lineTo(W - padRight, y); ctx.stroke();
+    ctx.fillStyle = "#445566";
+    ctx.font = "8px 'JetBrains Mono', monospace";
+    ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    ctx.fillText(v.toFixed(1), padLeft - 3, y);
+  }
+
+  // Zero line
+  const zeroY = toY(0);
+  if (zeroY >= padTop && zeroY <= padTop + plotH) {
+    ctx.beginPath(); ctx.moveTo(padLeft, zeroY); ctx.lineTo(W - padRight, zeroY);
+    ctx.strokeStyle = "#2a3a4a"; ctx.lineWidth = 1.5; ctx.stroke();
+  }
+
+  // ---- Scenario phase markers ----
+  // scenario_markers contains {sim_step, label, phase} for phase boundaries.
+  // We map sim_step -> tick position in history using historyTicks.
+  // If a tick hasn't been seen yet, we project its future x position.
+  //
+  // sim_step -> tick: each sim step increments _tick by 1 in api.py.
+  // At speed=1, 1 tick = 1 sim step. But speed can vary.
+  // We use a simpler approach: marker x is fixed by fraction of scenario progress.
+  // scenario_markers[i].sim_step / (NUM_INTERVALS * SIM_STEPS_PER_INTERVAL)
+  // gives fraction of full scenario. We translate that to an x position within
+  // the chart plot area relative to how full the history buffer is.
+  //
+  // Specifically: find entries in historyTicks where the corresponding sim_step
+  // was injected. Since we store tick (not sim_step) in historyTicks, we
+  // approximate: marker tick = first tick in history where tick >= scenario_start_tick
+  // + marker_sim_step * (speed_ratio). This is approximate but visually useful.
+  //
+  // Cleaner approach: the server now sends sim_step in every broadcast.
+  // We store sim_step in history alongside tensions.
+  // But we didn't add that to history yet. For now: use scenario_markers.sim_step
+  // and map to x by fraction.
+
+  if (state.scenario_markers && state.scenario_markers.length > 0) {
+    const currentSimStep = state.sim_step || 0;
+
+    // Determine x range: leftmost x is for the oldest history entry.
+    // The current sim step is at the right edge (W - padRight).
+    // oldestSimStep ≈ currentSimStep - history.length (1 tick ~ 1 sim step at 1x speed)
+    const oldestSimStep = Math.max(0, currentSimStep - history.length);
+    const simRange = currentSimStep - oldestSimStep || 1;
+
+    function simStepToX(s) {
+      if (simRange === 0) return padLeft;
+      return padLeft + plotW * (s - oldestSimStep) / simRange;
+    }
+
+    // Phase colors and short labels — covers both scenarios.
+    // accident_shock phases: onset, peak, recovery, tail
+    // stadium_shock phases:  surge, drain, tail
+    const markerColors = {
+      onset:    "#ffaa33",
+      peak:     "#ff4444",
+      recovery: "#44ccaa",
+      tail:     "#6688bb",
+      surge:    "#ffcc00",  // bright yellow — unmapped external energy, sharp onset
+      drain:    "#cc8833",  // amber — crowd draining, tension slowly resolving
+    };
+    const markerLabels = {
+      onset:    "accident",
+      peak:     "peak",
+      recovery: "recovery",
+      tail:     "tail",
+      surge:    "surge",
+      drain:    "draining",
+    };
+
+    state.scenario_markers.forEach(marker => {
+      const mx = simStepToX(marker.sim_step);
+      if (mx < padLeft || mx > W - padRight) return;  // outside visible window
+
+      const mColor = markerColors[marker.phase] || "#888";
+
+      // Dashed vertical line
+      ctx.save();
+      ctx.setLineDash([3, 4]);
+      ctx.beginPath();
+      ctx.moveTo(mx, padTop);
+      ctx.lineTo(mx, padTop + plotH);
+      ctx.strokeStyle = mColor;
+      ctx.lineWidth = 1;
+      ctx.globalAlpha = 0.65;
+      ctx.stroke();
+      ctx.restore();
+
+      // Label above the line
+      ctx.save();
+      ctx.globalAlpha = 0.85;
+      ctx.fillStyle = mColor;
+      ctx.font = "8px 'JetBrains Mono', monospace";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "bottom";
+      // Rotate label slightly if they're close together to avoid overlap
+      ctx.translate(mx, padTop - 1);
+      ctx.rotate(-Math.PI / 8);
+      ctx.fillText(markerLabels[marker.phase] || marker.label, 0, 0);
+      ctx.restore();
+    });
+  }
+
+  // ---- Tension series ----
+  for (let ni = 0; ni < 3; ni++) {
+    ctx.beginPath();
+    let first = true;
+    history.forEach((row, idx) => {
+      const x = toX(idx);
+      const y = toY(row[ni]);
+      if (first) { ctx.moveTo(x, y); first = false; }
+      else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = CHART_COLORS[ni];
+    ctx.lineWidth = 1.5;
+    ctx.lineJoin = "round";
+    ctx.shadowColor = CHART_COLORS[ni];
+    ctx.shadowBlur = 3;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Trailing dot at current value
+    if (history.length > 0) {
+      const last = history[history.length - 1];
+      ctx.beginPath();
+      ctx.arc(toX(history.length - 1), toY(last[ni]), 3, 0, Math.PI * 2);
+      ctx.fillStyle = CHART_COLORS[ni];
+      ctx.fill();
+    }
+  }
+
+  // Legend
+  for (let ni = 0; ni < 3; ni++) {
+    const lx = W - padRight - 86 + ni * 28;
+    const ly = padTop - 9;
+    ctx.beginPath();
+    ctx.moveTo(lx, ly); ctx.lineTo(lx + 14, ly);
+    ctx.strokeStyle = CHART_COLORS[ni]; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.fillStyle = CHART_COLORS[ni];
+    ctx.font = "8px 'JetBrains Mono', monospace";
+    ctx.textAlign = "left";
+    ctx.fillText(`N${ni}`, lx + 16, ly + 1);
+  }
+}
+
+// ---- Animation loop ----
+let lastFrameTime = 0;
+
+function frame(timestamp) {
+  // Advance strand flow phase for each strand
+  const dt = Math.min((timestamp - lastFrameTime) / 1000, 0.05);  // seconds, capped
+  lastFrameTime = timestamp;
+
+  state.strands.forEach((strand, si) => {
+    const grad = strand.tension_gradient;
+    const flowSpeed = 0.25 + grad * 1.6;  // units/s along [0,1]
+    strandFlowPhase[si] = ((strandFlowPhase[si] || 0) + flowSpeed * dt) % 1.0;
+  });
+
+  drawWeb(timestamp);
+  drawChart();
+  requestAnimationFrame(frame);
+}
+
+// ---- Init ----
+connectWS();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
