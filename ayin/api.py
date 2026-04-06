@@ -22,6 +22,20 @@ Control messages (client -> server, over the same websocket):
   {"cmd": "log"}                       — write current run data to ayin/docs/logbook.md
   {"cmd": "scenario", "value": NAME}   — switch active scenario and restart
                                          NAME: "accident_shock" | "stadium_shock"
+                                               "compound_shock" | "slow_decay"
+  {"cmd": "compound_mode", "value": B} — toggle compound mode (no reset on scenario switch)
+  {"cmd": "perturb", "node": N, "value": F}
+                                       — immediate manual perturbation at node N
+  {"cmd": "perturb_multi", "perturbations": [{node, value}, ...]}
+                                       — simultaneous multi-node perturbation
+  {"cmd": "attach_strand", "label": S, "target": N}
+                                       — attach a probationary strand to the web
+  {"cmd": "set_strand_weight", "source": I, "target": J, "weight": F}
+                                       — adjust coupling weight of a strand
+  {"cmd": "detach_strand", "source": I, "target": J}
+                                       — go slack on a strand
+  {"cmd": "pulse_external", "node": N, "value": F}
+                                       — pulse an external node directly
 """
 
 from __future__ import annotations
@@ -42,9 +56,13 @@ from ayin.nodes import NODE_LABELS
 from ayin.simulator import (
     AccidentShockConfig,
     BaselineConfig,
+    CompoundShockConfig,
+    SlowDecayConfig,
     UnmappedShockConfig,
     generate_accident_shock,
     generate_baseline,
+    generate_compound_shock,
+    generate_slow_decay,
     generate_unmapped_shock,
     volume_to_tension_delta,
     baseline_volume,
@@ -93,11 +111,15 @@ _step_requested: bool = False
 _restart_requested: bool = False
 
 # Active scenario name. Changing this (via websocket cmd) triggers a restart.
-# Valid values: "accident_shock" | "stadium_shock"
+# Valid values: "accident_shock" | "stadium_shock" | "compound_shock" | "slow_decay"
 _active_scenario: str = "accident_shock"
 
-# Flag to signal the loop to switch scenarios (rebuilds schedule + markers, then restarts).
+# Flag to signal the loop to switch scenarios.
 _scenario_switch_requested: str | None = None
+
+# Compound mode: when True, scenario switches do NOT reset the web.
+# New scenario perturbations are injected on top of current web state.
+_compound_mode: bool = False
 
 # Known perturbation events: list of dicts {tick, sim_step, label} recorded
 # as each perturbation fires. Sent in state so the chart can draw markers.
@@ -106,6 +128,15 @@ _perturbation_events: list[dict[str, Any]] = []
 
 # Tick at which the scenario started (for relative timing in events).
 _scenario_start_tick: int = 0
+
+# External node tracking: set when attach_strand is called
+_external_node_index: int | None = None
+_external_node_label: str | None = None
+_external_target_node: int | None = None
+
+# Feed signal toggle: when True, periodically inject a sine-wave pulse at the external node
+_feed_signal_active: bool = False
+_feed_signal_phase: float = 0.0
 
 
 # ---------------------------------------------------------------------------
@@ -458,11 +489,11 @@ _run_logger = RunLogger()
 # Scenario preparation
 # ---------------------------------------------------------------------------
 
-# Shared time-compression constants — same for both scenarios.
+# Shared time-compression constants — same for all scenarios.
 _SIM_STEPS_PER_INTERVAL = 5
 _NUM_INTERVALS = 36
 
-# Web construction parameters — identical for both scenarios so results are comparable.
+# Web construction parameters — identical for all scenarios so results are comparable.
 _WEB_CONFIG: dict[str, Any] = {
     "strand_strength": 1.0,
     "propagation_rate": 1.0,
@@ -484,6 +515,27 @@ _STADIUM_CONFIG = UnmappedShockConfig(
     surge_fraction=0.65,
     surge_duration_intervals=6,
     surge_onset_interval=10,
+)
+
+# compound_shock config
+_COMPOUND_CONFIG = CompoundShockConfig(
+    weather_reduction_min=0.15,
+    weather_reduction_max=0.28,
+    event_spike_fraction=0.40,
+    weather_onset_interval=6,
+    weather_onset_duration=4,
+    weather_duration=24,
+    weather_recovery=6,
+    event_onset_interval=18,
+    event_duration_intervals=8,
+)
+
+# slow_decay config
+_SLOW_DECAY_CONFIG = SlowDecayConfig(
+    onset_interval=4,
+    decay_rate_per_interval=0.012,
+    max_reduction=0.38,
+    plateau_duration_intervals=32,
 )
 
 
@@ -594,15 +646,129 @@ def _build_stadium_markers() -> list[dict[str, Any]]:
     return markers
 
 
+def _build_compound_schedule() -> list[tuple[int, np.ndarray]]:
+    """
+    Generate the compound_shock perturbation schedule.
+
+    Weather degradation + event demand spike interacting non-linearly.
+    Start hour 14.0 (2 PM) — afternoon, ahead of PM peak.
+    Seed 99.
+    """
+    rng = np.random.default_rng(seed=99)
+    config = BaselineConfig(start_hour=14.0, num_intervals=_NUM_INTERVALS, apply_lag=False)
+    baseline_vols = generate_baseline(config, rng)
+    perturbed_vols = generate_compound_shock(baseline_vols, _COMPOUND_CONFIG, rng)
+
+    rng2 = np.random.default_rng(seed=99)
+    clean_config = BaselineConfig(start_hour=14.0, num_intervals=_NUM_INTERVALS, apply_lag=False, noise_cv=0.0)
+    clean_vols = generate_baseline(clean_config, rng2)
+
+    schedule: list[tuple[int, np.ndarray]] = []
+    for i in range(_NUM_INTERVALS):
+        delta = volume_to_tension_delta(perturbed_vols[i], clean_vols[i])
+        schedule.append((i * _SIM_STEPS_PER_INTERVAL, delta))
+    return schedule
+
+
+def _build_compound_markers() -> list[dict[str, Any]]:
+    """
+    Phase boundary markers for the compound_shock scenario.
+    Phases: baseline -> weather_onset -> event_onset -> event_end -> tail
+    """
+    cfg = _COMPOUND_CONFIG
+    weather_start = cfg.weather_onset_interval
+    weather_full  = weather_start + cfg.weather_onset_duration
+    event_start   = cfg.event_onset_interval
+    event_end     = event_start + cfg.event_duration_intervals
+
+    phase_map = {
+        weather_start: ("weather_onset", "rain begins"),
+        weather_full:  ("weather_peak",  "full rain impact"),
+        event_start:   ("event_onset",   "event surge"),
+        event_end:     ("event_drain",   "event draining"),
+    }
+    markers = []
+    for i, (phase, label) in phase_map.items():
+        if i >= _NUM_INTERVALS:
+            continue
+        markers.append({
+            "sim_step": i * _SIM_STEPS_PER_INTERVAL,
+            "interval": i,
+            "label": label,
+            "phase": phase,
+        })
+    return markers
+
+
+def _build_slow_decay_schedule() -> list[tuple[int, np.ndarray]]:
+    """
+    Generate the slow_decay perturbation schedule.
+
+    Gradual capacity reduction — construction zone setup.
+    Start hour 9.0 (9 AM) — mid-morning, modest baseline.
+    Seed 777.
+    """
+    rng = np.random.default_rng(seed=777)
+    config = BaselineConfig(start_hour=9.0, num_intervals=_NUM_INTERVALS, apply_lag=False)
+    baseline_vols = generate_baseline(config, rng)
+    perturbed_vols = generate_slow_decay(baseline_vols, _SLOW_DECAY_CONFIG, rng)
+
+    rng2 = np.random.default_rng(seed=777)
+    clean_config = BaselineConfig(start_hour=9.0, num_intervals=_NUM_INTERVALS, apply_lag=False, noise_cv=0.0)
+    clean_vols = generate_baseline(clean_config, rng2)
+
+    schedule: list[tuple[int, np.ndarray]] = []
+    for i in range(_NUM_INTERVALS):
+        delta = volume_to_tension_delta(perturbed_vols[i], clean_vols[i])
+        schedule.append((i * _SIM_STEPS_PER_INTERVAL, delta))
+    return schedule
+
+
+def _build_slow_decay_markers() -> list[dict[str, Any]]:
+    """
+    Phase boundary markers for the slow_decay scenario.
+    Phases: baseline -> decay_onset -> plateau
+    """
+    cfg = _SLOW_DECAY_CONFIG
+    decay_start = cfg.onset_interval
+    # Intervals to reach max reduction
+    ramp_intervals = int(cfg.max_reduction / cfg.decay_rate_per_interval)
+    plateau_start  = decay_start + ramp_intervals
+
+    phase_map: dict[int, tuple[str, str]] = {
+        decay_start:   ("decay_onset",   "decay begins"),
+        plateau_start: ("decay_plateau", "full impact"),
+    }
+    markers = []
+    for i, (phase, label) in phase_map.items():
+        if i >= _NUM_INTERVALS:
+            continue
+        markers.append({
+            "sim_step": i * _SIM_STEPS_PER_INTERVAL,
+            "interval": i,
+            "label": label,
+            "phase": phase,
+        })
+    return markers
+
+
 def _build_schedule_for(scenario: str) -> list[tuple[int, np.ndarray]]:
     if scenario == "stadium_shock":
         return _build_stadium_schedule()
+    if scenario == "compound_shock":
+        return _build_compound_schedule()
+    if scenario == "slow_decay":
+        return _build_slow_decay_schedule()
     return _build_accident_schedule()
 
 
 def _build_markers_for(scenario: str) -> list[dict[str, Any]]:
     if scenario == "stadium_shock":
         return _build_stadium_markers()
+    if scenario == "compound_shock":
+        return _build_compound_markers()
+    if scenario == "slow_decay":
+        return _build_slow_decay_markers()
     return _build_accident_markers()
 
 
@@ -618,6 +784,24 @@ def _build_shock_log_config(scenario: str) -> dict[str, Any]:
             "surge_fraction": cfg.surge_fraction,
             "affected_node": cfg.affected_node,
             "timing_incoherence_fraction": cfg.timing_incoherence_fraction,
+        }
+    elif scenario == "compound_shock":
+        cfg = _COMPOUND_CONFIG
+        return {
+            "num_intervals": _NUM_INTERVALS,
+            "steps_per_interval": _SIM_STEPS_PER_INTERVAL,
+            "weather_onset_interval": cfg.weather_onset_interval,
+            "event_onset_interval": cfg.event_onset_interval,
+            "event_spike_fraction": cfg.event_spike_fraction,
+        }
+    elif scenario == "slow_decay":
+        cfg = _SLOW_DECAY_CONFIG
+        return {
+            "num_intervals": _NUM_INTERVALS,
+            "steps_per_interval": _SIM_STEPS_PER_INTERVAL,
+            "onset_interval": cfg.onset_interval,
+            "decay_rate_per_interval": cfg.decay_rate_per_interval,
+            "max_reduction": cfg.max_reduction,
         }
     else:
         cfg = _ACCIDENT_CONFIG
@@ -658,15 +842,24 @@ def _build_state_snapshot() -> dict[str, Any]:
       speed             — current speed multiplier
       scenario_progress — fraction of schedule consumed [0.0, 1.0]
       active_scenario   — name of the currently active scenario
+      compound_mode     — whether compound mode is active
       total_sim_steps   — total sim steps in the active scenario schedule
       nodes             — list of {index, label, tension, velocity, net_flux}
       strands           — list of {i, j, coupling, tension_gradient, tension_i, tension_j}
       scenario_markers  — fixed list of phase-boundary events for chart annotation
                           each: {sim_step, interval, label, phase}
+      has_external_node — bool: whether a 4th node is attached
+      external_node_index — int or null
+      external_node_label — string or null
+      external_target_node — int or null
+      strand_weights    — full coupling matrix as flat list (row-major)
+      feed_signal_active — bool
+      incoherence_scores — per-node incoherence scores [0.0, 1.0]
     """
     nodes_raw = web.observe()
     tension_vec = web.tension
     coupling = web.coupling_matrix
+    coherence = web.coherence()
 
     nodes_payload = [
         {
@@ -679,14 +872,27 @@ def _build_state_snapshot() -> dict[str, Any]:
         for n in nodes_raw
     ]
 
-    # Strands: upper triangle of the coupling matrix (3 strands for a triangle)
+    # Incoherence scores (one per node, including external if present)
+    incoherence_scores = [
+        round(float(coherence.incoherence_scores[i]), 4)
+        if i < len(coherence.incoherence_scores) else 0.0
+        for i in range(web.num_nodes)
+    ]
+
+    # Strands: upper triangle of the coupling matrix
     strands_payload = []
     n = web.num_nodes
     for i in range(n):
         for j in range(i + 1, n):
             w = float(coupling[i, j])
-            if w > 0:
+            if w > 1e-9:
                 gradient = abs(float(tension_vec[i]) - float(tension_vec[j])) * w
+                # Mark whether this strand is probationary (connects to external node)
+                is_probationary = (
+                    _external_node_index is not None
+                    and (i == _external_node_index or j == _external_node_index)
+                    and w < 0.5  # still "thin" weight = probationary
+                )
                 strands_payload.append({
                     "i": i,
                     "j": j,
@@ -694,7 +900,33 @@ def _build_state_snapshot() -> dict[str, Any]:
                     "tension_gradient": round(gradient, 4),
                     "tension_i": round(float(tension_vec[i]), 4),
                     "tension_j": round(float(tension_vec[j]), 4),
+                    "probationary": is_probationary,
                 })
+
+    # Strand weights flat list (for visualization)
+    strand_weights = coupling.flatten().tolist()
+
+    # Probation metrics if external node is attached
+    probation_status = None
+    if _external_node_index is not None and _external_target_node is not None:
+        ext_i = _external_node_index
+        tgt_j = _external_target_node
+        if ext_i < len(tension_vec) and tgt_j < len(tension_vec):
+            weight = float(coupling[ext_i, tgt_j])
+            ext_tension = float(tension_vec[ext_i])
+            tgt_tension = float(tension_vec[tgt_j])
+            flux = weight * (ext_tension - tgt_tension)
+            ext_incoherence = incoherence_scores[ext_i] if ext_i < len(incoherence_scores) else 0.0
+            tgt_incoherence = incoherence_scores[tgt_j] if tgt_j < len(incoherence_scores) else 0.0
+            probation_status = {
+                "source_node": ext_i,
+                "target_node": tgt_j,
+                "weight": round(weight, 4),
+                "flux": round(flux, 4),
+                "source_incoherence": round(ext_incoherence, 4),
+                "target_incoherence": round(tgt_incoherence, 4),
+                "energy": round(web.total_energy(), 6),
+            }
 
     return {
         "tick": _tick,
@@ -704,12 +936,21 @@ def _build_state_snapshot() -> dict[str, Any]:
         "total_tension": round(web.total_tension(), 4),
         "paused": _paused,
         "speed": _speed,
-        "scenario_progress": round(_schedule_cursor / len(_perturbation_schedule), 4),
+        "scenario_progress": round(_schedule_cursor / max(len(_perturbation_schedule), 1), 4),
         "active_scenario": _active_scenario,
+        "compound_mode": _compound_mode,
         "total_sim_steps": _NUM_INTERVALS * _SIM_STEPS_PER_INTERVAL,
         "nodes": nodes_payload,
         "strands": strands_payload,
         "scenario_markers": _scenario_markers,
+        "has_external_node": _external_node_index is not None,
+        "external_node_index": _external_node_index,
+        "external_node_label": _external_node_label,
+        "external_target_node": _external_target_node,
+        "strand_weights": strand_weights,
+        "feed_signal_active": _feed_signal_active,
+        "incoherence_scores": incoherence_scores,
+        "probation_status": probation_status,
     }
 
 
@@ -726,32 +967,43 @@ async def _simulation_loop() -> None:
       1. Handle scenario switch, restart, or step request
       2. If paused and no step request, broadcast current state and idle
       3. Apply any scheduled perturbations for the current step
-      4. Advance the web by one physics step (repeated per speed multiplier)
-      5. Serialize and broadcast state to all connected clients
-      6. Sleep to maintain target cadence
-      7. When schedule exhausts, reset web and restart scenario
+      4. If feed_signal active, inject periodic sine pulse at external node
+      5. Advance the web by one physics step (repeated per speed multiplier)
+      6. Serialize and broadcast state to all connected clients
+      7. Sleep to maintain target cadence
+      8. When schedule exhausts, reset web and restart scenario
     """
     global _tick, _schedule_cursor, web
     global _paused, _speed, _step_requested, _restart_requested
     global _perturbation_events, _scenario_start_tick, _run_logger
-    global _active_scenario, _scenario_switch_requested
+    global _active_scenario, _scenario_switch_requested, _compound_mode
     global _perturbation_schedule, _scenario_markers, _SHOCK_LOG_CONFIG
+    global _external_node_index, _external_node_label, _external_target_node
+    global _feed_signal_active, _feed_signal_phase
 
     BASE_INTERVAL = 0.10  # seconds — 10 Hz base cadence
+    feed_tick: int = 0   # increments each loop for feed signal timing
 
     while True:
         loop_start = asyncio.get_event_loop().time()
 
-        # --- Handle scenario switch (rebuilds schedule + markers, then restarts) ---
+        # --- Handle scenario switch (rebuilds schedule + markers, then optionally restarts) ---
         if _scenario_switch_requested is not None:
             new_scenario = _scenario_switch_requested
             _scenario_switch_requested = None
-            if new_scenario in ("accident_shock", "stadium_shock"):
+            if new_scenario in ("accident_shock", "stadium_shock", "compound_shock", "slow_decay"):
                 _active_scenario = new_scenario
                 _perturbation_schedule = _build_schedule_for(_active_scenario)
                 _scenario_markers = _build_markers_for(_active_scenario)
                 _SHOCK_LOG_CONFIG = _build_shock_log_config(_active_scenario)
-            _restart_requested = True  # fall through to restart logic below
+
+            # In compound mode: don't reset web, just reset schedule cursor
+            # so new perturbations layer on top of existing state.
+            if _compound_mode:
+                _schedule_cursor = 0
+                _perturbation_events = []
+            else:
+                _restart_requested = True  # fall through to restart logic below
 
         # --- Handle restart ---
         if _restart_requested:
@@ -763,6 +1015,12 @@ async def _simulation_loop() -> None:
             _run_logger.reset()
             _run_logger.run_start_tick = _tick
             _run_logger.run_start_sim_step = 0
+            # Reset external node (restart clears topology changes)
+            _external_node_index = None
+            _external_node_label = None
+            _external_target_node = None
+            _feed_signal_active = False
+            _feed_signal_phase = 0.0
 
         # --- If paused and no step request, just broadcast and idle ---
         if _paused and not _step_requested:
@@ -785,15 +1043,9 @@ async def _simulation_loop() -> None:
             _step_requested = False
 
         # --- Determine how many physics ticks to run this interval ---
-        # Speed multiplier > 1 means more ticks per wall-clock interval.
-        # Speed < 1 means we only tick every Nth interval (handled by not always stepping).
-        # Simplest model: run floor(speed) ticks always, plus an extra one probabilistically
-        # for fractional parts. This keeps the cadence smooth.
         if _speed >= 1.0:
             ticks_this_interval = int(_speed)
         else:
-            # Sub-1x speed: run one tick every (1/speed) intervals on average.
-            # We track fractional accumulator to avoid drift.
             if not hasattr(_simulation_loop, '_speed_acc'):
                 _simulation_loop._speed_acc = 0.0
             _simulation_loop._speed_acc += _speed
@@ -805,7 +1057,6 @@ async def _simulation_loop() -> None:
         if hasattr(_simulation_loop, '_speed_acc') and _speed >= 1.0:
             _simulation_loop._speed_acc = 0.0
 
-        # At sub-1x speed, ticks_this_interval may be 0 — skip physics entirely.
         n_ticks = ticks_this_interval if ticks_this_interval > 0 else 0
 
         for _ in range(n_ticks):
@@ -815,9 +1066,24 @@ async def _simulation_loop() -> None:
                 and _perturbation_schedule[_schedule_cursor][0] <= web.step_count
             ):
                 _scheduled_step, delta = _perturbation_schedule[_schedule_cursor]
+                # Pad delta to match current web size if external node was added
+                if len(delta) < web.num_nodes:
+                    padded = np.zeros(web.num_nodes, dtype=np.float64)
+                    padded[:len(delta)] = delta
+                    delta = padded
                 web.perturb_vector(delta)
                 _run_logger.record_perturbation(_tick, web.step_count, delta)
                 _schedule_cursor += 1
+
+            # Feed signal: inject sine wave at external node
+            if _feed_signal_active and _external_node_index is not None:
+                feed_tick += 1
+                _feed_signal_phase += 0.08  # ~0.8 Hz at 10 Hz loop
+                feed_value = 0.3 * np.sin(_feed_signal_phase)
+                try:
+                    web.perturb(_external_node_index, float(feed_value))
+                except (IndexError, ValueError):
+                    pass
 
             # Advance physics
             web.step()
@@ -849,9 +1115,8 @@ async def _simulation_loop() -> None:
             _clients.difference_update(dead)
 
         # --- Reset scenario when schedule is exhausted and web is quiet ---
-        # Auto-log the completed run BEFORE resetting, so the full scenario
-        # data is always captured in the logbook.
-        if _schedule_cursor >= len(_perturbation_schedule):
+        # In compound mode: don't auto-reset — let the web continue decaying.
+        if not _compound_mode and _schedule_cursor >= len(_perturbation_schedule):
             energy = web.total_energy()
             if energy < 1e-4 or web.step_count > 10_000:
                 # Capture final snapshot before reset
@@ -885,13 +1150,15 @@ async def _simulation_loop() -> None:
                 _run_logger.reset()
                 _run_logger.run_start_tick = _tick
                 _run_logger.run_start_sim_step = 0
+                _external_node_index = None
+                _external_node_label = None
+                _external_target_node = None
+                _feed_signal_active = False
+                _feed_signal_phase = 0.0
 
         # --- Maintain cadence (adjusted for speed) ---
-        # At speed > 1 we still broadcast at ~10 Hz (humans can't track faster).
-        # The extra ticks per interval is how we accelerate, not the broadcast rate.
         elapsed = asyncio.get_event_loop().time() - loop_start
         if _speed < 1.0:
-            # Slow mode: stretch the interval
             sleep_time = max(0.0, (BASE_INTERVAL / _speed) - elapsed)
         else:
             sleep_time = max(0.0, BASE_INTERVAL - elapsed)
@@ -935,21 +1202,35 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
     Server -> client: JSON state snapshots at ~10 Hz (from simulation loop).
 
     Client -> server: control messages (JSON):
-      {"cmd": "restart"}            — reset scenario
-      {"cmd": "pause"}              — pause simulation
-      {"cmd": "resume"}             — resume simulation
-      {"cmd": "step"}               — advance one tick while paused
-      {"cmd": "speed", "value": X}  — set speed (0.25, 0.5, 1, 2, 4)
+      {"cmd": "restart"}
+      {"cmd": "pause"}
+      {"cmd": "resume"}
+      {"cmd": "step"}
+      {"cmd": "speed", "value": X}
+      {"cmd": "scenario", "value": NAME}
+      {"cmd": "compound_mode", "value": bool}
+      {"cmd": "perturb", "node": N, "value": F}
+      {"cmd": "perturb_multi", "perturbations": [{node, value}, ...]}
+      {"cmd": "attach_strand", "label": S, "target": N}
+      {"cmd": "set_strand_weight", "source": I, "target": J, "weight": F}
+      {"cmd": "detach_strand", "source": I, "target": J}
+      {"cmd": "pulse_external", "node": N, "value": F}
+      {"cmd": "feed_signal", "value": bool}
+      {"cmd": "log"}
 
     On connect: immediately send one snapshot so the client renders
     something before the next broadcast tick.
     """
     global _paused, _speed, _step_requested, _restart_requested, _scenario_switch_requested
+    global _compound_mode
+    global _external_node_index, _external_node_label, _external_target_node
+    global _feed_signal_active, _feed_signal_phase
 
     await websocket.accept()
     _clients.add(websocket)
 
     VALID_SPEEDS = {0.25, 0.5, 1.0, 2.0, 4.0}
+    VALID_SCENARIOS = {"accident_shock", "stadium_shock", "compound_shock", "slow_decay"}
 
     try:
         # Send initial snapshot immediately so the client isn't blank
@@ -966,15 +1247,20 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                 continue
 
             cmd = msg.get("cmd")
+
             if cmd == "restart":
                 _restart_requested = True
                 _paused = False
+
             elif cmd == "pause":
                 _paused = True
+
             elif cmd == "resume":
                 _paused = False
+
             elif cmd == "step":
                 _step_requested = True
+
             elif cmd == "speed":
                 val = msg.get("value")
                 if val in VALID_SPEEDS:
@@ -983,22 +1269,204 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                     await websocket.send_text(json.dumps({
                         "error": f"invalid speed {val!r}, valid: {sorted(VALID_SPEEDS)}"
                     }))
+
             elif cmd == "scenario":
                 val = msg.get("value")
-                if val in ("accident_shock", "stadium_shock"):
+                if val in VALID_SCENARIOS:
                     _scenario_switch_requested = val
-                    _paused = False
+                    if not _compound_mode:
+                        _paused = False
                     await websocket.send_text(json.dumps({
                         "scenario_switching": True,
                         "scenario": val,
+                        "compound_mode": _compound_mode,
                     }))
                 else:
                     await websocket.send_text(json.dumps({
                         "error": (
                             f"invalid scenario {val!r}, "
-                            "valid: 'accident_shock' | 'stadium_shock'"
+                            f"valid: {sorted(VALID_SCENARIOS)}"
                         )
                     }))
+
+            elif cmd == "compound_mode":
+                val = msg.get("value")
+                if isinstance(val, bool):
+                    _compound_mode = val
+                    await websocket.send_text(json.dumps({
+                        "compound_mode": _compound_mode
+                    }))
+                else:
+                    await websocket.send_text(json.dumps({
+                        "error": f"compound_mode value must be boolean, got {val!r}"
+                    }))
+
+            elif cmd == "perturb":
+                node_idx = msg.get("node")
+                value = msg.get("value")
+                if not isinstance(node_idx, int) or not isinstance(value, (int, float)):
+                    await websocket.send_text(json.dumps({
+                        "error": "perturb requires {node: int, value: float}"
+                    }))
+                    continue
+                value = float(value)
+                if not np.isfinite(value) or abs(value) > 100.0:
+                    await websocket.send_text(json.dumps({
+                        "error": f"perturb value {value} out of range [-100, 100]"
+                    }))
+                    continue
+                try:
+                    web.perturb(node_idx, value)
+                    await websocket.send_text(json.dumps({
+                        "perturbed": True, "node": node_idx, "value": round(value, 4)
+                    }))
+                except IndexError as exc:
+                    await websocket.send_text(json.dumps({"error": str(exc)}))
+
+            elif cmd == "perturb_multi":
+                perturbations = msg.get("perturbations")
+                if not isinstance(perturbations, list):
+                    await websocket.send_text(json.dumps({
+                        "error": "perturb_multi requires {perturbations: [{node, value}, ...]}"
+                    }))
+                    continue
+                errors = []
+                applied = []
+                for p in perturbations:
+                    ni = p.get("node")
+                    val = p.get("value")
+                    if not isinstance(ni, int) or not isinstance(val, (int, float)):
+                        errors.append(f"invalid entry {p!r}")
+                        continue
+                    val = float(val)
+                    if not np.isfinite(val) or abs(val) > 100.0:
+                        errors.append(f"value {val} out of range for node {ni}")
+                        continue
+                    try:
+                        web.perturb(ni, val)
+                        applied.append({"node": ni, "value": round(val, 4)})
+                    except IndexError as exc:
+                        errors.append(str(exc))
+                await websocket.send_text(json.dumps({
+                    "perturbed_multi": True,
+                    "applied": applied,
+                    "errors": errors,
+                }))
+
+            elif cmd == "attach_strand":
+                label = msg.get("label")
+                target = msg.get("target")
+                if not isinstance(label, str) or not label.strip():
+                    await websocket.send_text(json.dumps({
+                        "error": "attach_strand requires {label: str, target: int}"
+                    }))
+                    continue
+                if not isinstance(target, int):
+                    await websocket.send_text(json.dumps({
+                        "error": "attach_strand target must be an integer node index"
+                    }))
+                    continue
+                try:
+                    new_idx = web.attach_probationary_strand(
+                        source_label=label.strip(),
+                        target_node=target,
+                        initial_weight=0.05,
+                    )
+                    _external_node_index = new_idx
+                    _external_node_label = label.strip()
+                    _external_target_node = target
+                    await websocket.send_text(json.dumps({
+                        "attached": True,
+                        "new_node_index": new_idx,
+                        "label": label.strip(),
+                        "target": target,
+                    }))
+                except (IndexError, ValueError, AssertionError) as exc:
+                    await websocket.send_text(json.dumps({"error": str(exc)}))
+
+            elif cmd == "set_strand_weight":
+                source = msg.get("source")
+                target = msg.get("target")
+                weight = msg.get("weight")
+                if not all(isinstance(x, int) for x in [source, target]):
+                    await websocket.send_text(json.dumps({
+                        "error": "set_strand_weight requires {source: int, target: int, weight: float}"
+                    }))
+                    continue
+                if not isinstance(weight, (int, float)) or not np.isfinite(float(weight)):
+                    await websocket.send_text(json.dumps({
+                        "error": "set_strand_weight weight must be a finite float"
+                    }))
+                    continue
+                weight = float(weight)
+                if weight < 0 or weight > 10.0:
+                    await websocket.send_text(json.dumps({
+                        "error": f"weight {weight} out of range [0, 10]"
+                    }))
+                    continue
+                try:
+                    web.set_strand_weight(source, target, weight)
+                    await websocket.send_text(json.dumps({
+                        "weight_set": True,
+                        "source": source,
+                        "target": target,
+                        "weight": round(weight, 4),
+                    }))
+                except (IndexError, ValueError, AssertionError) as exc:
+                    await websocket.send_text(json.dumps({"error": str(exc)}))
+
+            elif cmd == "detach_strand":
+                source = msg.get("source")
+                target = msg.get("target")
+                if not isinstance(source, int) or not isinstance(target, int):
+                    await websocket.send_text(json.dumps({
+                        "error": "detach_strand requires {source: int, target: int}"
+                    }))
+                    continue
+                try:
+                    web.detach_strand(source, target)
+                    await websocket.send_text(json.dumps({
+                        "detached": True, "source": source, "target": target
+                    }))
+                except (IndexError, ValueError) as exc:
+                    await websocket.send_text(json.dumps({"error": str(exc)}))
+
+            elif cmd == "pulse_external":
+                node_idx = msg.get("node")
+                value = msg.get("value", 1.0)
+                if not isinstance(node_idx, int):
+                    await websocket.send_text(json.dumps({
+                        "error": "pulse_external requires {node: int, value: float}"
+                    }))
+                    continue
+                value = float(value)
+                if not np.isfinite(value) or abs(value) > 100.0:
+                    await websocket.send_text(json.dumps({
+                        "error": f"pulse value {value} out of range"
+                    }))
+                    continue
+                try:
+                    web.perturb(node_idx, value)
+                    await websocket.send_text(json.dumps({
+                        "pulsed": True, "node": node_idx, "value": round(value, 4)
+                    }))
+                except IndexError as exc:
+                    await websocket.send_text(json.dumps({"error": str(exc)}))
+
+            elif cmd == "feed_signal":
+                val = msg.get("value")
+                if isinstance(val, bool):
+                    _feed_signal_active = val
+                    if val:
+                        _feed_signal_phase = 0.0
+                    await websocket.send_text(json.dumps({
+                        "feed_signal": _feed_signal_active
+                    }))
+                else:
+                    await websocket.send_text(json.dumps({
+                        "error": "feed_signal value must be boolean"
+                    }))
+
             elif cmd == "log":
                 try:
                     entry = _run_logger.write_entry(
@@ -1018,6 +1486,7 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
                     await websocket.send_text(json.dumps({
                         "error": f"log failed: {exc}"
                     }))
+
             else:
                 await websocket.send_text(json.dumps({"error": f"unknown cmd {cmd!r}"}))
 
@@ -1099,98 +1568,7 @@ async def ingest_node(node_index: int, request: Request) -> JSONResponse:
         content={
             "ok": True,
             "node_index": node_index,
-            "node_label": NODE_LABELS.get(node_index, f"Node-{node_index}"),
-            "tension_after": round(float(web.tension[node_index]), 4),
+            "tension_delta": tension_delta,
+            "node_tension_after": round(float(web.tension[node_index]), 4),
         }
     )
-
-
-@app.post("/ingest/web")
-async def ingest_web(request: Request) -> JSONResponse:
-    """
-    Inject perturbations at all nodes simultaneously.
-
-    Request body: {"tensions": [<float>, <float>, <float>]}
-      tensions — list of perturbation magnitudes, one per node.
-                 Length must equal the number of nodes (3).
-
-    Useful for correlated external events that affect multiple nodes at once.
-    """
-    try:
-        body = await request.json()
-    except Exception:
-        return JSONResponse(
-            status_code=422,
-            content={"error": "Request body must be valid JSON"},
-        )
-
-    if "tensions" not in body:
-        return JSONResponse(
-            status_code=422,
-            content={"error": "Payload must contain 'tensions' key (list of floats)"},
-        )
-
-    tensions_raw = body["tensions"]
-    if not isinstance(tensions_raw, list) or len(tensions_raw) != web.num_nodes:
-        return JSONResponse(
-            status_code=422,
-            content={
-                "error": f"'tensions' must be a list of {web.num_nodes} floats",
-                "got_length": len(tensions_raw) if isinstance(tensions_raw, list) else None,
-            },
-        )
-
-    validated: list[float] = []
-    for i, v in enumerate(tensions_raw):
-        try:
-            validated.append(_validate_tension_payload({"tension": v}))
-        except ValueError as exc:
-            return JSONResponse(
-                status_code=422,
-                content={"error": f"Node {i}: {exc}"},
-            )
-
-    delta = np.array(validated, dtype=np.float64)
-    web.perturb_vector(delta)
-
-    return JSONResponse(
-        content={
-            "ok": True,
-            "tensions_after": [round(float(t), 4) for t in web.tension],
-        }
-    )
-
-
-@app.get("/state")
-async def get_state() -> JSONResponse:
-    """Return the current web state snapshot as JSON (same schema as websocket)."""
-    return JSONResponse(content=_build_state_snapshot())
-
-
-@app.post("/log")
-async def trigger_log() -> JSONResponse:
-    """
-    Write the current run's accumulated data to ayin/docs/logbook.md.
-
-    This is the REST equivalent of the websocket {cmd: "log"} message.
-    Returns a summary of what was written.
-    """
-    try:
-        entry = _run_logger.write_entry(
-            scenario_name=_active_scenario,
-            web_config=_WEB_CONFIG,
-            shock_config=_SHOCK_LOG_CONFIG,
-            current_tick=_tick,
-            current_sim_step=web.step_count,
-            current_energy=web.total_energy(),
-        )
-        return JSONResponse(content={
-            "logged": True,
-            "path": str(_LOGBOOK_PATH),
-            "entry_lines": entry.count("\n"),
-            "snapshots_recorded": len(_run_logger.snapshots),
-            "perturbations_recorded": len(_run_logger.perturbation_events),
-            "incoherence_events": len(_run_logger.incoherence_events),
-        })
-    except Exception as exc:
-        return JSONResponse(status_code=500, content={"error": str(exc)})

@@ -168,7 +168,7 @@ class TensionWeb:
     ) -> None:
         self._params: Final[PropagationParams] = params or PropagationParams()
         self._coupling_matrix: NDArray[np.float64] = coupling_matrix.copy()
-        self._num_nodes: Final[int] = coupling_matrix.shape[0]
+        self._num_nodes: int = coupling_matrix.shape[0]
 
         # Verify the coupling matrix is symmetric — strands are bidirectional
         assert np.allclose(coupling_matrix, coupling_matrix.T), \
@@ -465,6 +465,394 @@ class TensionWeb:
             2.0 * np.sqrt(alpha * self._eigenvalues[nonzero_mask])
         )
         return ratios
+
+    # --- Dynamic Topology (Phase 2: strand integration) ---
+
+    def _recompute_topology(self) -> None:
+        """
+        Recompute the Laplacian and eigenvalues after a topology change.
+
+        This is the internal consistency step: any modification to the
+        coupling matrix invalidates the cached Laplacian and eigenvalues.
+        Also re-checks CFL stability — adding a strand can increase λ_max.
+
+        The coherence monitor is rebuilt with the new topology so its
+        neighbor weight matrix matches the expanded coupling structure.
+        """
+        # Verify symmetry (bidirectional strands only)
+        assert np.allclose(self._coupling_matrix, self._coupling_matrix.T), \
+            "Coupling matrix must be symmetric after topology change"
+
+        self._laplacian = graph_laplacian(self._coupling_matrix)
+        self._eigenvalues = np.linalg.eigvalsh(self._laplacian)
+
+        # CFL stability re-check
+        lambda_max: float = float(self._eigenvalues[-1])
+        if lambda_max > 0:
+            dt_critical: float = 2.0 / np.sqrt(
+                self._params.propagation_rate * lambda_max
+            )
+            assert self._params.dt < dt_critical, (
+                f"Timestep {self._params.dt} exceeds CFL limit {dt_critical:.4f} "
+                f"after topology change. New λ_max={lambda_max:.4f}."
+            )
+
+        # Rebuild the coherence monitor with updated topology.
+        # Recompute the analytical damping ratio for the new eigenspectrum.
+        nonzero_eigenvalues = self._eigenvalues[self._eigenvalues > 1e-12]
+        if len(nonzero_eigenvalues) > 0:
+            lambda_min_nontrivial = float(nonzero_eigenvalues[0])
+            analytical_zeta = self._params.damping_coefficient / (
+                2.0 * np.sqrt(self._params.propagation_rate * lambda_min_nontrivial)
+            )
+        else:
+            analytical_zeta = 0.0
+
+        self._monitor = CoherenceMonitor(
+            num_nodes=self._num_nodes,
+            coupling_matrix=self._coupling_matrix,
+            analytical_damping_ratio=analytical_zeta,
+        )
+
+    def attach_probationary_strand(
+        self,
+        source_label: str,
+        target_node: int,
+        initial_weight: float = 0.01,
+    ) -> int:
+        """
+        Add a new node and bidirectional strand to the web at runtime.
+
+        Physically: a new mass is attached to the existing spring network
+        via a very weak spring (initial_weight ~ 0.01). The new mass starts
+        at rest (zero tension, zero velocity). Because the spring is weak,
+        it carries almost no load — it exists in the topology but barely
+        participates in the dynamics. This is probationary attachment.
+
+        The propagation equation is UNCHANGED. The new node participates
+        in the same d²T/dt² = -α L T - β dT/dt physics. Its behavior
+        emerges from the expanded Laplacian, not from special-case logic.
+
+        Args:
+            source_label: Human-readable label for the new node.
+            target_node: Index of the existing node to connect to.
+            initial_weight: Coupling strength of the new strand (near-zero).
+
+        Returns:
+            The index of the newly created node.
+        """
+        if not (0 <= target_node < self._num_nodes):
+            raise IndexError(
+                f"Target node {target_node} out of range [0, {self._num_nodes})"
+            )
+
+        new_index: int = self._num_nodes
+        new_size: int = self._num_nodes + 1
+
+        # --- Expand the coupling matrix ---
+        # Add one row and one column, initialized to zero (no connections yet).
+        new_coupling = np.zeros((new_size, new_size), dtype=np.float64)
+        new_coupling[:self._num_nodes, :self._num_nodes] = self._coupling_matrix
+
+        # Set bidirectional strand: W[new, target] = W[target, new] = weight
+        new_coupling[new_index, target_node] = initial_weight
+        new_coupling[target_node, new_index] = initial_weight
+
+        self._coupling_matrix = new_coupling
+
+        # --- Expand state vectors ---
+        # New node starts at rest: zero tension, zero velocity, zero flux.
+        self._tension = np.append(self._tension, 0.0)
+        self._velocity = np.append(self._velocity, 0.0)
+        self._net_flux = np.append(self._net_flux, 0.0)
+
+        # --- Update node count ---
+        self._num_nodes = new_size
+
+        # --- Register the label for the new node ---
+        # Import is module-level; NODE_LABELS is mutable dict.
+        NODE_LABELS[new_index] = source_label
+
+        # --- Recompute derived topology quantities ---
+        self._recompute_topology()
+
+        return new_index
+
+    def set_strand_weight(self, i: int, j: int, weight: float) -> None:
+        """
+        Adjust the coupling weight of an existing strand.
+
+        Physically: tightening or loosening a spring between two masses.
+        A higher weight means the strand transmits perturbations more
+        strongly. The weight must be non-negative (springs don't push
+        nodes apart — that would violate the positive-semidefinite
+        property of the Laplacian).
+
+        After changing the weight, the Laplacian and eigenvalues are
+        recomputed to maintain consistency.
+        """
+        if not (0 <= i < self._num_nodes and 0 <= j < self._num_nodes):
+            raise IndexError(f"Node indices ({i}, {j}) out of range")
+        if i == j:
+            raise ValueError("Self-loops are not physical (a spring from a mass to itself)")
+        if weight < 0:
+            raise ValueError("Strand weight must be non-negative")
+
+        # Bidirectional: set both directions symmetrically
+        self._coupling_matrix[i, j] = weight
+        self._coupling_matrix[j, i] = weight
+
+        self._recompute_topology()
+
+    def detach_strand(self, i: int, j: int) -> None:
+        """
+        Set a strand's weight to near-zero (slack), preserving topology.
+
+        The strand is not deleted — it remains in the coupling matrix
+        with a negligible weight (1e-10). This preserves the node indices
+        and matrix dimensions while making the strand effectively inert.
+
+        Physically: the spring has gone completely slack. It's still
+        attached but transmits no meaningful force.
+        """
+        self.set_strand_weight(i, j, 1e-10)
+
+    def strand_flux(self, i: int, j: int) -> float:
+        """
+        Measure the instantaneous tension flux along a strand from i to j.
+
+        Flux_ij = W_ij * (T_i - T_j)
+
+        Positive flux means tension is flowing FROM i TO j (i has higher
+        tension). This is a measurement of the current state, computed
+        from the coupling matrix and tension vector.
+
+        Physical meaning: the force that strand (i,j) exerts on node j
+        due to the tension difference across it. In a spring analogy,
+        this is the spring force.
+        """
+        if not (0 <= i < self._num_nodes and 0 <= j < self._num_nodes):
+            raise IndexError(f"Node indices ({i}, {j}) out of range")
+        weight = self._coupling_matrix[i, j]
+        return float(weight * (self._tension[i] - self._tension[j]))
+
+
+# --- Probation Tracker ---
+
+@dataclass
+class FluxAccumulator:
+    """
+    Accumulates directional tension flux along a strand over time.
+
+    Records total flux in each direction to determine if the strand
+    carries bidirectional load (genuine coupling) or is unidirectional
+    (a sensor, not a strand).
+
+    Physical interpretation:
+      flux_i_to_j: cumulative tension flow from node i to node j
+      flux_j_to_i: cumulative tension flow from node j to node i
+
+    Both should be significantly positive for a genuine bidirectional strand.
+    A strand where 90%+ of total flow is one-directional is a sensor.
+    """
+    flux_i_to_j: float = 0.0
+    flux_j_to_i: float = 0.0
+
+    def record(self, instantaneous_flux: float) -> None:
+        """
+        Record one observation of instantaneous strand flux.
+
+        instantaneous_flux > 0 means flow from i to j.
+        instantaneous_flux < 0 means flow from j to i.
+        """
+        if instantaneous_flux > 0:
+            self.flux_i_to_j += instantaneous_flux
+        else:
+            self.flux_j_to_i += abs(instantaneous_flux)
+
+    @property
+    def total_flux(self) -> float:
+        return self.flux_i_to_j + self.flux_j_to_i
+
+    @property
+    def directionality_ratio(self) -> float:
+        """
+        Fraction of total flux in the dominant direction.
+
+        Returns a value in [0.5, 1.0]:
+          0.5 = perfectly bidirectional (equal flow both ways)
+          1.0 = completely unidirectional (all flow one way)
+
+        A strand with directionality > 0.9 is functionally a sensor.
+        """
+        if self.total_flux < 1e-15:
+            return 0.5  # No flux observed yet — neutral
+        dominant = max(self.flux_i_to_j, self.flux_j_to_i)
+        return dominant / self.total_flux
+
+    @property
+    def is_bidirectional(self) -> bool:
+        """True if the strand shows significant flow in both directions."""
+        return self.directionality_ratio < 0.9
+
+
+@dataclass
+class ProbationResult:
+    """
+    Summary of probation tracking for one strand.
+
+    This is the output of the ProbationTracker — a measurement report,
+    not a decision. The caller interprets these measurements.
+    """
+    source_node: int
+    target_node: int
+    flux_accumulator: FluxAccumulator
+
+    # Incoherence scores at the target node during probation,
+    # collected at each observation step.
+    target_incoherence_history: list[float]
+
+    # Baseline incoherence scores at the target node (from the
+    # scenario run WITHOUT the probationary strand).
+    baseline_incoherence_history: list[float]
+
+    # Energy history during probation (for Lyapunov verification).
+    energy_history: list[float]
+
+    @property
+    def mean_target_incoherence(self) -> float:
+        if not self.target_incoherence_history:
+            return float("nan")
+        return float(np.mean(self.target_incoherence_history))
+
+    @property
+    def mean_baseline_incoherence(self) -> float:
+        if not self.baseline_incoherence_history:
+            return float("nan")
+        return float(np.mean(self.baseline_incoherence_history))
+
+    @property
+    def incoherence_improvement(self) -> float:
+        """
+        Reduction in mean incoherence score at the target node
+        compared to the baseline (no-strand) run.
+
+        Positive = improvement (lower incoherence with the strand).
+        Negative = the strand made things worse.
+        """
+        return self.mean_baseline_incoherence - self.mean_target_incoherence
+
+    @property
+    def passed_bidirectional(self) -> bool:
+        return self.flux_accumulator.is_bidirectional
+
+    @property
+    def passed_coherence(self) -> bool:
+        return self.incoherence_improvement > 0.0
+
+    @property
+    def energy_converged(self) -> bool:
+        """
+        Check that energy decays during free propagation (no external forcing).
+
+        During active perturbation injection, energy INCREASES — that is
+        external work being done on the system, not a stability violation.
+        The Lyapunov property (dE/dt = -beta ||V||^2 <= 0) only applies
+        during free decay.
+
+        We check the last 20% of the energy history, which should be the
+        settle phase after perturbations stop. Energy there must be
+        monotonically non-increasing on average.
+        """
+        if len(self.energy_history) < 10:
+            return True
+        n = len(self.energy_history)
+        tail_start = max(0, n - n // 5)  # Last 20%
+        tail = self.energy_history[tail_start:]
+        if len(tail) < 2:
+            return True
+        # Check that the second half of the tail is <= the first half
+        mid = len(tail) // 2
+        first_half_mean = float(np.mean(tail[:mid]))
+        second_half_mean = float(np.mean(tail[mid:]))
+        return second_half_mean <= first_half_mean * 1.05
+
+
+class ProbationTracker:
+    """
+    Monitors a probationary strand against two physical criteria:
+
+    1. Bidirectional propagation: tension must flow BOTH directions
+       along the strand. A one-directional strand is a sensor, not a
+       genuine coupling in the web's physics.
+
+    2. Coherence improvement: the target node's incoherence score
+       should decrease with the strand attached, compared to the
+       baseline (no-strand) scenario.
+
+    This tracker is a MEASUREMENT instrument. It observes the web's
+    state at each step and accumulates statistics. It does not steer
+    behavior — the web's physics determine what happens.
+
+    Usage:
+        tracker = ProbationTracker(web, source_node=3, target_node=2)
+        # In the simulation loop:
+        tracker.observe(web)
+        # After the run:
+        result = tracker.result(baseline_scores)
+    """
+
+    def __init__(
+        self,
+        source_node: int,
+        target_node: int,
+    ) -> None:
+        self._source_node: int = source_node
+        self._target_node: int = target_node
+        self._flux: FluxAccumulator = FluxAccumulator()
+        self._target_incoherence: list[float] = []
+        self._energy: list[float] = []
+
+    def observe(self, web: 'TensionWeb') -> None:
+        """
+        Record one observation of the web state.
+
+        Measures the instantaneous flux along the probationary strand
+        and the current incoherence score at the target node.
+        """
+        # Measure strand flux
+        flux = web.strand_flux(self._source_node, self._target_node)
+        self._flux.record(flux)
+
+        # Measure target node incoherence
+        snapshot = web.coherence()
+        if self._target_node < len(snapshot.incoherence_scores):
+            score = float(snapshot.incoherence_scores[self._target_node])
+            self._target_incoherence.append(score)
+
+        # Measure total energy
+        self._energy.append(web.total_energy())
+
+    def result(
+        self,
+        baseline_incoherence: list[float],
+    ) -> ProbationResult:
+        """
+        Produce the final probation report.
+
+        Args:
+            baseline_incoherence: Incoherence scores at the target node
+                from the scenario run WITHOUT the probationary strand.
+                Must be the same length as the observation history.
+        """
+        return ProbationResult(
+            source_node=self._source_node,
+            target_node=self._target_node,
+            flux_accumulator=self._flux,
+            target_incoherence_history=list(self._target_incoherence),
+            baseline_incoherence_history=list(baseline_incoherence),
+            energy_history=list(self._energy),
+        )
 
 
 # --- Factory ---

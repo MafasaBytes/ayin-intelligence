@@ -22,6 +22,8 @@
     --mono:        "JetBrains Mono", "Fira Mono", "Consolas", monospace;
     --ctrl-bg:     #161b22;
     --ctrl-border: #2a3545;
+    --external:    #9b59b6;
+    --external-dim: #5b2d6e;
   }
 
   html, body {
@@ -37,11 +39,12 @@
   /* ---- Layout ---- */
   #root {
     display: grid;
-    grid-template-rows: 28px 36px 1fr 190px;
-    grid-template-columns: 1fr 280px;
+    grid-template-rows: 28px 36px 36px 1fr 190px;
+    grid-template-columns: 1fr 300px;
     grid-template-areas:
       "header   header"
       "controls controls"
+      "controls2 controls2"
       "web      sidebar"
       "chart    chart";
     height: 100vh;
@@ -83,7 +86,7 @@
   #status-dot.disconnected { background: var(--alarm); }
   #status-label { font-size: 10px; color: var(--text-dim); }
 
-  /* ---- Controls bar ---- */
+  /* ---- Controls bar (row 1) ---- */
   #controls {
     grid-area: controls;
     background: var(--ctrl-bg);
@@ -92,6 +95,18 @@
     align-items: center;
     gap: 10px;
     padding: 0 16px;
+  }
+
+  /* ---- Controls bar (row 2) ---- */
+  #controls2 {
+    grid-area: controls2;
+    background: #0f1318;
+    border-bottom: 1px solid var(--ctrl-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    overflow: hidden;
   }
 
   .ctrl-btn {
@@ -125,6 +140,19 @@
   }
   .ctrl-btn.log-btn.error { border-color: #aa4444; color: #dd6666; }
 
+  /* Compound mode toggle */
+  .ctrl-btn.compound-btn {
+    border-color: #3a2a4a;
+    color: #9966bb;
+  }
+  .ctrl-btn.compound-btn:hover { background: #1e1530; border-color: #7744aa; color: #cc88ff; }
+  .ctrl-btn.compound-btn.active {
+    background: #1a0e2a;
+    border-color: #9b59b6;
+    color: #cc88ff;
+    box-shadow: 0 0 8px rgba(155,89,182,0.4);
+  }
+
   /* Scenario selector buttons */
   .scenario-btn {
     background: #1e2836;
@@ -132,7 +160,7 @@
     color: var(--text-dim);
     font-family: var(--mono);
     font-size: 10px;
-    padding: 3px 11px;
+    padding: 3px 10px;
     border-radius: 3px;
     cursor: pointer;
     letter-spacing: 0.04em;
@@ -146,12 +174,20 @@
     color: #88bbee;
     font-weight: bold;
   }
-  /* Stadium scenario gets a distinct amber active state
-     to signal its "unmapped / external" character */
   .scenario-btn.stadium.active {
     background: #2a1e10;
     border-color: #cc8822;
     color: #ffbb55;
+  }
+  .scenario-btn.compound.active {
+    background: #1a1e10;
+    border-color: #88aa22;
+    color: #ccee55;
+  }
+  .scenario-btn.slow-decay.active {
+    background: #101a1e;
+    border-color: #2288aa;
+    color: #55bbee;
   }
 
   /* Scenario name badge in header */
@@ -166,11 +202,22 @@
     background: #0e1520;
     transition: color 0.4s, border-color 0.4s, background 0.4s;
   }
-  #scenario-badge.stadium {
-    color: #ffbb55;
-    border-color: #553311;
-    background: #1a1005;
+  #scenario-badge.stadium    { color: #ffbb55; border-color: #553311; background: #1a1005; }
+  #scenario-badge.compound   { color: #ccee55; border-color: #334411; background: #101505; }
+  #scenario-badge.slow-decay { color: #55bbee; border-color: #113344; background: #051015; }
+
+  /* Compound mode badge */
+  #compound-badge {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    padding: 1px 6px;
+    border-radius: 2px;
+    border: 1px solid #3a2a4a;
+    color: #9966bb;
+    background: #0e0a14;
+    display: none;
   }
+  #compound-badge.visible { display: inline; }
 
   .ctrl-sep {
     width: 1px;
@@ -183,6 +230,7 @@
     font-size: 10px;
     color: var(--text-dim);
     letter-spacing: 0.08em;
+    white-space: nowrap;
   }
 
   .speed-btn {
@@ -212,6 +260,7 @@
     border-radius: 2px;
     overflow: hidden;
     margin-left: 8px;
+    min-width: 40px;
   }
   #scenario-progress-fill {
     height: 100%;
@@ -235,6 +284,21 @@
   }
   #paused-overlay.visible { display: block; }
 
+  /* Drag perturbation overlay */
+  #drag-overlay {
+    position: absolute;
+    pointer-events: none;
+    display: none;
+    padding: 4px 8px;
+    background: rgba(10,12,15,0.88);
+    border: 1px solid #446688;
+    border-radius: 3px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: #88ccff;
+    white-space: nowrap;
+  }
+
   /* ---- Web canvas area ---- */
   #web-panel {
     grid-area: web;
@@ -246,7 +310,9 @@
     display: block;
     width: 100%;
     height: 100%;
+    cursor: crosshair;
   }
+  #web-canvas.dragging { cursor: ns-resize; }
 
   /* ---- Sidebar ---- */
   #sidebar {
@@ -255,13 +321,15 @@
     display: flex;
     flex-direction: column;
     gap: 1px;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .panel {
     background: var(--surface);
     padding: 10px 12px;
     border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
   }
   .panel-title {
     font-size: 9px;
@@ -290,7 +358,7 @@
     margin-bottom: 4px;
   }
   .node-card .node-tension {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
     color: var(--text-bright);
     line-height: 1;
@@ -303,12 +371,26 @@
     color: var(--text-dim);
     font-variant-numeric: tabular-nums;
   }
+  .node-card .incoherence-bar-wrap {
+    height: 2px;
+    background: #1a2030;
+    border-radius: 1px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+  .node-card .incoherence-bar {
+    height: 100%;
+    background: #3a8fb5;
+    border-radius: 1px;
+    transition: width 0.3s, background 0.3s;
+    width: 0%;
+  }
   /* Recovery bar */
   .recovery-track {
     height: 3px;
     background: var(--border);
     border-radius: 1px;
-    margin-top: 6px;
+    margin-top: 4px;
     overflow: hidden;
   }
   .recovery-fill {
@@ -328,6 +410,12 @@
     0%, 100% { box-shadow: 0 0 14px var(--alarm-glow), inset 0 0 22px var(--alarm-glow); }
     50%       { box-shadow: 0 0 28px rgba(204,31,31,0.65), inset 0 0 32px rgba(204,31,31,0.38); }
   }
+  /* External node card distinct styling */
+  .node-card.external {
+    border-color: var(--external-dim);
+    border-style: dashed;
+  }
+  .node-card.external .node-name { color: #9966bb; }
 
   /* Strand readouts */
   .strand-row {
@@ -344,10 +432,11 @@
   .strand-label { font-size: 9px; color: var(--text-dim); letter-spacing: 0.06em; }
   .strand-value { font-size: 13px; font-weight: bold; color: var(--text-bright); font-variant-numeric: tabular-nums; }
   .strand-row.high-tension { border-color: var(--perturbed); }
+  .strand-row.probationary { border-color: var(--external-dim); border-style: dashed; }
 
   /* Energy readout */
   .energy-value {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: bold;
     color: var(--accent);
     line-height: 1;
@@ -357,6 +446,118 @@
     font-size: 9px;
     color: var(--text-dim);
     margin-top: 3px;
+  }
+
+  /* ---- Strand Management Panel ---- */
+  #strand-panel {
+    display: none;  /* shown when external node is attached or panel is toggled */
+  }
+  #strand-panel.visible { display: block; }
+
+  .strand-mgmt-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .strand-mgmt-row:last-child { margin-bottom: 0; }
+
+  .strand-input {
+    background: #0e1420;
+    border: 1px solid var(--ctrl-border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 7px;
+    border-radius: 3px;
+    outline: none;
+  }
+  .strand-input:focus { border-color: var(--external); }
+  .strand-input.wide { flex: 1; min-width: 80px; }
+
+  .strand-select {
+    background: #0e1420;
+    border: 1px solid var(--ctrl-border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 6px;
+    border-radius: 3px;
+    outline: none;
+  }
+
+  .strand-btn {
+    background: #1a1530;
+    border: 1px solid var(--external-dim);
+    color: #9966bb;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.12s, color 0.12s;
+  }
+  .strand-btn:hover { background: #251e40; border-color: var(--external); color: #cc88ff; }
+  .strand-btn.pulse { border-color: #cc8844; color: #ffaa55; background: #201408; }
+  .strand-btn.pulse:hover { background: #2a1a08; color: #ffcc88; }
+  .strand-btn.slack { border-color: #445566; color: #6688aa; background: #0e1418; }
+  .strand-btn.slack:hover { background: #151e28; color: #88aacc; }
+  .strand-btn.feed-on { border-color: #44aa44; color: #77dd77; background: #0e1a0e; }
+  .strand-btn.feed-on.active { background: #102010; border-color: #55cc55; box-shadow: 0 0 6px rgba(80,200,80,0.3); }
+
+  /* Weight slider */
+  .weight-slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .weight-slider {
+    flex: 1;
+    accent-color: var(--external);
+  }
+  .weight-value {
+    font-size: 10px;
+    color: #cc88ff;
+    min-width: 32px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Probation metrics */
+  .probation-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 0;
+    font-size: 9px;
+    border-bottom: 1px solid #1a2030;
+  }
+  .probation-row:last-child { border-bottom: none; }
+  .prob-label { color: var(--text-dim); }
+  .prob-value { color: var(--text-bright); font-variant-numeric: tabular-nums; }
+  .prob-value.good  { color: #55cc77; }
+  .prob-value.warn  { color: #ccaa33; }
+  .prob-value.alarm { color: #cc4444; }
+
+  /* Shift-click multi-node indicator */
+  #multi-perturb-bar {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: #88aacc;
+  }
+  #multi-perturb-bar.visible { display: flex; }
+  .multi-node-tag {
+    padding: 1px 6px;
+    border: 1px solid #3a5a7a;
+    border-radius: 2px;
+    background: #0e1824;
+    color: #88ccee;
+    font-size: 10px;
   }
 
   /* ---- Chart ---- */
@@ -393,13 +594,14 @@
     <div id="status-dot"></div>
     <div id="status-label">disconnected</div>
     <div id="scenario-badge">accident_shock</div>
+    <div id="compound-badge">COMPOUND</div>
     <div class="live-stat">tick <span id="stat-tick">-</span></div>
     <div class="live-stat">t <span id="stat-time">-</span></div>
     <div class="live-stat">E <span id="stat-energy">-</span></div>
     <div class="live-stat">ST <span id="stat-total-tension">-</span></div>
   </div>
 
-  <!-- Controls bar -->
+  <!-- Controls bar row 1: playback + scenarios + speed -->
   <div id="controls">
     <button class="ctrl-btn danger" id="btn-restart" title="Reset scenario from beginning">Restart</button>
     <div class="ctrl-sep"></div>
@@ -408,9 +610,15 @@
     <div class="ctrl-sep"></div>
     <span class="ctrl-label">Scenario</span>
     <button class="scenario-btn accident active" id="btn-scenario-accident"
-            data-scenario="accident_shock" title="Accident shock scenario — road incident, congestion wave">accident</button>
+            data-scenario="accident_shock" title="Accident shock — road incident, congestion wave">accident</button>
     <button class="scenario-btn stadium" id="btn-scenario-stadium"
             data-scenario="stadium_shock" title="Stadium shock — unmapped external surge, incoherence diagnostic">stadium</button>
+    <button class="scenario-btn compound" id="btn-scenario-compound"
+            data-scenario="compound_shock" title="Compound shock — weather + event demand spike, non-linear interaction">compound</button>
+    <button class="scenario-btn slow-decay" id="btn-scenario-slow-decay"
+            data-scenario="slow_decay" title="Slow decay — construction zone, gradual capacity loss below noise floor">slow decay</button>
+    <button class="ctrl-btn compound-btn" id="btn-compound-mode"
+            title="Compound Mode: stack scenarios without resetting the web">Stack</button>
     <div class="ctrl-sep"></div>
     <span class="ctrl-label">Speed</span>
     <button class="speed-btn" data-speed="0.25">0.25x</button>
@@ -425,10 +633,44 @@
     <button class="ctrl-btn log-btn" id="btn-log" title="Write current run data to logbook.md">Log Run</button>
   </div>
 
+  <!-- Controls bar row 2: strand management + multi-perturb status -->
+  <div id="controls2">
+    <span class="ctrl-label">Strand</span>
+    <input type="text" class="strand-input wide" id="strand-label-input" placeholder="External node label" style="max-width:160px;">
+    <select class="strand-select" id="strand-target-select">
+      <option value="0">Node 0</option>
+      <option value="1">Node 1</option>
+      <option value="2">Node 2</option>
+    </select>
+    <button class="strand-btn" id="btn-attach-strand" title="Attach probationary strand to target node">Attach</button>
+    <div class="ctrl-sep"></div>
+    <!-- Weight slider (shown when external node present) -->
+    <div id="weight-slider-section" style="display:none; align-items:center; gap:6px;">
+      <span class="ctrl-label">Weight</span>
+      <div class="weight-slider-wrap" style="width:120px;">
+        <input type="range" class="weight-slider" id="strand-weight-slider" min="0.01" max="1.0" step="0.01" value="0.05">
+        <span class="weight-value" id="strand-weight-val">0.05</span>
+      </div>
+      <button class="strand-btn pulse" id="btn-pulse-external" title="Inject one pulse at the external node">Pulse</button>
+      <button class="strand-btn feed-on" id="btn-feed-signal" title="Toggle automatic periodic feed signal">Feed</button>
+      <button class="strand-btn slack" id="btn-go-slack" title="Set strand weight to near-zero (go slack)">Go Slack</button>
+    </div>
+    <div class="ctrl-sep"></div>
+    <!-- Multi-node perturb status -->
+    <div id="multi-perturb-bar">
+      <span class="ctrl-label">Shift+click nodes queued:</span>
+      <div id="multi-node-tags"></div>
+      <span id="multi-hint" style="color:#445566;font-size:9px;">(release Shift to fire)</span>
+    </div>
+    <!-- Drag hint -->
+    <span class="ctrl-label" style="margin-left:auto;color:#334455;font-size:9px;">drag node up/down to perturb</span>
+  </div>
+
   <!-- Web topology canvas -->
   <div id="web-panel">
     <canvas id="web-canvas"></canvas>
     <div id="paused-overlay">Paused</div>
+    <div id="drag-overlay"></div>
   </div>
 
   <!-- Sidebar -->
@@ -440,6 +682,11 @@
     <div class="panel">
       <div class="panel-title">Strand Tension Gradient</div>
       <div id="strand-rows"></div>
+    </div>
+    <!-- Strand management / probation panel -->
+    <div class="panel" id="strand-panel">
+      <div class="panel-title">Probation Status</div>
+      <div id="probation-metrics"></div>
     </div>
     <div class="panel" style="margin-top: auto;">
       <div class="panel-title">System Energy</div>
@@ -461,34 +708,36 @@
 
 // ============================================================
 // Ayin Visualization — single-file vanilla JS
-// ============================================================
-// Key changes from prior version:
-//   1. Scenario controls: restart, pause/resume, step, speed — sent as WS messages
-//   2. Node color: calm blue (#2266bb) -> hot red (#ff3333) via smooth gradient
-//   3. Node breathing: size pulses at a rate proportional to tension magnitude
-//   4. Strand energy flow: continuous shimmer animation traveling along each strand
-//   5. Reduced decimals: 1dp in readouts
-//   6. Chart markers: vertical lines at perturbation phase boundaries
+// Layers added:
+//   1. Full scenario selection: accident, stadium, compound, slow_decay
+//      + Compound Mode toggle (stack scenarios without web reset)
+//   2. Click-and-drag perturbation: drag up = positive, down = negative
+//      Shift+click to queue multi-node simultaneous perturbation
+//   3. Strand management panel: attach, weight slider, pulse, feed signal, go slack
+//      Probation metrics shown live. 4th node rendered on canvas.
 // ============================================================
 
 // ---- Color palette ----
-// Node: calm blue -> hot red. Single hue arc avoids the green ambiguity.
-const NODE_CALM_COLOR   = { r: 34,  g: 102, b: 187 };  // #2266bb
-const NODE_HOT_COLOR    = { r: 255, g: 51,  b: 51  };  // #ff3333
-// Strand base: dark blue-gray. Energy shimmer is a lighter cyan-white.
-const STRAND_BASE_COLOR = { r: 30,  g: 45,  b: 65  };  // #1e2d41
-const STRAND_HOT_COLOR  = { r: 200, g: 120, b: 30  };  // amber
-const STRAND_ALARM_COLOR= { r: 204, g: 31,  b: 31  };  // #cc1f1f
-const CHART_COLORS      = ["#4488ee", "#44ccaa", "#cc66ff"];
-const HISTORY_LENGTH    = 200;
-const RECONNECT_DELAY   = 1500;
+const NODE_CALM_COLOR    = { r: 34,  g: 102, b: 187 };   // #2266bb
+const NODE_HOT_COLOR     = { r: 255, g: 51,  b: 51  };   // #ff3333
+const NODE_EXTERNAL_COLOR= { r: 155, g: 89,  b: 182 };   // #9b59b6
+const STRAND_BASE_COLOR  = { r: 30,  g: 45,  b: 65  };   // #1e2d41
+const STRAND_HOT_COLOR   = { r: 200, g: 120, b: 30  };   // amber
+const STRAND_ALARM_COLOR = { r: 204, g: 31,  b: 31  };   // #cc1f1f
+const STRAND_EXT_COLOR   = { r: 120, g: 60,  b: 160 };   // purple
+const CHART_COLORS       = ["#4488ee", "#44ccaa", "#cc66ff", "#bb8833"];
+const HISTORY_LENGTH     = 200;
+const RECONNECT_DELAY    = 1500;
 
-// Node layout: equilateral triangle, fixed spatial positions
+// Triangle node positions (normalized [0,1])
 const NODE_POS_NORM = [
-  { x: 0.20, y: 0.75 },  // 0: Intersection Throughput
-  { x: 0.50, y: 0.20 },  // 1: Signal Timing
-  { x: 0.80, y: 0.75 },  // 2: Approaching Traffic
+  { x: 0.22, y: 0.72 },  // 0: Intersection Throughput
+  { x: 0.50, y: 0.18 },  // 1: Signal Timing
+  { x: 0.78, y: 0.72 },  // 2: Approaching Traffic
 ];
+// External (4th) node position — outside the triangle to the right
+const EXT_NODE_POS = { x: 0.88, y: 0.38 };
+
 const NODE_SHORT_LABELS = ["Throughput", "Signal", "Approach"];
 
 // ---- Shared mutable state ----
@@ -496,6 +745,7 @@ let state = {
   tick: 0, sim_time: 0, sim_step: 0, energy: 0, total_tension: 0,
   paused: false, speed: 1.0, scenario_progress: 0,
   active_scenario: "accident_shock",
+  compound_mode: false,
   total_sim_steps: 180,
   nodes: [
     { index: 0, label: "Intersection Throughput", tension: 0, velocity: 0, net_flux: 0 },
@@ -503,28 +753,32 @@ let state = {
     { index: 2, label: "Approaching Traffic",       tension: 0, velocity: 0, net_flux: 0 },
   ],
   strands: [
-    { i: 0, j: 1, coupling: 1, tension_gradient: 0, tension_i: 0, tension_j: 0 },
-    { i: 0, j: 2, coupling: 1, tension_gradient: 0, tension_i: 0, tension_j: 0 },
-    { i: 1, j: 2, coupling: 1, tension_gradient: 0, tension_i: 0, tension_j: 0 },
+    { i: 0, j: 1, coupling: 1, tension_gradient: 0, tension_i: 0, tension_j: 0, probationary: false },
+    { i: 0, j: 2, coupling: 1, tension_gradient: 0, tension_i: 0, tension_j: 0, probationary: false },
+    { i: 1, j: 2, coupling: 1, tension_gradient: 0, tension_i: 0, tension_j: 0, probationary: false },
   ],
   scenario_markers: [],
+  has_external_node: false,
+  external_node_index: null,
+  external_node_label: null,
+  external_target_node: null,
+  strand_weights: [],
+  feed_signal_active: false,
+  incoherence_scores: [0, 0, 0],
+  probation_status: null,
 };
 
-// History for chart: each entry is [t0, t1, t2]
+// History for chart: each entry is [t0, t1, t2, (t3)]
 let history = [];
-// Tick at which each history entry was recorded (for marker positioning)
 let historyTicks = [];
 
-// Wave packets: perturbation pulses traveling along strands
-// { strandIndex, fromNode, toNode, t, speed, amplitude, born }
+// Wave packets
 let waves = [];
 let lastTickProcessed = -1;
 let prevNodeTensions = [0, 0, 0];
 
-// Strand flow phase: each strand has a continuously advancing phase for
-// the energy-flow shimmer animation. Phase advances at a rate proportional
-// to tension magnitude on that strand.
-let strandFlowPhase = [0, 0, 0];  // one per strand
+// Strand flow phases
+let strandFlowPhase = [0, 0, 0];
 
 // Canvas refs
 const webCanvas   = document.getElementById("web-canvas");
@@ -538,35 +792,36 @@ let ws = null;
 function connectWS() {
   const proto = location.protocol === "https:" ? "wss" : "ws";
   ws = new WebSocket(`${proto}://${location.host}/ws`);
-
-  ws.onopen = () => setStatus("connected");
-
+  ws.onopen  = () => setStatus("connected");
   ws.onmessage = (evt) => {
     let data;
     try { data = JSON.parse(evt.data); } catch (e) { return; }
 
-    // Route non-state messages to their handlers
-    if ("logged" in data) { onLogResponse(data); return; }
-    if ("scenario_switching" in data) {
-      // Server acknowledged scenario switch — clear history now if not already done
-      history = [];
-      historyTicks = [];
-      waves = [];
-      strandFlowPhase = [0, 0, 0];
-      prevNodeTensions = [0, 0, 0];
+    if ("logged" in data)              { onLogResponse(data); return; }
+    if ("compound_mode" in data && Object.keys(data).length === 1) { return; }
+    if ("weight_set" in data)          { return; }
+    if ("attached" in data)            { onStrandAttached(data); return; }
+    if ("perturbed" in data)           { return; }
+    if ("perturbed_multi" in data)     { return; }
+    if ("pulsed" in data)              { return; }
+    if ("feed_signal" in data)         { return; }
+    if ("detached" in data)            { return; }
+    if ("scenario_switching" in data)  {
+      if (!data.compound_mode) {
+        // Only clear history if not compound mode
+        history = []; historyTicks = []; waves = [];
+        strandFlowPhase = [0, 0, 0];
+        prevNodeTensions = [0, 0, 0];
+      }
       return;
     }
-    // Error responses and other control acks — ignore (not state updates)
     if (!data.nodes) return;
-
     onStateUpdate(data);
   };
-
   ws.onclose = () => {
     setStatus("disconnected");
     setTimeout(connectWS, RECONNECT_DELAY);
   };
-
   ws.onerror = () => ws.close();
 }
 
@@ -584,11 +839,11 @@ function setStatus(s) {
 // ---- Controls wiring ----
 document.getElementById("btn-restart").addEventListener("click", () => {
   sendCmd({ cmd: "restart" });
-  history = [];
-  historyTicks = [];
-  waves = [];
+  history = []; historyTicks = []; waves = [];
   strandFlowPhase = [0, 0, 0];
   prevNodeTensions = [0, 0, 0];
+  // Reset strand UI
+  resetStrandUI();
 });
 
 const pauseBtn = document.getElementById("btn-pause");
@@ -597,19 +852,15 @@ const stepBtn  = document.getElementById("btn-step");
 pauseBtn.addEventListener("click", () => {
   const willPause = !state.paused;
   sendCmd({ cmd: willPause ? "pause" : "resume" });
-  // Optimistically update local state so button feels instant
   state.paused = willPause;
   updatePauseButtonState(willPause);
 });
 
-stepBtn.addEventListener("click", () => {
-  sendCmd({ cmd: "step" });
-});
+stepBtn.addEventListener("click", () => { sendCmd({ cmd: "step" }); });
 
-// ---- Log Run button ----
+// Log Run button
 const logBtn = document.getElementById("btn-log");
 let _logFeedbackTimer = null;
-
 logBtn.addEventListener("click", () => {
   logBtn.textContent = "Logging...";
   logBtn.classList.remove("logged", "error");
@@ -620,14 +871,11 @@ function onLogResponse(data) {
   if (_logFeedbackTimer) clearTimeout(_logFeedbackTimer);
   if (data.logged) {
     logBtn.textContent = `Logged (${data.entry_lines} lines)`;
-    logBtn.classList.add("logged");
-    logBtn.classList.remove("error");
+    logBtn.classList.add("logged"); logBtn.classList.remove("error");
   } else {
     logBtn.textContent = "Log Error";
-    logBtn.classList.add("error");
-    logBtn.classList.remove("logged");
+    logBtn.classList.add("error"); logBtn.classList.remove("logged");
   }
-  // Reset button label after 4 seconds
   _logFeedbackTimer = setTimeout(() => {
     logBtn.textContent = "Log Run";
     logBtn.classList.remove("logged", "error");
@@ -654,90 +902,103 @@ document.querySelectorAll(".speed-btn").forEach(btn => {
 document.querySelectorAll(".scenario-btn").forEach(btn => {
   btn.addEventListener("click", () => {
     const scenario = btn.dataset.scenario;
-    if (scenario === state.active_scenario) return;  // already active, no-op
+    if (scenario === state.active_scenario) return;
     sendCmd({ cmd: "scenario", value: scenario });
-    // Optimistically clear local history so the chart doesn't show
-    // stale data from the previous scenario while the server restarts.
-    history = [];
-    historyTicks = [];
-    waves = [];
-    strandFlowPhase = [0, 0, 0];
-    prevNodeTensions = [0, 0, 0];
-    // Badge update will happen once the server echoes back state with new scenario name.
+    if (!state.compound_mode) {
+      history = []; historyTicks = []; waves = [];
+      strandFlowPhase = [0, 0, 0]; prevNodeTensions = [0, 0, 0];
+    }
   });
+});
+
+// ---- Compound Mode toggle ----
+const compoundBtn = document.getElementById("btn-compound-mode");
+compoundBtn.addEventListener("click", () => {
+  const newVal = !state.compound_mode;
+  sendCmd({ cmd: "compound_mode", value: newVal });
+  state.compound_mode = newVal;
+  compoundBtn.classList.toggle("active", newVal);
+  document.getElementById("compound-badge").classList.toggle("visible", newVal);
 });
 
 function updateScenarioBadge(scenario) {
   const badge = document.getElementById("scenario-badge");
-  const isStadium = scenario === "stadium_shock";
-  badge.textContent = isStadium ? "stadium_shock" : "accident_shock";
-  badge.classList.toggle("stadium", isStadium);
+  const classMap = {
+    stadium_shock:  "stadium",
+    compound_shock: "compound",
+    slow_decay:     "slow-decay",
+  };
+  badge.textContent = scenario;
+  badge.className = classMap[scenario] || "";
 
   document.querySelectorAll(".scenario-btn").forEach(btn => {
-    const isActive = btn.dataset.scenario === scenario;
-    btn.classList.toggle("active", isActive);
+    btn.classList.toggle("active", btn.dataset.scenario === scenario);
   });
 }
 
 // ---- State update handler ----
 function onStateUpdate(data) {
-  // Spawn wave packets on new tick before overwriting prev tensions
   if (data.tick !== lastTickProcessed) {
     spawnWaves(data);
     lastTickProcessed = data.tick;
   }
 
   state = data;
+  const numNodes = data.nodes.length;
+  if (prevNodeTensions.length !== numNodes) {
+    prevNodeTensions = new Array(numNodes).fill(0);
+  }
   prevNodeTensions = data.nodes.map(n => n.tension);
 
-  // History ring-buffer
+  // History ring-buffer: include external node tension if present
   history.push(data.nodes.map(n => n.tension));
   historyTicks.push(data.tick);
-  if (history.length > HISTORY_LENGTH) {
-    history.shift();
-    historyTicks.shift();
-  }
+  if (history.length > HISTORY_LENGTH) { history.shift(); historyTicks.shift(); }
 
-  // Header stats — minimal decimals
+  // Header stats
   document.getElementById("stat-tick").textContent  = data.tick;
   document.getElementById("stat-time").textContent  = data.sim_time.toFixed(1);
   document.getElementById("stat-energy").textContent = data.energy.toExponential(1);
   document.getElementById("stat-total-tension").textContent = data.total_tension.toFixed(1);
   document.getElementById("energy-big").textContent = data.energy.toExponential(2);
 
-  // Scenario progress bar
+  // Progress bar
   document.getElementById("scenario-progress-fill").style.width =
     (data.scenario_progress * 100).toFixed(1) + "%";
 
-  // Sync pause/speed state from server
+  // Sync controls
   updatePauseButtonState(data.paused);
-  // Match speed button by comparing numeric values (avoids "1" vs "1.0" string issues)
   document.querySelectorAll(".speed-btn").forEach(b => {
     b.classList.toggle("active", parseFloat(b.dataset.speed) === data.speed);
   });
+  if (data.active_scenario) updateScenarioBadge(data.active_scenario);
 
-  // Sync scenario badge and selector buttons on every update
-  if (data.active_scenario) {
-    updateScenarioBadge(data.active_scenario);
-  }
+  // Compound mode sync
+  const isCompound = !!data.compound_mode;
+  compoundBtn.classList.toggle("active", isCompound);
+  document.getElementById("compound-badge").classList.toggle("visible", isCompound);
 
-  updateNodeCards(data.nodes);
+  // Strand flow phases: ensure enough slots
+  while (strandFlowPhase.length < data.strands.length) strandFlowPhase.push(0);
+
+  updateNodeCards(data.nodes, data.incoherence_scores || []);
   updateStrandRows(data.strands);
+  updateStrandPanel(data);
+  updateWeightSliderFromState(data);
 }
 
 // ---- Wave spawning ----
 function spawnWaves(data) {
   const now = performance.now();
   data.nodes.forEach((node, ni) => {
-    const delta = node.tension - prevNodeTensions[ni];
+    const prev = ni < prevNodeTensions.length ? prevNodeTensions[ni] : 0;
+    const delta = node.tension - prev;
     if (Math.abs(delta) < 0.005) return;
-
     data.strands.forEach((strand, si) => {
       let fromNode = -1, toNode = -1;
       if (strand.i === ni)      { fromNode = ni; toNode = strand.j; }
       else if (strand.j === ni) { fromNode = ni; toNode = strand.i; }
       if (fromNode === -1) return;
-
       waves.push({
         strandIndex: si, fromNode, toNode,
         t: 0.0,
@@ -752,24 +1013,31 @@ function spawnWaves(data) {
 }
 
 // ---- Sidebar: node cards ----
-function updateNodeCards(nodes) {
+function updateNodeCards(nodes, incoherenceScores) {
   const container = document.getElementById("node-cards");
+  const numNodes  = nodes.length;
 
-  if (!container._init) {
+  // Rebuild DOM if node count changed
+  if (!container._nodeCount || container._nodeCount !== numNodes) {
     container.innerHTML = "";
     nodes.forEach((n, i) => {
-      const card = document.createElement("div");
-      card.className = "node-card";
+      const isExt = state.external_node_index === i;
+      const card  = document.createElement("div");
+      card.className = "node-card" + (isExt ? " external" : "");
       card.id = `nc-${i}`;
+      const shortLabel = i < NODE_SHORT_LABELS.length
+        ? NODE_SHORT_LABELS[i]
+        : (n.label || `Node ${i}`);
       card.innerHTML = `
-        <div class="node-name">${NODE_SHORT_LABELS[i] || n.label}</div>
+        <div class="node-name">${shortLabel}</div>
         <div class="node-tension" id="nt-${i}">0.0</div>
         <div class="node-meta">v <span id="nv-${i}">0.0</span> &nbsp; flux <span id="nf-${i}">0.0</span></div>
         <div class="recovery-track"><div class="recovery-fill" id="nr-${i}"></div></div>
+        <div class="incoherence-bar-wrap"><div class="incoherence-bar" id="ni-${i}"></div></div>
       `;
       container.appendChild(card);
     });
-    container._init = true;
+    container._nodeCount = numNodes;
   }
 
   nodes.forEach((n, i) => {
@@ -778,16 +1046,20 @@ function updateNodeCards(nodes) {
     const velEl  = document.getElementById(`nv-${i}`);
     const fluxEl = document.getElementById(`nf-${i}`);
     const recEl  = document.getElementById(`nr-${i}`);
+    const incEl  = document.getElementById(`ni-${i}`);
     if (!card) return;
 
-    // 1 decimal place — the visual encoding carries the precision
     tensEl.textContent = n.tension.toFixed(1);
     velEl.textContent  = n.velocity.toFixed(1);
     fluxEl.textContent = n.net_flux.toFixed(1);
 
-    // Color: calm blue -> hot red. Same mapping as canvas nodes.
     const absT = Math.abs(n.tension);
-    tensEl.style.color = rgbStr(lerpRGB(NODE_CALM_COLOR, NODE_HOT_COLOR, Math.min(absT / 3.0, 1.0)));
+    const isExt = state.external_node_index === i;
+    if (isExt) {
+      tensEl.style.color = rgbStr(lerpRGB(NODE_EXTERNAL_COLOR, NODE_HOT_COLOR, Math.min(absT / 3.0, 1.0)));
+    } else {
+      tensEl.style.color = rgbStr(lerpRGB(NODE_CALM_COLOR, NODE_HOT_COLOR, Math.min(absT / 3.0, 1.0)));
+    }
 
     // Recovery bar
     if (!card._peak) card._peak = 0;
@@ -797,6 +1069,15 @@ function updateNodeCards(nodes) {
       ? Math.max(0, 1.0 - absT / card._peak) * 100 : 100;
     recEl.style.width = recovPct.toFixed(0) + "%";
     recEl.style.background = recovPct > 75 ? "#2a9f5a" : recovPct > 40 ? "#c47000" : "#cc3030";
+
+    // Incoherence bar
+    const incScore = i < incoherenceScores.length ? incoherenceScores[i] : 0;
+    if (incEl) {
+      incEl.style.width = (incScore * 100).toFixed(0) + "%";
+      if (incScore > 0.7) incEl.style.background = "#cc3030";
+      else if (incScore > 0.4) incEl.style.background = "#cc8830";
+      else incEl.style.background = "#3a8fb5";
+    }
 
     // Alarm
     const isAlarm = Math.abs(n.velocity) > 0.5 && absT > 0.8;
@@ -808,19 +1089,21 @@ function updateNodeCards(nodes) {
 function updateStrandRows(strands) {
   const container = document.getElementById("strand-rows");
 
-  if (!container._init) {
+  if (!container._strandCount || container._strandCount !== strands.length) {
     container.innerHTML = "";
     strands.forEach((s, i) => {
+      const iLabel = i < NODE_SHORT_LABELS.length ? NODE_SHORT_LABELS[s.i] : `N${s.i}`;
+      const jLabel = s.j < NODE_SHORT_LABELS.length ? NODE_SHORT_LABELS[s.j] : `N${s.j}`;
       const row = document.createElement("div");
-      row.className = "strand-row";
+      row.className = "strand-row" + (s.probationary ? " probationary" : "");
       row.id = `sr-${i}`;
       row.innerHTML = `
-        <span class="strand-label">${NODE_SHORT_LABELS[s.i]} - ${NODE_SHORT_LABELS[s.j]}</span>
+        <span class="strand-label">${iLabel} - ${jLabel}</span>
         <span class="strand-value" id="sv-${i}">0.0</span>
       `;
       container.appendChild(row);
     });
-    container._init = true;
+    container._strandCount = strands.length;
   }
 
   strands.forEach((s, i) => {
@@ -828,11 +1111,264 @@ function updateStrandRows(strands) {
     const valEl = document.getElementById(`sv-${i}`);
     if (!row || !valEl) return;
     valEl.textContent = s.tension_gradient.toFixed(1);
-    row.classList.toggle("high-tension", s.tension_gradient > 0.3);
+    row.classList.toggle("high-tension", s.tension_gradient > 0.3 && !s.probationary);
+    row.classList.toggle("probationary", !!s.probationary);
   });
 }
 
-// ---- Canvas utilities ----
+// ---- Strand management panel ----
+function updateStrandPanel(data) {
+  const panel = document.getElementById("strand-panel");
+  if (!data.has_external_node || !data.probation_status) {
+    panel.classList.remove("visible");
+    return;
+  }
+  panel.classList.add("visible");
+
+  const ps   = data.probation_status;
+  const cont = document.getElementById("probation-metrics");
+  const srcInc = ps.source_incoherence;
+  const tgtInc = ps.target_incoherence;
+
+  cont.innerHTML = `
+    <div class="probation-row">
+      <span class="prob-label">Strand weight</span>
+      <span class="prob-value ${ps.weight > 0.2 ? 'good' : 'warn'}">${ps.weight.toFixed(3)}</span>
+    </div>
+    <div class="probation-row">
+      <span class="prob-label">Flux (ext -> tgt)</span>
+      <span class="prob-value">${ps.flux.toFixed(3)}</span>
+    </div>
+    <div class="probation-row">
+      <span class="prob-label">Ext incoherence</span>
+      <span class="prob-value ${srcInc > 0.6 ? 'alarm' : srcInc > 0.35 ? 'warn' : 'good'}">${srcInc.toFixed(3)}</span>
+    </div>
+    <div class="probation-row">
+      <span class="prob-label">Target incoherence</span>
+      <span class="prob-value ${tgtInc > 0.6 ? 'alarm' : tgtInc > 0.35 ? 'warn' : 'good'}">${tgtInc.toFixed(3)}</span>
+    </div>
+    <div class="probation-row">
+      <span class="prob-label">System energy</span>
+      <span class="prob-value">${ps.energy.toExponential(2)}</span>
+    </div>
+  `;
+}
+
+// ---- Strand management: controls bar row 2 ----
+document.getElementById("btn-attach-strand").addEventListener("click", () => {
+  const label  = document.getElementById("strand-label-input").value.trim();
+  const target = parseInt(document.getElementById("strand-target-select").value, 10);
+  if (!label) { alert("Enter a label for the external node."); return; }
+  sendCmd({ cmd: "attach_strand", label, target });
+});
+
+function onStrandAttached(data) {
+  if (!data.attached) return;
+  // Show weight section
+  document.getElementById("weight-slider-section").style.display = "flex";
+  // Update target select range to include new node (not needed, we already know indices)
+}
+
+function resetStrandUI() {
+  document.getElementById("weight-slider-section").style.display = "none";
+  document.getElementById("strand-label-input").value = "";
+  document.getElementById("strand-weight-slider").value = "0.05";
+  document.getElementById("strand-weight-val").textContent = "0.05";
+  document.getElementById("btn-feed-signal").classList.remove("active");
+}
+
+function updateWeightSliderFromState(data) {
+  if (!data.has_external_node) {
+    document.getElementById("weight-slider-section").style.display = "none";
+    return;
+  }
+  document.getElementById("weight-slider-section").style.display = "flex";
+
+  // Sync feed signal button
+  const feedBtn = document.getElementById("btn-feed-signal");
+  feedBtn.classList.toggle("active", !!data.feed_signal_active);
+  feedBtn.textContent = data.feed_signal_active ? "Feed ON" : "Feed";
+
+  // Update weight slider to reflect actual coupling if we have it
+  if (data.probation_status) {
+    const slider = document.getElementById("strand-weight-slider");
+    const valEl  = document.getElementById("strand-weight-val");
+    // Only update if not currently being dragged
+    if (document.activeElement !== slider) {
+      slider.value = data.probation_status.weight.toFixed(3);
+      valEl.textContent = data.probation_status.weight.toFixed(3);
+    }
+  }
+}
+
+document.getElementById("strand-weight-slider").addEventListener("input", (e) => {
+  const weight = parseFloat(e.target.value);
+  document.getElementById("strand-weight-val").textContent = weight.toFixed(2);
+  if (state.external_node_index !== null && state.external_target_node !== null) {
+    sendCmd({
+      cmd: "set_strand_weight",
+      source: state.external_node_index,
+      target: state.external_target_node,
+      weight,
+    });
+  }
+});
+
+document.getElementById("btn-pulse-external").addEventListener("click", () => {
+  if (state.external_node_index === null) return;
+  sendCmd({ cmd: "pulse_external", node: state.external_node_index, value: 1.0 });
+});
+
+document.getElementById("btn-feed-signal").addEventListener("click", () => {
+  const newVal = !state.feed_signal_active;
+  sendCmd({ cmd: "feed_signal", value: newVal });
+  state.feed_signal_active = newVal;
+  const btn = document.getElementById("btn-feed-signal");
+  btn.classList.toggle("active", newVal);
+  btn.textContent = newVal ? "Feed ON" : "Feed";
+});
+
+document.getElementById("btn-go-slack").addEventListener("click", () => {
+  if (state.external_node_index === null || state.external_target_node === null) return;
+  sendCmd({
+    cmd: "detach_strand",
+    source: state.external_node_index,
+    target: state.external_target_node,
+  });
+  document.getElementById("strand-weight-slider").value = "0.01";
+  document.getElementById("strand-weight-val").textContent = "0.01";
+});
+
+// ============================================================
+// Layer 2: Click-and-drag perturbation
+// ============================================================
+
+let dragState = null;
+// Multi-node shift-click queue: [{nodeIndex, value}] — fires when shift released
+let multiQueue = [];
+
+function getNodePixelPositions(W, H) {
+  const positions = NODE_POS_NORM.map((p, i) => ({ x: p.x * W, y: p.y * H, index: i }));
+  // Add external node if present
+  if (state.has_external_node && state.external_node_index !== null) {
+    positions.push({ x: EXT_NODE_POS.x * W, y: EXT_NODE_POS.y * H, index: state.external_node_index });
+  }
+  return positions;
+}
+
+function hitTestNode(clientX, clientY, W, H) {
+  const rect = webCanvas.getBoundingClientRect();
+  const mx = clientX - rect.left;
+  const my = clientY - rect.top;
+  const baseR = Math.min(W, H) * 0.055;
+  const positions = getNodePixelPositions(W, H);
+  for (const p of positions) {
+    const dx = mx - p.x, dy = my - p.y;
+    // Use a generous hit radius
+    if (dx * dx + dy * dy < (baseR + 14) * (baseR + 14)) {
+      return { nodeIndex: p.index, mx, my };
+    }
+  }
+  return null;
+}
+
+webCanvas.addEventListener("mousedown", (e) => {
+  resizeCanvas(webCanvas);
+  const W = webCanvas.width, H = webCanvas.height;
+  const hit = hitTestNode(e.clientX, e.clientY, W, H);
+  if (!hit) return;
+  e.preventDefault();
+
+  if (e.shiftKey) {
+    // Shift+click: queue this node for multi-perturb
+    const exists = multiQueue.findIndex(q => q.nodeIndex === hit.nodeIndex);
+    if (exists >= 0) {
+      multiQueue.splice(exists, 1);
+    } else {
+      multiQueue.push({ nodeIndex: hit.nodeIndex, value: 1.0 });
+    }
+    updateMultiBar();
+    return;
+  }
+
+  // Regular drag: start drag state
+  dragState = {
+    nodeIndex: hit.nodeIndex,
+    startY: hit.my,
+    currentY: hit.my,
+    startTension: state.nodes[hit.nodeIndex] ? state.nodes[hit.nodeIndex].tension : 0,
+  };
+  webCanvas.classList.add("dragging");
+});
+
+webCanvas.addEventListener("mousemove", (e) => {
+  if (!dragState) return;
+  e.preventDefault();
+  const rect = webCanvas.getBoundingClientRect();
+  dragState.currentY = e.clientY - rect.top;
+
+  // Drag UP = positive perturbation, drag DOWN = negative
+  const dy = dragState.startY - dragState.currentY;  // positive = up
+  const magnitude = dy * 0.025;  // scale: 40px ~= 1.0 tension
+
+  // Show overlay
+  const overlay = document.getElementById("drag-overlay");
+  overlay.style.display = "block";
+  overlay.style.left = (e.clientX - rect.left + 16) + "px";
+  overlay.style.top  = (e.clientY - rect.top  - 8)  + "px";
+  overlay.style.color = magnitude >= 0 ? "#ff9944" : "#44aaff";
+  overlay.textContent = `N${dragState.nodeIndex} ${magnitude >= 0 ? "+" : ""}${magnitude.toFixed(2)}`;
+});
+
+webCanvas.addEventListener("mouseup", (e) => {
+  if (!dragState) return;
+  e.preventDefault();
+
+  const dy = dragState.startY - dragState.currentY;
+  const magnitude = dy * 0.025;
+
+  document.getElementById("drag-overlay").style.display = "none";
+  webCanvas.classList.remove("dragging");
+
+  if (Math.abs(magnitude) > 0.05) {
+    sendCmd({ cmd: "perturb", node: dragState.nodeIndex, value: magnitude });
+  }
+  dragState = null;
+});
+
+webCanvas.addEventListener("mouseleave", () => {
+  document.getElementById("drag-overlay").style.display = "none";
+  if (dragState) {
+    webCanvas.classList.remove("dragging");
+    dragState = null;
+  }
+});
+
+// Shift key release: fire multi-node perturbation
+window.addEventListener("keyup", (e) => {
+  if (e.key === "Shift" && multiQueue.length > 0) {
+    sendCmd({ cmd: "perturb_multi", perturbations: multiQueue.map(q => ({ node: q.nodeIndex, value: q.value })) });
+    multiQueue = [];
+    updateMultiBar();
+  }
+});
+
+function updateMultiBar() {
+  const bar      = document.getElementById("multi-perturb-bar");
+  const tagsDiv  = document.getElementById("multi-node-tags");
+  if (multiQueue.length === 0) {
+    bar.classList.remove("visible");
+    tagsDiv.innerHTML = "";
+    return;
+  }
+  bar.classList.add("visible");
+  tagsDiv.innerHTML = multiQueue.map(q => `<span class="multi-node-tag">N${q.nodeIndex}</span>`).join(" ");
+}
+
+// ============================================================
+// Canvas rendering
+// ============================================================
+
 function resizeCanvas(canvas) {
   const r = canvas.parentElement.getBoundingClientRect();
   if (canvas.width !== Math.round(r.width) || canvas.height !== Math.round(r.height)) {
@@ -865,26 +1401,23 @@ function lightenRGB(c, amount) {
   };
 }
 
+// Return pixel position for a node index
+// Core triangle uses NODE_POS_NORM, external node uses EXT_NODE_POS
 function nodePixelPos(i, W, H) {
-  return { x: NODE_POS_NORM[i].x * W, y: NODE_POS_NORM[i].y * H };
+  if (i < 3) return { x: NODE_POS_NORM[i].x * W, y: NODE_POS_NORM[i].y * H };
+  // External node
+  return { x: EXT_NODE_POS.x * W, y: EXT_NODE_POS.y * H };
 }
 
-// ---- Node radius with breathing ----
-// Base radius scales with canvas size.
-// A continuous sine oscillation (breathing) whose frequency scales with tension.
-// At calm (tension~0): very slow, barely perceptible.
-// At peak stress: rapid pulse visible to the eye.
 function nodeRadius(tension, baseRadius, timestamp) {
   const absT = Math.abs(tension);
   const staticR = baseRadius + Math.min(absT * baseRadius * 0.55, baseRadius * 1.1);
-  // Breathing: frequency proportional to tension magnitude (0.5 Hz calm -> 4 Hz stressed)
-  const freq = 0.5 + absT * 2.5;   // Hz
+  const freq = 0.5 + absT * 2.5;
   const breathAmp = baseRadius * (0.04 + absT * 0.07);
   const breath = Math.sin(timestamp * 0.001 * freq * 2 * Math.PI) * breathAmp;
   return staticR + breath;
 }
 
-// ---- Strand thickness ----
 function strandThickness(gradient) {
   return 1.5 + Math.min(gradient * 7.0, 11.0);
 }
@@ -898,23 +1431,31 @@ function drawWeb(timestamp) {
   ctx.fillStyle = "#0a0c0f";
   ctx.fillRect(0, 0, W, H);
 
-  const baseR = Math.min(W, H) * 0.055;
-  const positions = NODE_POS_NORM.map((_, i) => nodePixelPos(i, W, H));
+  const baseR     = Math.min(W, H) * 0.055;
+  const extBaseR  = baseR * 0.80;  // external node slightly smaller
+
+  // Collect all node pixel positions
+  const allPositions = state.nodes.map((_, i) => nodePixelPos(i, W, H));
 
   // ---- Draw strands ----
   state.strands.forEach((strand, si) => {
-    const pA = positions[strand.i];
-    const pB = positions[strand.j];
-    const grad = strand.tension_gradient;
-    const thickness = strandThickness(grad);
+    const pA = allPositions[strand.i];
+    const pB = allPositions[strand.j];
+    if (!pA || !pB) return;
 
-    // Color: cool -> amber -> alarm red based on gradient
+    const grad       = strand.tension_gradient;
+    const thickness  = strandThickness(grad);
+    const isExt      = !!strand.probationary;
+
+    // Color
     const tCol = Math.min(grad / 1.0, 1.0);
     let baseCol;
-    if (tCol > 0.75) {
+    if (isExt) {
+      // Probationary: purple palette
+      baseCol = lerpRGB(STRAND_EXT_COLOR, NODE_HOT_COLOR, tCol);
+    } else if (tCol > 0.75) {
       baseCol = STRAND_ALARM_COLOR;
     } else if (tCol > 0.35) {
-      // amber zone
       const sub = (tCol - 0.35) / 0.40;
       baseCol = lerpRGB(STRAND_HOT_COLOR, STRAND_ALARM_COLOR, sub);
     } else {
@@ -922,57 +1463,58 @@ function drawWeb(timestamp) {
     }
 
     // Main strand
+    ctx.save();
+    if (isExt) {
+      // Probationary strand: dashed
+      ctx.setLineDash([6, 5]);
+    }
     ctx.beginPath();
     ctx.moveTo(pA.x, pA.y);
     ctx.lineTo(pB.x, pB.y);
     ctx.strokeStyle = rgbStr(baseCol);
-    ctx.lineWidth = thickness;
-    ctx.lineCap = "round";
+    ctx.lineWidth   = isExt ? Math.max(thickness * 0.6, 1.5) : thickness;
+    ctx.lineCap     = "round";
     ctx.stroke();
+    ctx.restore();
 
-    // Tension glow halo
-    if (grad > 0.10) {
+    // Tension glow halo (regular strands only)
+    if (!isExt && grad > 0.10) {
       ctx.beginPath();
       ctx.moveTo(pA.x, pA.y);
       ctx.lineTo(pB.x, pB.y);
       ctx.strokeStyle = rgbStr(baseCol, Math.min(grad * 0.35, 0.30));
-      ctx.lineWidth = thickness + 8;
+      ctx.lineWidth   = thickness + 8;
       ctx.stroke();
     }
 
-    // ---- Energy flow shimmer ----
-    // A bright highlight travels continuously along the strand.
-    // Speed of travel proportional to tension gradient (more disequilibrium = faster flow).
-    // Phase is maintained per-strand so the shimmer never snaps on a state update.
-    const flowSpeed = 0.3 + grad * 1.8;  // units/s along [0,1] strand
+    // Energy flow shimmer
+    const flowSpeed = 0.3 + grad * 1.8;
     strandFlowPhase[si] = (strandFlowPhase[si] || 0);
-    // Phase is advanced in the animation loop (not here) — we just read it.
     const phase = strandFlowPhase[si] % 1.0;
-
-    const shimmerW = 0.18;  // shimmer blob width as fraction of strand length
+    const shimmerW     = 0.18;
     const shimmerAlpha = Math.min(0.10 + grad * 0.55, 0.70);
 
-    // Draw a bright oval segment centered at phase position along the strand
     const shimX = lerp(pA.x, pB.x, phase);
     const shimY = lerp(pA.y, pB.y, phase);
-    const strandLen = Math.sqrt((pB.x-pA.x)**2 + (pB.y-pA.y)**2);
-    const shimPixelHalf = strandLen * shimmerW * 0.5;
-    const shimAngle = Math.atan2(pB.y - pA.y, pB.x - pA.x);
+    const strandLen   = Math.sqrt((pB.x - pA.x) ** 2 + (pB.y - pA.y) ** 2);
+    const shimPixHalf = strandLen * shimmerW * 0.5;
+    const shimAngle   = Math.atan2(pB.y - pA.y, pB.x - pA.x);
 
     ctx.save();
     ctx.translate(shimX, shimY);
     ctx.rotate(shimAngle);
-    const shimGrad = ctx.createLinearGradient(-shimPixelHalf, 0, shimPixelHalf, 0);
-    const shimColor = tCol > 0.5
-      ? { r: 255, g: 180, b: 100 }
-      : { r: 140, g: 200, b: 255 };
+    const shimGrad = ctx.createLinearGradient(-shimPixHalf, 0, shimPixHalf, 0);
+    const shimColor = isExt
+      ? { r: 200, g: 140, b: 255 }
+      : (tCol > 0.5 ? { r: 255, g: 180, b: 100 } : { r: 140, g: 200, b: 255 });
     shimGrad.addColorStop(0,   rgbStr(shimColor, 0));
     shimGrad.addColorStop(0.3, rgbStr(shimColor, shimmerAlpha));
-    shimGrad.addColorStop(0.5, rgbStr(shimColor, shimmerAlpha * 1.3 > 1 ? 1 : shimmerAlpha * 1.3));
+    shimGrad.addColorStop(0.5, rgbStr(shimColor, Math.min(shimmerAlpha * 1.3, 1)));
     shimGrad.addColorStop(0.7, rgbStr(shimColor, shimmerAlpha));
     shimGrad.addColorStop(1,   rgbStr(shimColor, 0));
     ctx.beginPath();
-    ctx.rect(-shimPixelHalf, -thickness * 1.5, shimPixelHalf * 2, thickness * 3);
+    const effectiveThick = isExt ? Math.max(thickness * 0.6, 1.5) : thickness;
+    ctx.rect(-shimPixHalf, -effectiveThick * 1.5, shimPixHalf * 2, effectiveThick * 3);
     ctx.fillStyle = shimGrad;
     ctx.fill();
     ctx.restore();
@@ -981,11 +1523,11 @@ function drawWeb(timestamp) {
     const mx = (pA.x + pB.x) / 2;
     const my = (pA.y + pB.y) / 2;
     const dx = pB.x - pA.x, dy = pB.y - pA.y;
-    const len = Math.sqrt(dx*dx + dy*dy) || 1;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
     const nx = -dy / len, ny = dx / len;
-    ctx.fillStyle = grad > 0.3 ? "#e06040" : "#445566";
+    ctx.fillStyle = isExt ? "#9966bb" : (grad > 0.3 ? "#e06040" : "#445566");
     ctx.font = "10px 'JetBrains Mono', monospace";
-    ctx.textAlign = "center";
+    ctx.textAlign    = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(grad.toFixed(1), mx + nx * 18, my + ny * 18);
   });
@@ -995,19 +1537,19 @@ function drawWeb(timestamp) {
     wave.t = Math.min(wave.t + wave.speed * 0.016, 1.0);
     if (wave.t >= 1.0) return;
 
-    const pFrom = positions[wave.fromNode];
-    const pTo   = positions[wave.toNode];
-    const wx = lerp(pFrom.x, pTo.x, wave.t);
-    const wy = lerp(pFrom.y, pTo.y, wave.t);
+    const fromPos = allPositions[wave.fromNode];
+    const toPos   = allPositions[wave.toNode];
+    if (!fromPos || !toPos) return;
+
+    const wx = lerp(fromPos.x, toPos.x, wave.t);
+    const wy = lerp(fromPos.y, toPos.y, wave.t);
 
     const alpha = wave.t < 0.15 ? wave.t / 0.15
       : wave.t > 0.80 ? (1.0 - wave.t) / 0.20 : 1.0;
     const r = 4 + wave.amplitude * 5;
 
-    // Wave color: positive perturbation (load spike) = orange-yellow
-    //             negative perturbation (capacity drop) = cyan-blue
-    const waveInner = wave.positive ? { r: 255, g: 220, b: 80 } : { r: 80, g: 200, b: 255 };
-    const waveOuter = wave.positive ? { r: 220, g: 100, b: 20 } : { r: 20, g: 120, b: 220 };
+    const waveInner = wave.positive ? { r: 255, g: 220, b: 80  } : { r: 80,  g: 200, b: 255 };
+    const waveOuter = wave.positive ? { r: 220, g: 100, b: 20  } : { r: 20,  g: 120, b: 220 };
 
     const grd = webCtx.createRadialGradient(wx, wy, 0, wx, wy, r * 2.5);
     grd.addColorStop(0,   rgbStr(waveInner, alpha * 0.9));
@@ -1023,24 +1565,63 @@ function drawWeb(timestamp) {
     ctx.fillStyle = rgbStr(waveInner, alpha);
     ctx.fill();
   });
-
   waves = waves.filter(w => w.t < 1.0);
+
+  // ---- Draw drag feedback ----
+  if (dragState) {
+    const pos = allPositions[dragState.nodeIndex];
+    if (pos) {
+      const dy  = dragState.startY - dragState.currentY;
+      const mag = dy * 0.025;
+      const arrowColor = mag >= 0 ? "#ff9944" : "#44aaff";
+      const arrowEnd   = { x: pos.x, y: pos.y - dy };  // arrow tip direction
+
+      ctx.save();
+      ctx.strokeStyle = arrowColor;
+      ctx.lineWidth   = 2.5;
+      ctx.globalAlpha = 0.85;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+      ctx.lineTo(arrowEnd.x, arrowEnd.y);
+      ctx.stroke();
+
+      // Arrowhead
+      ctx.setLineDash([]);
+      const angle   = Math.atan2(arrowEnd.y - pos.y, arrowEnd.x - pos.x);
+      const arrowSz = 8;
+      ctx.beginPath();
+      ctx.moveTo(arrowEnd.x, arrowEnd.y);
+      ctx.lineTo(arrowEnd.x - arrowSz * Math.cos(angle - 0.4), arrowEnd.y - arrowSz * Math.sin(angle - 0.4));
+      ctx.lineTo(arrowEnd.x - arrowSz * Math.cos(angle + 0.4), arrowEnd.y - arrowSz * Math.sin(angle + 0.4));
+      ctx.closePath();
+      ctx.fillStyle = arrowColor;
+      ctx.fill();
+      ctx.restore();
+    }
+  }
 
   // ---- Draw nodes ----
   state.nodes.forEach((node, i) => {
-    const pos  = positions[i];
-    const absT = Math.abs(node.tension);
-    const r    = nodeRadius(node.tension, baseR, timestamp);
+    const pos    = allPositions[i];
+    if (!pos) return;
+    const isExt  = state.external_node_index === i;
+    const absT   = Math.abs(node.tension);
+    const effR   = isExt ? extBaseR : baseR;
+    const r      = nodeRadius(node.tension, effR, timestamp);
 
-    // Color: calm blue -> hot red
-    const tFrac = Math.min(absT / 3.0, 1.0);
-    const fillRGB = lerpRGB(NODE_CALM_COLOR, NODE_HOT_COLOR, tFrac);
+    // Node color
+    const tFrac  = Math.min(absT / 3.0, 1.0);
+    const fillRGB = isExt
+      ? lerpRGB(NODE_EXTERNAL_COLOR, NODE_HOT_COLOR, tFrac)
+      : lerpRGB(NODE_CALM_COLOR, NODE_HOT_COLOR, tFrac);
 
-    // Outer glow: intensifies and shifts color as tension rises
+    // Outer glow
     if (absT > 0.05) {
-      const glowR = r + 8 + absT * 7;
+      const glowR    = r + 8 + absT * 7;
       const glowGrad = ctx.createRadialGradient(pos.x, pos.y, r * 0.7, pos.x, pos.y, glowR);
-      const glowColor = lerpRGB({ r: 20, g: 80, b: 180 }, { r: 255, g: 60, b: 20 }, tFrac);
+      const glowBase = isExt ? { r: 80, g: 20, b: 130 } : { r: 20, g: 80, b: 180 };
+      const glowColor = lerpRGB(glowBase, { r: 255, g: 60, b: 20 }, tFrac);
       glowGrad.addColorStop(0, rgbStr(glowColor, Math.min(absT * 0.25, 0.35)));
       glowGrad.addColorStop(1, rgbStr(glowColor, 0));
       ctx.beginPath();
@@ -1056,68 +1637,141 @@ function drawWeb(timestamp) {
       ctx.beginPath();
       ctx.arc(pos.x, pos.y, r + 13, 0, Math.PI * 2);
       ctx.strokeStyle = `rgba(220, 30, 30, ${flashAlpha})`;
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth   = 2.5;
       ctx.stroke();
     }
 
-    // Node body: radial gradient gives depth
-    const bodyGrad = ctx.createRadialGradient(
-      pos.x - r * 0.28, pos.y - r * 0.28, r * 0.08,
-      pos.x, pos.y, r
-    );
-    const lightRGB = lightenRGB(fillRGB, 0.42);
-    bodyGrad.addColorStop(0, rgbStr(lightRGB));
-    bodyGrad.addColorStop(1, rgbStr(fillRGB));
-    ctx.beginPath();
-    ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-    ctx.fillStyle = bodyGrad;
-    ctx.fill();
+    // External node: diamond shape instead of circle
+    if (isExt) {
+      ctx.save();
+      ctx.translate(pos.x, pos.y);
 
-    // Border
-    const borderCol = isAlarm ? "#cc2222" : rgbStr(lightenRGB(fillRGB, 0.55));
-    ctx.beginPath();
-    ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
-    ctx.strokeStyle = borderCol;
-    ctx.lineWidth = isAlarm ? 2.5 : 1.5;
-    ctx.stroke();
+      // Diamond body (rotated square)
+      const bodyGrad = ctx.createRadialGradient(-r * 0.2, -r * 0.2, r * 0.05, 0, 0, r);
+      const lightRGB = lightenRGB(fillRGB, 0.42);
+      bodyGrad.addColorStop(0, rgbStr(lightRGB));
+      bodyGrad.addColorStop(1, rgbStr(fillRGB));
 
-    // Short label
-    ctx.fillStyle = "#e8edf3";
-    ctx.font = `bold ${Math.round(r * 0.36)}px 'JetBrains Mono', monospace`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(NODE_SHORT_LABELS[i], pos.x, pos.y - r * 0.20);
-
-    // Tension value (1dp) — color matches the node
-    ctx.font = `${Math.round(r * 0.28)}px 'JetBrains Mono', monospace`;
-    ctx.fillStyle = absT > 0.5 ? "#ffaa66" : "#8899aa";
-    ctx.fillText(node.tension.toFixed(1), pos.x, pos.y + r * 0.26);
-
-    // Velocity arc: small arc outside the node showing velocity direction/magnitude
-    if (Math.abs(node.velocity) > 0.005) {
-      const arcLen = Math.min(Math.abs(node.velocity) * 1.1, 1.0) * Math.PI;
       ctx.beginPath();
-      ctx.arc(pos.x, pos.y, r + 5, -Math.PI / 2, -Math.PI / 2 + arcLen);
-      ctx.strokeStyle = node.velocity > 0 ? "#e06020" : "#2090d0";
-      ctx.lineWidth = 2.5;
-      ctx.lineCap = "round";
+      ctx.moveTo(0, -r);
+      ctx.lineTo(r, 0);
+      ctx.lineTo(0, r);
+      ctx.lineTo(-r, 0);
+      ctx.closePath();
+      ctx.fillStyle = bodyGrad;
+      ctx.fill();
+
+      // Dashed border — probationary
+      ctx.save();
+      ctx.setLineDash([4, 3]);
+      ctx.strokeStyle = isAlarm ? "#cc2222" : rgbStr(lightenRGB(fillRGB, 0.55));
+      ctx.lineWidth   = isAlarm ? 2.5 : 1.5;
       ctx.stroke();
+      ctx.restore();
+
+      // Label
+      ctx.fillStyle    = "#e8edf3";
+      ctx.font         = `bold ${Math.round(r * 0.34)}px 'JetBrains Mono', monospace`;
+      ctx.textAlign    = "center";
+      ctx.textBaseline = "middle";
+      const shortLabel = state.external_node_label
+        ? state.external_node_label.slice(0, 7)
+        : "Ext";
+      ctx.fillText(shortLabel, 0, -r * 0.18);
+
+      ctx.font         = `${Math.round(r * 0.27)}px 'JetBrains Mono', monospace`;
+      ctx.fillStyle    = absT > 0.5 ? "#dd99ff" : "#8866aa";
+      ctx.fillText(node.tension.toFixed(1), 0, r * 0.28);
+
+      ctx.restore();
+
+      // "PROBATIONARY" label below
+      ctx.fillStyle    = "#5b2d6e";
+      ctx.font         = `9px 'JetBrains Mono', monospace`;
+      ctx.textAlign    = "center";
+      ctx.textBaseline = "top";
+      ctx.fillText("probationary", pos.x, pos.y + r + 4);
+
+    } else {
+      // Regular node: circle
+      const bodyGrad = ctx.createRadialGradient(
+        pos.x - r * 0.28, pos.y - r * 0.28, r * 0.08,
+        pos.x, pos.y, r
+      );
+      const lightRGB = lightenRGB(fillRGB, 0.42);
+      bodyGrad.addColorStop(0, rgbStr(lightRGB));
+      bodyGrad.addColorStop(1, rgbStr(fillRGB));
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = bodyGrad;
+      ctx.fill();
+
+      // Border
+      const borderCol = isAlarm ? "#cc2222" : rgbStr(lightenRGB(fillRGB, 0.55));
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+      ctx.strokeStyle = borderCol;
+      ctx.lineWidth   = isAlarm ? 2.5 : 1.5;
+      ctx.stroke();
+
+      // Short label
+      ctx.fillStyle    = "#e8edf3";
+      ctx.font         = `bold ${Math.round(r * 0.36)}px 'JetBrains Mono', monospace`;
+      ctx.textAlign    = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(NODE_SHORT_LABELS[i] || `N${i}`, pos.x, pos.y - r * 0.20);
+
+      // Tension value
+      ctx.font         = `${Math.round(r * 0.28)}px 'JetBrains Mono', monospace`;
+      ctx.fillStyle    = absT > 0.5 ? "#ffaa66" : "#8899aa";
+      ctx.fillText(node.tension.toFixed(1), pos.x, pos.y + r * 0.26);
+
+      // Velocity arc
+      if (Math.abs(node.velocity) > 0.005) {
+        const arcLen = Math.min(Math.abs(node.velocity) * 1.1, 1.0) * Math.PI;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, r + 5, -Math.PI / 2, -Math.PI / 2 + arcLen);
+        ctx.strokeStyle = node.velocity > 0 ? "#e06020" : "#2090d0";
+        ctx.lineWidth   = 2.5;
+        ctx.lineCap     = "round";
+        ctx.stroke();
+      }
     }
   });
 
   // External node index labels
   state.nodes.forEach((node, i) => {
-    const pos = positions[i];
-    const r   = nodeRadius(node.tension, baseR, timestamp);
+    const pos  = allPositions[i];
+    const isExt = state.external_node_index === i;
+    if (!pos) return;
+    const effR = isExt ? extBaseR : baseR;
+    const r    = nodeRadius(node.tension, effR, timestamp);
+    // Place label outward from center
     const cx = W * 0.5, cy = H * 0.5;
     const dx = pos.x - cx, dy = pos.y - cy;
-    const dlen = Math.sqrt(dx*dx + dy*dy) || 1;
-    ctx.fillStyle = "#445566";
-    ctx.font = "9px 'JetBrains Mono', monospace";
-    ctx.textAlign = "center";
+    const dlen = Math.sqrt(dx * dx + dy * dy) || 1;
+    ctx.fillStyle    = isExt ? "#5b2d6e" : "#445566";
+    ctx.font         = "9px 'JetBrains Mono', monospace";
+    ctx.textAlign    = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(`N${i}`, pos.x + (dx/dlen)*(r+20), pos.y + (dy/dlen)*(r+20));
+    ctx.fillText(`N${i}`, pos.x + (dx / dlen) * (r + 20), pos.y + (dy / dlen) * (r + 20));
   });
+
+  // Drag-hover highlight: highlight node under cursor if dragging
+  if (dragState) {
+    const pos = allPositions[dragState.nodeIndex];
+    if (pos) {
+      const node = state.nodes[dragState.nodeIndex];
+      const isExt = state.external_node_index === dragState.nodeIndex;
+      const effR  = isExt ? extBaseR : baseR;
+      const r     = nodeRadius(node ? node.tension : 0, effR, timestamp);
+      ctx.beginPath();
+      ctx.arc(pos.x, pos.y, r + 8, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(100, 180, 255, 0.5)";
+      ctx.lineWidth   = 2;
+      ctx.stroke();
+    }
+  }
 }
 
 // ---- Chart renderer ----
@@ -1135,7 +1789,7 @@ function drawChart() {
   const plotW = W - padLeft - padRight;
   const plotH = H - padTop - padBottom;
 
-  // Tension range
+  // Tension range across all nodes in history
   let minT = Infinity, maxT = -Infinity;
   history.forEach(row => row.forEach(v => {
     if (v < minT) minT = v;
@@ -1143,23 +1797,21 @@ function drawChart() {
   }));
   const range = Math.max(maxT - minT, 0.4);
   const center = (maxT + minT) / 2;
-  const displayMin = center - range * 0.6;
-  const displayMax = center + range * 0.6;
+  const displayMin   = center - range * 0.6;
+  const displayMax   = center + range * 0.6;
   const displayRange = displayMax - displayMin;
 
   function toY(v) { return padTop + plotH * (1.0 - (v - displayMin) / displayRange); }
   function toX(idx) {
-    // Right-align: most recent entry at right edge
     const offset = HISTORY_LENGTH - history.length;
     return padLeft + plotW * ((idx + offset) / (HISTORY_LENGTH - 1));
   }
 
   // Grid
   ctx.strokeStyle = "#1e2530";
-  ctx.lineWidth = 1;
-  const gridCount = 4;
-  for (let g = 0; g <= gridCount; g++) {
-    const v = displayMin + displayRange * g / gridCount;
+  ctx.lineWidth   = 1;
+  for (let g = 0; g <= 4; g++) {
+    const v = displayMin + displayRange * g / 4;
     const y = toY(v);
     ctx.beginPath(); ctx.moveTo(padLeft, y); ctx.lineTo(W - padRight, y); ctx.stroke();
     ctx.fillStyle = "#445566";
@@ -1176,87 +1828,65 @@ function drawChart() {
   }
 
   // ---- Scenario phase markers ----
-  // scenario_markers contains {sim_step, label, phase} for phase boundaries.
-  // We map sim_step -> tick position in history using historyTicks.
-  // If a tick hasn't been seen yet, we project its future x position.
-  //
-  // sim_step -> tick: each sim step increments _tick by 1 in api.py.
-  // At speed=1, 1 tick = 1 sim step. But speed can vary.
-  // We use a simpler approach: marker x is fixed by fraction of scenario progress.
-  // scenario_markers[i].sim_step / (NUM_INTERVALS * SIM_STEPS_PER_INTERVAL)
-  // gives fraction of full scenario. We translate that to an x position within
-  // the chart plot area relative to how full the history buffer is.
-  //
-  // Specifically: find entries in historyTicks where the corresponding sim_step
-  // was injected. Since we store tick (not sim_step) in historyTicks, we
-  // approximate: marker tick = first tick in history where tick >= scenario_start_tick
-  // + marker_sim_step * (speed_ratio). This is approximate but visually useful.
-  //
-  // Cleaner approach: the server now sends sim_step in every broadcast.
-  // We store sim_step in history alongside tensions.
-  // But we didn't add that to history yet. For now: use scenario_markers.sim_step
-  // and map to x by fraction.
-
   if (state.scenario_markers && state.scenario_markers.length > 0) {
     const currentSimStep = state.sim_step || 0;
-
-    // Determine x range: leftmost x is for the oldest history entry.
-    // The current sim step is at the right edge (W - padRight).
-    // oldestSimStep ≈ currentSimStep - history.length (1 tick ~ 1 sim step at 1x speed)
-    const oldestSimStep = Math.max(0, currentSimStep - history.length);
-    const simRange = currentSimStep - oldestSimStep || 1;
+    const oldestSimStep  = Math.max(0, currentSimStep - history.length);
+    const simRange       = currentSimStep - oldestSimStep || 1;
 
     function simStepToX(s) {
-      if (simRange === 0) return padLeft;
       return padLeft + plotW * (s - oldestSimStep) / simRange;
     }
 
-    // Phase colors and short labels — covers both scenarios.
-    // accident_shock phases: onset, peak, recovery, tail
-    // stadium_shock phases:  surge, drain, tail
     const markerColors = {
-      onset:    "#ffaa33",
-      peak:     "#ff4444",
-      recovery: "#44ccaa",
-      tail:     "#6688bb",
-      surge:    "#ffcc00",  // bright yellow — unmapped external energy, sharp onset
-      drain:    "#cc8833",  // amber — crowd draining, tension slowly resolving
+      onset:          "#ffaa33",
+      peak:           "#ff4444",
+      recovery:       "#44ccaa",
+      tail:           "#6688bb",
+      surge:          "#ffcc00",
+      drain:          "#cc8833",
+      weather_onset:  "#66bbee",
+      weather_peak:   "#3388cc",
+      event_onset:    "#ffcc44",
+      event_drain:    "#cc8844",
+      decay_onset:    "#44ccbb",
+      decay_plateau:  "#2299aa",
     };
     const markerLabels = {
-      onset:    "accident",
-      peak:     "peak",
-      recovery: "recovery",
-      tail:     "tail",
-      surge:    "surge",
-      drain:    "draining",
+      onset:         "accident",
+      peak:          "peak",
+      recovery:      "recovery",
+      tail:          "tail",
+      surge:         "surge",
+      drain:         "draining",
+      weather_onset: "rain",
+      weather_peak:  "full rain",
+      event_onset:   "event",
+      event_drain:   "event end",
+      decay_onset:   "decay",
+      decay_plateau: "plateau",
     };
 
     state.scenario_markers.forEach(marker => {
       const mx = simStepToX(marker.sim_step);
-      if (mx < padLeft || mx > W - padRight) return;  // outside visible window
-
+      if (mx < padLeft || mx > W - padRight) return;
       const mColor = markerColors[marker.phase] || "#888";
 
-      // Dashed vertical line
       ctx.save();
       ctx.setLineDash([3, 4]);
       ctx.beginPath();
-      ctx.moveTo(mx, padTop);
-      ctx.lineTo(mx, padTop + plotH);
+      ctx.moveTo(mx, padTop); ctx.lineTo(mx, padTop + plotH);
       ctx.strokeStyle = mColor;
-      ctx.lineWidth = 1;
+      ctx.lineWidth   = 1;
       ctx.globalAlpha = 0.65;
       ctx.stroke();
       ctx.restore();
 
-      // Label above the line
       ctx.save();
       ctx.globalAlpha = 0.85;
-      ctx.fillStyle = mColor;
-      ctx.font = "8px 'JetBrains Mono', monospace";
-      ctx.textAlign = "center";
+      ctx.fillStyle   = mColor;
+      ctx.font        = "8px 'JetBrains Mono', monospace";
+      ctx.textAlign   = "center";
       ctx.textBaseline = "bottom";
-      // Rotate label slightly if they're close together to avoid overlap
       ctx.translate(mx, padTop - 1);
       ctx.rotate(-Math.PI / 8);
       ctx.fillText(markerLabels[marker.phase] || marker.label, 0, 0);
@@ -1265,41 +1895,55 @@ function drawChart() {
   }
 
   // ---- Tension series ----
-  for (let ni = 0; ni < 3; ni++) {
+  const numSeries = history.length > 0 ? history[0].length : 3;
+  for (let ni = 0; ni < numSeries; ni++) {
+    const color = CHART_COLORS[ni] || "#aaaaaa";
+    const isExt = state.external_node_index === ni;
+
+    ctx.save();
+    if (isExt) ctx.setLineDash([5, 3]);
     ctx.beginPath();
     let first = true;
     history.forEach((row, idx) => {
+      if (ni >= row.length) return;
       const x = toX(idx);
       const y = toY(row[ni]);
       if (first) { ctx.moveTo(x, y); first = false; }
       else ctx.lineTo(x, y);
     });
-    ctx.strokeStyle = CHART_COLORS[ni];
-    ctx.lineWidth = 1.5;
-    ctx.lineJoin = "round";
-    ctx.shadowColor = CHART_COLORS[ni];
-    ctx.shadowBlur = 3;
+    ctx.strokeStyle = color;
+    ctx.lineWidth   = isExt ? 1.2 : 1.5;
+    ctx.lineJoin    = "round";
+    ctx.shadowColor = color;
+    ctx.shadowBlur  = isExt ? 1 : 3;
     ctx.stroke();
-    ctx.shadowBlur = 0;
+    ctx.shadowBlur  = 0;
+    ctx.restore();
 
-    // Trailing dot at current value
+    // Trailing dot
     if (history.length > 0) {
       const last = history[history.length - 1];
-      ctx.beginPath();
-      ctx.arc(toX(history.length - 1), toY(last[ni]), 3, 0, Math.PI * 2);
-      ctx.fillStyle = CHART_COLORS[ni];
-      ctx.fill();
+      if (ni < last.length) {
+        ctx.beginPath();
+        ctx.arc(toX(history.length - 1), toY(last[ni]), 3, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      }
     }
   }
 
   // Legend
-  for (let ni = 0; ni < 3; ni++) {
-    const lx = W - padRight - 86 + ni * 28;
+  for (let ni = 0; ni < numSeries; ni++) {
+    const color = CHART_COLORS[ni] || "#aaaaaa";
+    const lx = W - padRight - 30 - (numSeries - ni - 1) * 28;
     const ly = padTop - 9;
+    ctx.save();
+    if (state.external_node_index === ni) ctx.setLineDash([4, 2]);
     ctx.beginPath();
     ctx.moveTo(lx, ly); ctx.lineTo(lx + 14, ly);
-    ctx.strokeStyle = CHART_COLORS[ni]; ctx.lineWidth = 1.5; ctx.stroke();
-    ctx.fillStyle = CHART_COLORS[ni];
+    ctx.strokeStyle = color; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = color;
     ctx.font = "8px 'JetBrains Mono', monospace";
     ctx.textAlign = "left";
     ctx.fillText(`N${ni}`, lx + 16, ly + 1);
@@ -1310,13 +1954,12 @@ function drawChart() {
 let lastFrameTime = 0;
 
 function frame(timestamp) {
-  // Advance strand flow phase for each strand
-  const dt = Math.min((timestamp - lastFrameTime) / 1000, 0.05);  // seconds, capped
+  const dt = Math.min((timestamp - lastFrameTime) / 1000, 0.05);
   lastFrameTime = timestamp;
 
   state.strands.forEach((strand, si) => {
-    const grad = strand.tension_gradient;
-    const flowSpeed = 0.25 + grad * 1.6;  // units/s along [0,1]
+    const grad      = strand.tension_gradient;
+    const flowSpeed = 0.25 + grad * 1.6;
     strandFlowPhase[si] = ((strandFlowPhase[si] || 0) + flowSpeed * dt) % 1.0;
   });
 

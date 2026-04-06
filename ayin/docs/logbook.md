@@ -1450,3 +1450,133 @@ Evidence:
   ✗ Agent did not recognize event/surge pattern
   ✗ Agent did not identify Node 2 as affected
   ✓ Agent predicted positive tension direction (demand surge) — correct
+
+## Strand Integration Validation (Phase 2) -- 2026-04-06T13:52:25Z
+
+**Scenario:** Stadium/Event Venue probationary strand attached to Node 2 (Approaching Traffic)  
+**Run timestamp:** 2026-04-06T13:52:25Z  
+**Script:** run_strand_validation.py  
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength (triangle) | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| seed | 314 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| initial_strand_weight | 0.01 |
+| weight_ramp | 0.01 -> 0.05 -> 0.10 -> 0.25 |
+
+### Criterion 1: Bidirectional Propagation
+
+| Measure | Value |
+|---------|-------|
+| Flux source->target | 11.982388 |
+| Flux target->source | 3.585586 |
+| Total flux | 15.567973 |
+| Directionality ratio | 0.7697 |
+| Result | PASS |
+
+### Criterion 2: Coherence Improvement
+
+| Measure | Value |
+|---------|-------|
+| Mean incoherence (baseline) | 0.0477 |
+| Mean incoherence (with strand) | 0.0235 |
+| Improvement | +0.0242 |
+| Result | PASS |
+
+Per-phase breakdown:
+
+| Phase | Baseline | With Strand | Improvement |
+|-------|----------|-------------|-------------|
+| Pre-surge | 0.0000 | 0.0000 | +0.0000 |
+| During surge | 0.2368 | 0.1388 | +0.0981 |
+| Post-surge | 0.0149 | 0.0007 | +0.0142 |
+
+### Criterion 3: Energy Convergence
+
+| Measure | Value |
+|---------|-------|
+| Peak energy | 1.9614e+00 |
+| Final energy | 4.2603e-01 |
+| Dissipated | 1.5354e+00 |
+| Result | FAIL |
+
+### Overall Result: FAIL
+
+The probationary strand did not pass all criteria.
+  - Energy convergence FAILED
+
+---
+
+## Strand Integration Validation (Phase 2) -- 2026-04-06T13:53:06Z
+
+**Scenario:** Stadium/Event Venue probationary strand attached to Node 2 (Approaching Traffic)  
+**Run timestamp:** 2026-04-06T13:53:06Z  
+**Script:** run_strand_validation.py  
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength (triangle) | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| seed | 314 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| initial_strand_weight | 0.01 |
+| weight_ramp | 0.01 -> 0.05 -> 0.10 -> 0.25 |
+
+### Criterion 1: Bidirectional Propagation
+
+| Measure | Value |
+|---------|-------|
+| Flux source->target | 16.671975 |
+| Flux target->source | 11.835484 |
+| Total flux | 28.507458 |
+| Directionality ratio | 0.5848 |
+| Result | PASS |
+
+### Criterion 2: Coherence Improvement
+
+| Measure | Value |
+|---------|-------|
+| Mean incoherence (baseline) | 0.0477 |
+| Mean incoherence (with strand) | 0.0070 |
+| Improvement | +0.0407 |
+| Result | PASS |
+
+Per-phase breakdown:
+
+| Phase | Baseline | With Strand | Improvement |
+|-------|----------|-------------|-------------|
+| Pre-surge | 0.0000 | 0.0000 | +0.0000 |
+| During surge | 0.2368 | 0.1388 | +0.0981 |
+| Post-surge | 0.0149 | 0.0007 | +0.0142 |
+
+### Criterion 3: Energy Convergence
+
+| Measure | Value |
+|---------|-------|
+| Peak energy | 1.9614e+00 |
+| Final energy | 9.9674e-05 |
+| Dissipated | 1.9613e+00 |
+| Result | PASS |
+
+### Overall Result: PASS
+
+The probationary strand earned its place. The stadium demand signal,
+when fed through the fourth node and coupled to Node 2, reduced
+incoherence at the target node. Tension flowed bidirectionally along
+the strand, confirming it is a genuine coupling, not a sensor.
+The Lyapunov function (total energy) still converged, confirming
+the expanded web maintains stability.
+
+---
