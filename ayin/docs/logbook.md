@@ -1580,3 +1580,4427 @@ The Lyapunov function (total energy) still converged, confirming
 the expanded web maintains stability.
 
 ---
+## Run — 2026-04-06T16:48:31
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T16:28:54  
+**Log written:** 2026-04-06T16:48:31  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 927 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 191 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+0.0s |
+| 192 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 196 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+8.0s |
+| 201 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+16.01s |
+| 206 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+24.02s |
+| 231 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+64.07s |
+| 256 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+104.11s |
+| 258 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 262 | peak energy — 1.6604e+00 |
+| 281 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+144.13s |
+| 282 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 290 | peak tension N1 (Signal Timing) — +0.8241 |
+| 306 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+184.17s |
+| 324 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 331 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+224.23s |
+| 332 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 356 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+264.28s |
+| 361 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+272.28s |
+| 366 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+280.29s |
+| 927 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 262
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 282
+- N1 (Signal Timing): +0.8241 at tick 290
+- N2 (Approaching Traffic): +0.8477 at tick 324
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T17:08:10
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T16:48:31  
+**Log written:** 2026-04-06T17:08:10  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 1663 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 927 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 928 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 932 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.6s |
+| 937 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.61s |
+| 942 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.61s |
+| 967 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.64s |
+| 992 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.68s |
+| 994 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 998 | peak energy — 1.6604e+00 |
+| 1017 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+145.69s |
+| 1018 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 1026 | peak tension N1 (Signal Timing) — +0.8241 |
+| 1042 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+185.74s |
+| 1060 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 1067 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+225.76s |
+| 1068 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 1092 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+265.81s |
+| 1097 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+273.82s |
+| 1102 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+281.82s |
+| 1663 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 998
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 1018
+- N1 (Signal Timing): +0.8241 at tick 1026
+- N2 (Approaching Traffic): +0.8477 at tick 1060
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T17:27:45
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T17:08:10  
+**Log written:** 2026-04-06T17:27:45  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 2399 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 1663 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 1664 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 1668 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.6s |
+| 1673 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.6s |
+| 1678 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.6s |
+| 1703 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.67s |
+| 1728 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.73s |
+| 1730 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 1734 | peak energy — 1.6604e+00 |
+| 1753 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+145.75s |
+| 1754 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 1762 | peak tension N1 (Signal Timing) — +0.8241 |
+| 1778 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+185.77s |
+| 1796 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 1803 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+225.85s |
+| 1804 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 1828 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+265.87s |
+| 1833 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+273.87s |
+| 1838 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+281.87s |
+| 2399 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 1734
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 1754
+- N1 (Signal Timing): +0.8241 at tick 1762
+- N2 (Approaching Traffic): +0.8477 at tick 1796
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T17:47:23
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T17:27:45  
+**Log written:** 2026-04-06T17:47:23  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 3135 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 2399 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 2400 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 2404 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.61s |
+| 2409 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.62s |
+| 2414 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.63s |
+| 2439 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.68s |
+| 2464 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.73s |
+| 2466 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 2470 | peak energy — 1.6604e+00 |
+| 2489 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+145.76s |
+| 2490 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 2498 | peak tension N1 (Signal Timing) — +0.8241 |
+| 2514 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+185.8s |
+| 2532 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 2539 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+225.82s |
+| 2540 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 2564 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+265.88s |
+| 2569 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+273.88s |
+| 2574 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+281.89s |
+| 3135 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 2470
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 2490
+- N1 (Signal Timing): +0.8241 at tick 2498
+- N2 (Approaching Traffic): +0.8477 at tick 2532
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T18:06:52
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T17:47:23  
+**Log written:** 2026-04-06T18:06:52  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 3871 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 3135 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 3136 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 3140 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.61s |
+| 3145 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.62s |
+| 3150 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.63s |
+| 3175 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.67s |
+| 3200 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.74s |
+| 3202 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 3206 | peak energy — 1.6604e+00 |
+| 3225 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+145.79s |
+| 3226 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 3234 | peak tension N1 (Signal Timing) — +0.8241 |
+| 3250 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+185.85s |
+| 3268 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 3275 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+225.91s |
+| 3276 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 3300 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+265.96s |
+| 3305 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+273.98s |
+| 3310 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+281.99s |
+| 3871 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 3206
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 3226
+- N1 (Signal Timing): +0.8241 at tick 3234
+- N2 (Approaching Traffic): +0.8477 at tick 3268
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T18:26:14
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T18:06:52  
+**Log written:** 2026-04-06T18:26:14  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 4607 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 3871 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 3872 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 3876 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.62s |
+| 3881 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.64s |
+| 3886 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.66s |
+| 3911 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.77s |
+| 3936 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.87s |
+| 3938 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 3942 | peak energy — 1.6604e+00 |
+| 3961 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+145.98s |
+| 3962 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 3970 | peak tension N1 (Signal Timing) — +0.8241 |
+| 3986 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.1s |
+| 4004 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 4011 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.2s |
+| 4012 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 4036 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.29s |
+| 4041 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.31s |
+| 4046 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.32s |
+| 4607 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 3942
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 3962
+- N1 (Signal Timing): +0.8241 at tick 3970
+- N2 (Approaching Traffic): +0.8477 at tick 4004
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T18:45:34
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T18:26:14  
+**Log written:** 2026-04-06T18:45:34  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 5343 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 4607 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 4608 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 4612 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.62s |
+| 4617 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.64s |
+| 4622 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.66s |
+| 4647 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.78s |
+| 4672 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.89s |
+| 4674 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 4678 | peak energy — 1.6604e+00 |
+| 4697 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.01s |
+| 4698 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 4706 | peak tension N1 (Signal Timing) — +0.8241 |
+| 4722 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.13s |
+| 4740 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 4747 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.21s |
+| 4748 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 4772 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.33s |
+| 4777 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.35s |
+| 4782 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.38s |
+| 5343 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 4678
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 4698
+- N1 (Signal Timing): +0.8241 at tick 4706
+- N2 (Approaching Traffic): +0.8477 at tick 4740
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T19:04:51
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T18:45:34  
+**Log written:** 2026-04-06T19:04:51  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 6079 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 5343 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.58s |
+| 5344 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 5348 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.59s |
+| 5353 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.61s |
+| 5358 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.63s |
+| 5383 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.73s |
+| 5408 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.81s |
+| 5410 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 5414 | peak energy — 1.6604e+00 |
+| 5433 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+145.91s |
+| 5434 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 5442 | peak tension N1 (Signal Timing) — +0.8241 |
+| 5458 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.03s |
+| 5476 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 5483 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.14s |
+| 5484 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 5508 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.25s |
+| 5513 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.27s |
+| 5518 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.29s |
+| 6079 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 5414
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 5434
+- N1 (Signal Timing): +0.8241 at tick 5442
+- N2 (Approaching Traffic): +0.8477 at tick 5476
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T19:24:08
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T19:04:51  
+**Log written:** 2026-04-06T19:24:08  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 6815 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 6079 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 6080 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 6084 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 6089 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.65s |
+| 6094 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.68s |
+| 6119 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.8s |
+| 6144 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.94s |
+| 6146 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 6150 | peak energy — 1.6604e+00 |
+| 6169 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.08s |
+| 6170 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 6178 | peak tension N1 (Signal Timing) — +0.8241 |
+| 6194 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.21s |
+| 6212 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 6219 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.34s |
+| 6220 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 6244 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.46s |
+| 6249 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.49s |
+| 6254 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.51s |
+| 6815 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 6150
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 6170
+- N1 (Signal Timing): +0.8241 at tick 6178
+- N2 (Approaching Traffic): +0.8477 at tick 6212
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T19:43:23
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T19:24:08  
+**Log written:** 2026-04-06T19:43:23  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 7551 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 6815 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 6816 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 6820 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.61s |
+| 6825 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.63s |
+| 6830 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.66s |
+| 6855 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.81s |
+| 6880 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.95s |
+| 6882 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 6886 | peak energy — 1.6604e+00 |
+| 6905 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.08s |
+| 6906 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 6914 | peak tension N1 (Signal Timing) — +0.8241 |
+| 6930 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.23s |
+| 6948 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 6955 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.37s |
+| 6956 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 6980 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.51s |
+| 6985 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.54s |
+| 6990 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.57s |
+| 7551 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 6886
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 6906
+- N1 (Signal Timing): +0.8241 at tick 6914
+- N2 (Approaching Traffic): +0.8477 at tick 6948
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T20:02:37
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T19:43:23  
+**Log written:** 2026-04-06T20:02:37  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 8287 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 7551 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 7552 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 7556 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.62s |
+| 7561 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.64s |
+| 7566 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.65s |
+| 7591 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.73s |
+| 7616 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.84s |
+| 7618 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 7622 | peak energy — 1.6604e+00 |
+| 7641 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+145.96s |
+| 7642 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 7650 | peak tension N1 (Signal Timing) — +0.8241 |
+| 7666 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.07s |
+| 7684 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 7691 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.19s |
+| 7692 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 7716 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.3s |
+| 7721 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.33s |
+| 7726 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.35s |
+| 8287 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 7622
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 7642
+- N1 (Signal Timing): +0.8241 at tick 7650
+- N2 (Approaching Traffic): +0.8477 at tick 7684
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T20:21:51
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T20:02:37  
+**Log written:** 2026-04-06T20:21:51  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 9023 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 8287 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 8288 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 8292 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.62s |
+| 8297 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.65s |
+| 8302 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.68s |
+| 8327 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.83s |
+| 8352 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.96s |
+| 8354 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 8358 | peak energy — 1.6604e+00 |
+| 8377 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.11s |
+| 8378 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 8386 | peak tension N1 (Signal Timing) — +0.8241 |
+| 8402 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.23s |
+| 8420 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 8427 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.38s |
+| 8428 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 8452 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.53s |
+| 8457 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.56s |
+| 8462 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.59s |
+| 9023 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 8358
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 8378
+- N1 (Signal Timing): +0.8241 at tick 8386
+- N2 (Approaching Traffic): +0.8477 at tick 8420
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T20:41:04
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T20:21:51  
+**Log written:** 2026-04-06T20:41:04  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 9759 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 9023 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 9024 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 9028 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.62s |
+| 9033 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.63s |
+| 9038 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.66s |
+| 9063 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.77s |
+| 9088 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.92s |
+| 9090 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 9094 | peak energy — 1.6604e+00 |
+| 9113 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.05s |
+| 9114 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 9122 | peak tension N1 (Signal Timing) — +0.8241 |
+| 9138 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.17s |
+| 9156 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 9163 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.29s |
+| 9164 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 9188 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.38s |
+| 9193 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.39s |
+| 9198 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.42s |
+| 9759 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 9094
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 9114
+- N1 (Signal Timing): +0.8241 at tick 9122
+- N2 (Approaching Traffic): +0.8477 at tick 9156
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T21:00:16
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T20:41:04  
+**Log written:** 2026-04-06T21:00:16  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 10495 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 9759 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 9760 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 9764 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 9769 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.66s |
+| 9774 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.68s |
+| 9799 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.8s |
+| 9824 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.95s |
+| 9826 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 9830 | peak energy — 1.6604e+00 |
+| 9849 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.07s |
+| 9850 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 9858 | peak tension N1 (Signal Timing) — +0.8241 |
+| 9874 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.22s |
+| 9892 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 9899 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.33s |
+| 9900 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 9924 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.42s |
+| 9929 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.44s |
+| 9934 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.46s |
+| 10495 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 9830
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 9850
+- N1 (Signal Timing): +0.8241 at tick 9858
+- N2 (Approaching Traffic): +0.8477 at tick 9892
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T21:19:27
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T21:00:16  
+**Log written:** 2026-04-06T21:19:27  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 11231 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 10495 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 10496 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 10500 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.62s |
+| 10505 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.65s |
+| 10510 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.68s |
+| 10535 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.8s |
+| 10560 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.95s |
+| 10562 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 10566 | peak energy — 1.6604e+00 |
+| 10585 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.09s |
+| 10586 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 10594 | peak tension N1 (Signal Timing) — +0.8241 |
+| 10610 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.25s |
+| 10628 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 10635 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.4s |
+| 10636 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 10660 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.56s |
+| 10665 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.59s |
+| 10670 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.62s |
+| 11231 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 10566
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 10586
+- N1 (Signal Timing): +0.8241 at tick 10594
+- N2 (Approaching Traffic): +0.8477 at tick 10628
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T21:38:37
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T21:19:27  
+**Log written:** 2026-04-06T21:38:37  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 11967 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 11231 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 11232 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 11236 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.62s |
+| 11241 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.64s |
+| 11246 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.65s |
+| 11271 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.8s |
+| 11296 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.95s |
+| 11298 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 11302 | peak energy — 1.6604e+00 |
+| 11321 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.1s |
+| 11322 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 11330 | peak tension N1 (Signal Timing) — +0.8241 |
+| 11346 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.25s |
+| 11364 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 11371 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.4s |
+| 11372 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 11396 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.54s |
+| 11401 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.57s |
+| 11406 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.6s |
+| 11967 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 11302
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 11322
+- N1 (Signal Timing): +0.8241 at tick 11330
+- N2 (Approaching Traffic): +0.8477 at tick 11364
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T21:57:46
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T21:38:37  
+**Log written:** 2026-04-06T21:57:46  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 12703 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 11967 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 11968 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 11972 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 11977 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.66s |
+| 11982 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.69s |
+| 12007 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.85s |
+| 12032 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.03s |
+| 12034 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 12038 | peak energy — 1.6604e+00 |
+| 12057 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.19s |
+| 12058 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 12066 | peak tension N1 (Signal Timing) — +0.8241 |
+| 12082 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.36s |
+| 12100 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 12107 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.52s |
+| 12108 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 12132 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.67s |
+| 12137 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.69s |
+| 12142 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.72s |
+| 12703 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 12038
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 12058
+- N1 (Signal Timing): +0.8241 at tick 12066
+- N2 (Approaching Traffic): +0.8477 at tick 12100
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T22:16:53
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T21:57:46  
+**Log written:** 2026-04-06T22:16:53  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 13439 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 12703 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 12704 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 12708 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.62s |
+| 12713 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.66s |
+| 12718 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.68s |
+| 12743 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.82s |
+| 12768 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.93s |
+| 12770 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 12774 | peak energy — 1.6604e+00 |
+| 12793 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.06s |
+| 12794 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 12802 | peak tension N1 (Signal Timing) — +0.8241 |
+| 12818 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.2s |
+| 12836 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 12843 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.34s |
+| 12844 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 12868 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.49s |
+| 12873 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.53s |
+| 12878 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.56s |
+| 13439 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 12774
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 12794
+- N1 (Signal Timing): +0.8241 at tick 12802
+- N2 (Approaching Traffic): +0.8477 at tick 12836
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T22:36:00
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T22:16:53  
+**Log written:** 2026-04-06T22:36:00  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 14175 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 13439 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 13440 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 13444 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.62s |
+| 13449 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.64s |
+| 13454 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.67s |
+| 13479 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.82s |
+| 13504 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.98s |
+| 13506 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 13510 | peak energy — 1.6604e+00 |
+| 13529 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.15s |
+| 13530 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 13538 | peak tension N1 (Signal Timing) — +0.8241 |
+| 13554 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.3s |
+| 13572 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 13579 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.49s |
+| 13580 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 13604 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.65s |
+| 13609 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.68s |
+| 13614 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.71s |
+| 14175 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 13510
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 13530
+- N1 (Signal Timing): +0.8241 at tick 13538
+- N2 (Approaching Traffic): +0.8477 at tick 13572
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T22:55:06
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T22:36:00  
+**Log written:** 2026-04-06T22:55:06  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 14911 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 14175 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 14176 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 14180 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 14185 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.67s |
+| 14190 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.71s |
+| 14215 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.85s |
+| 14240 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.04s |
+| 14242 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 14246 | peak energy — 1.6604e+00 |
+| 14265 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.21s |
+| 14266 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 14274 | peak tension N1 (Signal Timing) — +0.8241 |
+| 14290 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.37s |
+| 14308 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 14315 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.5s |
+| 14316 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 14340 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.66s |
+| 14345 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.69s |
+| 14350 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.72s |
+| 14911 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 14246
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 14266
+- N1 (Signal Timing): +0.8241 at tick 14274
+- N2 (Approaching Traffic): +0.8477 at tick 14308
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T23:14:09
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T22:55:06  
+**Log written:** 2026-04-06T23:14:09  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 15647 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 14911 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 14912 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 14916 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.62s |
+| 14921 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.66s |
+| 14926 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.7s |
+| 14951 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.89s |
+| 14976 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.06s |
+| 14978 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 14982 | peak energy — 1.6604e+00 |
+| 15001 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.22s |
+| 15002 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 15010 | peak tension N1 (Signal Timing) — +0.8241 |
+| 15026 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.39s |
+| 15044 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 15051 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.57s |
+| 15052 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 15076 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.75s |
+| 15081 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.79s |
+| 15086 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.84s |
+| 15647 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 14982
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 15002
+- N1 (Signal Timing): +0.8241 at tick 15010
+- N2 (Approaching Traffic): +0.8477 at tick 15044
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T23:33:12
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T23:14:09  
+**Log written:** 2026-04-06T23:33:12  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 16383 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 15647 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 15648 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 15652 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 15657 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.66s |
+| 15662 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.7s |
+| 15687 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.85s |
+| 15712 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.0s |
+| 15714 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 15718 | peak energy — 1.6604e+00 |
+| 15737 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.18s |
+| 15738 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 15746 | peak tension N1 (Signal Timing) — +0.8241 |
+| 15762 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.38s |
+| 15780 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 15787 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.55s |
+| 15788 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 15812 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.74s |
+| 15817 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.78s |
+| 15822 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.81s |
+| 16383 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 15718
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 15738
+- N1 (Signal Timing): +0.8241 at tick 15746
+- N2 (Approaching Traffic): +0.8477 at tick 15780
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-06T23:52:15
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T23:33:12  
+**Log written:** 2026-04-06T23:52:15  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 17119 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 16383 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 16384 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 16388 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 16393 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.66s |
+| 16398 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.7s |
+| 16423 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.87s |
+| 16448 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.04s |
+| 16450 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 16454 | peak energy — 1.6604e+00 |
+| 16473 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.18s |
+| 16474 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 16482 | peak tension N1 (Signal Timing) — +0.8241 |
+| 16498 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.32s |
+| 16516 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 16523 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.5s |
+| 16524 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 16548 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.67s |
+| 16553 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.7s |
+| 16558 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.74s |
+| 17119 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 16454
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 16474
+- N1 (Signal Timing): +0.8241 at tick 16482
+- N2 (Approaching Traffic): +0.8477 at tick 16516
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T00:11:16
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-06T23:52:15  
+**Log written:** 2026-04-07T00:11:16  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 17855 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 17119 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 17120 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 17124 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 17129 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.67s |
+| 17134 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.72s |
+| 17159 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.88s |
+| 17184 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.05s |
+| 17186 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 17190 | peak energy — 1.6604e+00 |
+| 17209 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.24s |
+| 17210 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 17218 | peak tension N1 (Signal Timing) — +0.8241 |
+| 17234 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.43s |
+| 17252 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 17259 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.58s |
+| 17260 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 17284 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.73s |
+| 17289 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.76s |
+| 17294 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.8s |
+| 17855 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 17190
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 17210
+- N1 (Signal Timing): +0.8241 at tick 17218
+- N2 (Approaching Traffic): +0.8477 at tick 17252
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T00:30:16
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T00:11:16  
+**Log written:** 2026-04-07T00:30:16  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 18591 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 17855 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 17856 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 17860 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 17865 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.66s |
+| 17870 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.69s |
+| 17895 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.88s |
+| 17920 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.07s |
+| 17922 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 17926 | peak energy — 1.6604e+00 |
+| 17945 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.25s |
+| 17946 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 17954 | peak tension N1 (Signal Timing) — +0.8241 |
+| 17970 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.46s |
+| 17988 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 17995 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.63s |
+| 17996 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 18020 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.81s |
+| 18025 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.85s |
+| 18030 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.89s |
+| 18591 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 17926
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 17946
+- N1 (Signal Timing): +0.8241 at tick 17954
+- N2 (Approaching Traffic): +0.8477 at tick 17988
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T00:49:14
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T00:30:16  
+**Log written:** 2026-04-07T00:49:14  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 19327 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 18591 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 18592 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 18596 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.65s |
+| 18601 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.69s |
+| 18606 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.72s |
+| 18631 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.91s |
+| 18656 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.1s |
+| 18658 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 18662 | peak energy — 1.6604e+00 |
+| 18681 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.33s |
+| 18682 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 18690 | peak tension N1 (Signal Timing) — +0.8241 |
+| 18706 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.54s |
+| 18724 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 18731 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.72s |
+| 18732 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 18756 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.9s |
+| 18761 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.94s |
+| 18766 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.98s |
+| 19327 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 18662
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 18682
+- N1 (Signal Timing): +0.8241 at tick 18690
+- N2 (Approaching Traffic): +0.8477 at tick 18724
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T01:08:14
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T00:49:14  
+**Log written:** 2026-04-07T01:08:14  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 20063 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 19327 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 19328 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 19332 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 19337 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.67s |
+| 19342 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.72s |
+| 19367 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.87s |
+| 19392 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.04s |
+| 19394 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 19398 | peak energy — 1.6604e+00 |
+| 19417 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.24s |
+| 19418 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 19426 | peak tension N1 (Signal Timing) — +0.8241 |
+| 19442 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.47s |
+| 19460 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 19467 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.69s |
+| 19468 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 19492 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.89s |
+| 19497 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.94s |
+| 19502 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.99s |
+| 20063 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 19398
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 19418
+- N1 (Signal Timing): +0.8241 at tick 19426
+- N2 (Approaching Traffic): +0.8477 at tick 19460
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T01:27:11
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T01:08:14  
+**Log written:** 2026-04-07T01:27:11  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 20799 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 20063 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 20064 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 20068 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 20073 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.69s |
+| 20078 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.73s |
+| 20103 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.96s |
+| 20128 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.19s |
+| 20130 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 20134 | peak energy — 1.6604e+00 |
+| 20153 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.41s |
+| 20154 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 20162 | peak tension N1 (Signal Timing) — +0.8241 |
+| 20178 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.64s |
+| 20196 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 20203 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.86s |
+| 20204 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 20228 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.07s |
+| 20233 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.11s |
+| 20238 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.14s |
+| 20799 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 20134
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 20154
+- N1 (Signal Timing): +0.8241 at tick 20162
+- N2 (Approaching Traffic): +0.8477 at tick 20196
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T01:46:07
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T01:27:11  
+**Log written:** 2026-04-07T01:46:07  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 21535 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 20799 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 20800 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 20804 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 20809 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.67s |
+| 20814 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.71s |
+| 20839 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.91s |
+| 20864 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.08s |
+| 20866 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 20870 | peak energy — 1.6604e+00 |
+| 20889 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.21s |
+| 20890 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 20898 | peak tension N1 (Signal Timing) — +0.8241 |
+| 20914 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.43s |
+| 20932 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 20939 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.65s |
+| 20940 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 20964 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.87s |
+| 20969 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.91s |
+| 20974 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.95s |
+| 21535 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 20870
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 20890
+- N1 (Signal Timing): +0.8241 at tick 20898
+- N2 (Approaching Traffic): +0.8477 at tick 20932
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T02:05:01
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T01:46:07  
+**Log written:** 2026-04-07T02:05:01  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 22271 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 21535 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 21536 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 21540 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 21545 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.69s |
+| 21550 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.73s |
+| 21575 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.94s |
+| 21600 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.17s |
+| 21602 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 21606 | peak energy — 1.6604e+00 |
+| 21625 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.36s |
+| 21626 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 21634 | peak tension N1 (Signal Timing) — +0.8241 |
+| 21650 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.51s |
+| 21668 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 21675 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.65s |
+| 21676 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 21700 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.83s |
+| 21705 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.88s |
+| 21710 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.92s |
+| 22271 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 21606
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 21626
+- N1 (Signal Timing): +0.8241 at tick 21634
+- N2 (Approaching Traffic): +0.8477 at tick 21668
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T02:23:54
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T02:05:01  
+**Log written:** 2026-04-07T02:23:54  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 23007 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 22271 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 22272 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 22276 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 22281 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.67s |
+| 22286 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.69s |
+| 22311 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.88s |
+| 22336 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.04s |
+| 22338 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 22342 | peak energy — 1.6604e+00 |
+| 22361 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.14s |
+| 22362 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 22370 | peak tension N1 (Signal Timing) — +0.8241 |
+| 22386 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.3s |
+| 22404 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 22411 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.45s |
+| 22412 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 22436 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.61s |
+| 22441 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.63s |
+| 22446 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+282.67s |
+| 23007 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 22342
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 22362
+- N1 (Signal Timing): +0.8241 at tick 22370
+- N2 (Approaching Traffic): +0.8477 at tick 22404
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T02:42:47
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T02:23:54  
+**Log written:** 2026-04-07T02:42:47  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 23743 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 23007 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 23008 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 23012 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 23017 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.68s |
+| 23022 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.73s |
+| 23047 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.94s |
+| 23072 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.21s |
+| 23074 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 23078 | peak energy — 1.6604e+00 |
+| 23097 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.45s |
+| 23098 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 23106 | peak tension N1 (Signal Timing) — +0.8241 |
+| 23122 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.7s |
+| 23140 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 23147 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.9s |
+| 23148 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 23172 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.11s |
+| 23177 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.15s |
+| 23182 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.19s |
+| 23743 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 23078
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 23098
+- N1 (Signal Timing): +0.8241 at tick 23106
+- N2 (Approaching Traffic): +0.8477 at tick 23140
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T03:01:38
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T02:42:47  
+**Log written:** 2026-04-07T03:01:38  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 24479 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 23743 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 23744 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 23748 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 23753 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.69s |
+| 23758 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.72s |
+| 23783 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.91s |
+| 23808 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.11s |
+| 23810 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 23814 | peak energy — 1.6604e+00 |
+| 23833 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.31s |
+| 23834 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 23842 | peak tension N1 (Signal Timing) — +0.8241 |
+| 23858 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.53s |
+| 23876 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 23883 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.76s |
+| 23884 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 23908 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.99s |
+| 23913 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.04s |
+| 23918 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.08s |
+| 24479 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 23814
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 23834
+- N1 (Signal Timing): +0.8241 at tick 23842
+- N2 (Approaching Traffic): +0.8477 at tick 23876
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T03:20:31
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T03:01:38  
+**Log written:** 2026-04-07T03:20:31  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 25215 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 24479 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 24480 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 24484 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 24489 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.68s |
+| 24494 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.74s |
+| 24519 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.95s |
+| 24544 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.16s |
+| 24546 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 24550 | peak energy — 1.6604e+00 |
+| 24569 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.36s |
+| 24570 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 24578 | peak tension N1 (Signal Timing) — +0.8241 |
+| 24594 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.51s |
+| 24612 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 24619 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.7s |
+| 24620 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 24644 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.91s |
+| 24649 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+274.97s |
+| 24654 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.02s |
+| 25215 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 24550
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 24570
+- N1 (Signal Timing): +0.8241 at tick 24578
+- N2 (Approaching Traffic): +0.8477 at tick 24612
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T03:39:22
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T03:20:31  
+**Log written:** 2026-04-07T03:39:22  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 25951 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 25215 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 25216 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 25220 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 25225 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.7s |
+| 25230 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.76s |
+| 25255 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.99s |
+| 25280 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.22s |
+| 25282 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 25286 | peak energy — 1.6604e+00 |
+| 25305 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.4s |
+| 25306 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 25314 | peak tension N1 (Signal Timing) — +0.8241 |
+| 25330 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.61s |
+| 25348 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 25355 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.83s |
+| 25356 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 25380 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.02s |
+| 25385 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.05s |
+| 25390 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.09s |
+| 25951 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 25286
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 25306
+- N1 (Signal Timing): +0.8241 at tick 25314
+- N2 (Approaching Traffic): +0.8477 at tick 25348
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T03:58:11
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T03:39:22  
+**Log written:** 2026-04-07T03:58:11  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 26687 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 25951 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 25952 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 25956 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.65s |
+| 25961 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.7s |
+| 25966 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.76s |
+| 25991 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.03s |
+| 26016 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.29s |
+| 26018 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 26022 | peak energy — 1.6604e+00 |
+| 26041 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.51s |
+| 26042 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 26050 | peak tension N1 (Signal Timing) — +0.8241 |
+| 26066 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.69s |
+| 26084 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 26091 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.91s |
+| 26092 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 26116 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.08s |
+| 26121 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.12s |
+| 26126 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.16s |
+| 26687 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 26022
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 26042
+- N1 (Signal Timing): +0.8241 at tick 26050
+- N2 (Approaching Traffic): +0.8477 at tick 26084
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T04:16:59
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T03:58:11  
+**Log written:** 2026-04-07T04:16:59  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 27423 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 26687 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 26688 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 26692 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.65s |
+| 26697 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.7s |
+| 26702 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.75s |
+| 26727 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.02s |
+| 26752 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.28s |
+| 26754 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 26758 | peak energy — 1.6604e+00 |
+| 26777 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.52s |
+| 26778 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 26786 | peak tension N1 (Signal Timing) — +0.8241 |
+| 26802 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.73s |
+| 26820 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 26827 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.99s |
+| 26828 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 26852 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.24s |
+| 26857 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.28s |
+| 26862 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.34s |
+| 27423 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 26758
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 26778
+- N1 (Signal Timing): +0.8241 at tick 26786
+- N2 (Approaching Traffic): +0.8477 at tick 26820
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T04:35:46
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T04:16:59  
+**Log written:** 2026-04-07T04:35:46  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 28159 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 27423 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 27424 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 27428 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.66s |
+| 27433 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.72s |
+| 27438 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.78s |
+| 27463 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.07s |
+| 27488 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.31s |
+| 27490 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 27494 | peak energy — 1.6604e+00 |
+| 27513 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.58s |
+| 27514 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 27522 | peak tension N1 (Signal Timing) — +0.8241 |
+| 27538 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.87s |
+| 27556 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 27563 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.13s |
+| 27564 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 27588 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.39s |
+| 27593 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.45s |
+| 27598 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.5s |
+| 28159 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 27494
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 27514
+- N1 (Signal Timing): +0.8241 at tick 27522
+- N2 (Approaching Traffic): +0.8477 at tick 27556
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T04:54:32
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T04:35:46  
+**Log written:** 2026-04-07T04:54:32  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 28895 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 28159 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 28160 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 28164 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 28169 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.69s |
+| 28174 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.76s |
+| 28199 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.99s |
+| 28224 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.19s |
+| 28226 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 28230 | peak energy — 1.6604e+00 |
+| 28249 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.4s |
+| 28250 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 28258 | peak tension N1 (Signal Timing) — +0.8241 |
+| 28274 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.58s |
+| 28292 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 28299 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.75s |
+| 28300 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 28324 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+266.98s |
+| 28329 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.03s |
+| 28334 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.07s |
+| 28895 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 28230
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 28250
+- N1 (Signal Timing): +0.8241 at tick 28258
+- N2 (Approaching Traffic): +0.8477 at tick 28292
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T05:13:18
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T04:54:32  
+**Log written:** 2026-04-07T05:13:18  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 29631 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 28895 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 28896 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 28900 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 28905 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.68s |
+| 28910 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.73s |
+| 28935 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.95s |
+| 28960 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.18s |
+| 28962 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 28966 | peak energy — 1.6604e+00 |
+| 28985 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.44s |
+| 28986 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 28994 | peak tension N1 (Signal Timing) — +0.8241 |
+| 29010 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.71s |
+| 29028 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 29035 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.94s |
+| 29036 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 29060 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.2s |
+| 29065 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.25s |
+| 29070 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.3s |
+| 29631 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 28966
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 28986
+- N1 (Signal Timing): +0.8241 at tick 28994
+- N2 (Approaching Traffic): +0.8477 at tick 29028
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T05:32:01
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T05:13:18  
+**Log written:** 2026-04-07T05:32:01  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 30367 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 29631 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 29632 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 29636 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.65s |
+| 29641 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.7s |
+| 29646 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.74s |
+| 29671 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.02s |
+| 29696 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.28s |
+| 29698 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 29702 | peak energy — 1.6604e+00 |
+| 29721 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.57s |
+| 29722 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 29730 | peak tension N1 (Signal Timing) — +0.8241 |
+| 29746 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.77s |
+| 29764 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 29771 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.01s |
+| 29772 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 29796 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.24s |
+| 29801 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.27s |
+| 29806 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.32s |
+| 30367 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 29702
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 29722
+- N1 (Signal Timing): +0.8241 at tick 29730
+- N2 (Approaching Traffic): +0.8477 at tick 29764
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T05:50:45
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T05:32:01  
+**Log written:** 2026-04-07T05:50:45  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 31103 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 30367 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.61s |
+| 30368 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 30372 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.65s |
+| 30377 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.71s |
+| 30382 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.77s |
+| 30407 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.02s |
+| 30432 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.24s |
+| 30434 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 30438 | peak energy — 1.6604e+00 |
+| 30457 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.47s |
+| 30458 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 30466 | peak tension N1 (Signal Timing) — +0.8241 |
+| 30482 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.72s |
+| 30500 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 30507 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.93s |
+| 30508 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 30532 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.12s |
+| 30537 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.14s |
+| 30542 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.18s |
+| 31103 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 30438
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 30458
+- N1 (Signal Timing): +0.8241 at tick 30466
+- N2 (Approaching Traffic): +0.8477 at tick 30500
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T06:09:26
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T05:50:45  
+**Log written:** 2026-04-07T06:09:26  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 31839 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 31103 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 31104 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 31108 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.66s |
+| 31113 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.72s |
+| 31118 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.79s |
+| 31143 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.09s |
+| 31168 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.36s |
+| 31170 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 31174 | peak energy — 1.6604e+00 |
+| 31193 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.53s |
+| 31194 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 31202 | peak tension N1 (Signal Timing) — +0.8241 |
+| 31218 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.73s |
+| 31236 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 31243 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.03s |
+| 31244 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 31268 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.33s |
+| 31273 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.38s |
+| 31278 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.43s |
+| 31839 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 31174
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 31194
+- N1 (Signal Timing): +0.8241 at tick 31202
+- N2 (Approaching Traffic): +0.8477 at tick 31236
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T06:28:07
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T06:09:26  
+**Log written:** 2026-04-07T06:28:07  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 32575 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 31839 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 31840 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 31844 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 31849 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.71s |
+| 31854 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.75s |
+| 31879 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.01s |
+| 31904 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.29s |
+| 31906 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 31910 | peak energy — 1.6604e+00 |
+| 31929 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.56s |
+| 31930 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 31938 | peak tension N1 (Signal Timing) — +0.8241 |
+| 31954 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.8s |
+| 31972 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 31979 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.01s |
+| 31980 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 32004 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.26s |
+| 32009 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.33s |
+| 32014 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.38s |
+| 32575 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 31910
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 31930
+- N1 (Signal Timing): +0.8241 at tick 31938
+- N2 (Approaching Traffic): +0.8477 at tick 31972
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T06:46:48
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T06:28:07  
+**Log written:** 2026-04-07T06:46:48  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 33311 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 32575 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 32576 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 32580 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.66s |
+| 32585 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.71s |
+| 32590 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.78s |
+| 32615 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.05s |
+| 32640 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.28s |
+| 32642 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 32646 | peak energy — 1.6604e+00 |
+| 32665 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.52s |
+| 32666 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 32674 | peak tension N1 (Signal Timing) — +0.8241 |
+| 32690 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.78s |
+| 32708 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 32715 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.04s |
+| 32716 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 32740 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.31s |
+| 32745 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.37s |
+| 32750 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.43s |
+| 33311 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 32646
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 32666
+- N1 (Signal Timing): +0.8241 at tick 32674
+- N2 (Approaching Traffic): +0.8477 at tick 32708
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T07:05:27
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T06:46:48  
+**Log written:** 2026-04-07T07:05:27  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 34047 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 33311 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.61s |
+| 33312 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 33316 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.68s |
+| 33321 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.75s |
+| 33326 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.81s |
+| 33351 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.01s |
+| 33376 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.35s |
+| 33378 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 33382 | peak energy — 1.6604e+00 |
+| 33401 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.64s |
+| 33402 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 33410 | peak tension N1 (Signal Timing) — +0.8241 |
+| 33426 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.92s |
+| 33444 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 33451 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.14s |
+| 33452 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 33476 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.37s |
+| 33481 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.42s |
+| 33486 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.48s |
+| 34047 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 33382
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 33402
+- N1 (Signal Timing): +0.8241 at tick 33410
+- N2 (Approaching Traffic): +0.8477 at tick 33444
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T07:24:06
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T07:05:27  
+**Log written:** 2026-04-07T07:24:06  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 34783 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 34047 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 34048 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 34052 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 34057 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.67s |
+| 34062 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.7s |
+| 34087 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.98s |
+| 34112 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.27s |
+| 34114 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 34118 | peak energy — 1.6604e+00 |
+| 34137 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.54s |
+| 34138 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 34146 | peak tension N1 (Signal Timing) — +0.8241 |
+| 34162 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.75s |
+| 34180 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 34187 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.02s |
+| 34188 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 34212 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.35s |
+| 34217 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.41s |
+| 34222 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.48s |
+| 34783 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 34118
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 34138
+- N1 (Signal Timing): +0.8241 at tick 34146
+- N2 (Approaching Traffic): +0.8477 at tick 34180
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T07:42:43
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T07:24:06  
+**Log written:** 2026-04-07T07:42:43  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 35519 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 34783 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.61s |
+| 34784 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 34788 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.65s |
+| 34793 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.7s |
+| 34798 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.76s |
+| 34823 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.01s |
+| 34848 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.26s |
+| 34850 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 34854 | peak energy — 1.6604e+00 |
+| 34873 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.5s |
+| 34874 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 34882 | peak tension N1 (Signal Timing) — +0.8241 |
+| 34898 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.82s |
+| 34916 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 34923 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.11s |
+| 34924 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 34948 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.42s |
+| 34953 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.48s |
+| 34958 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.55s |
+| 35519 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 34854
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 34874
+- N1 (Signal Timing): +0.8241 at tick 34882
+- N2 (Approaching Traffic): +0.8477 at tick 34916
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T08:01:20
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T07:42:43  
+**Log written:** 2026-04-07T08:01:20  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 36255 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 35519 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 35520 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 35524 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.65s |
+| 35529 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.72s |
+| 35534 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.78s |
+| 35559 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.08s |
+| 35584 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.33s |
+| 35586 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 35590 | peak energy — 1.6604e+00 |
+| 35609 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.63s |
+| 35610 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 35618 | peak tension N1 (Signal Timing) — +0.8241 |
+| 35634 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.94s |
+| 35652 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 35659 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.2s |
+| 35660 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 35684 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.44s |
+| 35689 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.47s |
+| 35694 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.53s |
+| 36255 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 35590
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 35610
+- N1 (Signal Timing): +0.8241 at tick 35618
+- N2 (Approaching Traffic): +0.8477 at tick 35652
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T08:19:55
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T08:01:20  
+**Log written:** 2026-04-07T08:19:55  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 36991 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 36255 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 36256 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 36260 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.66s |
+| 36265 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.71s |
+| 36270 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.78s |
+| 36295 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.09s |
+| 36320 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.39s |
+| 36322 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 36326 | peak energy — 1.6604e+00 |
+| 36345 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.68s |
+| 36346 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 36354 | peak tension N1 (Signal Timing) — +0.8241 |
+| 36370 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.95s |
+| 36388 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 36395 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.22s |
+| 36396 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 36420 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.41s |
+| 36425 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.43s |
+| 36430 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.47s |
+| 36991 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 36326
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 36346
+- N1 (Signal Timing): +0.8241 at tick 36354
+- N2 (Approaching Traffic): +0.8477 at tick 36388
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T08:38:29
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T08:19:55  
+**Log written:** 2026-04-07T08:38:29  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 37727 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 36991 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 36992 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 36996 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.63s |
+| 37001 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.68s |
+| 37006 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.74s |
+| 37031 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.99s |
+| 37056 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.29s |
+| 37058 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 37062 | peak energy — 1.6604e+00 |
+| 37081 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.51s |
+| 37082 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 37090 | peak tension N1 (Signal Timing) — +0.8241 |
+| 37106 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.71s |
+| 37124 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 37131 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.99s |
+| 37132 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 37156 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.24s |
+| 37161 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.29s |
+| 37166 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.35s |
+| 37727 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 37062
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 37082
+- N1 (Signal Timing): +0.8241 at tick 37090
+- N2 (Approaching Traffic): +0.8477 at tick 37124
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T08:57:02
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T08:38:29  
+**Log written:** 2026-04-07T08:57:02  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 38463 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 37727 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.61s |
+| 37728 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 37732 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.66s |
+| 37737 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.72s |
+| 37742 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.78s |
+| 37767 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.03s |
+| 37792 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.28s |
+| 37794 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 37798 | peak energy — 1.6604e+00 |
+| 37817 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.52s |
+| 37818 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 37826 | peak tension N1 (Signal Timing) — +0.8241 |
+| 37842 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.75s |
+| 37860 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 37867 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+226.97s |
+| 37868 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 37892 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.25s |
+| 37897 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.32s |
+| 37902 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.36s |
+| 38463 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 37798
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 37818
+- N1 (Signal Timing): +0.8241 at tick 37826
+- N2 (Approaching Traffic): +0.8477 at tick 37860
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T09:15:37
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T08:57:02  
+**Log written:** 2026-04-07T09:15:37  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 39199 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 38463 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 38464 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 38468 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.64s |
+| 38473 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.7s |
+| 38478 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.75s |
+| 38503 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.93s |
+| 38528 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.11s |
+| 38530 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 38534 | peak energy — 1.6604e+00 |
+| 38553 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.38s |
+| 38554 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 38562 | peak tension N1 (Signal Timing) — +0.8241 |
+| 38578 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+186.7s |
+| 38596 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 38603 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.02s |
+| 38604 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 38628 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.34s |
+| 38633 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.4s |
+| 38638 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.44s |
+| 39199 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 38534
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 38554
+- N1 (Signal Timing): +0.8241 at tick 38562
+- N2 (Approaching Traffic): +0.8477 at tick 38596
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T09:34:35
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T09:15:37  
+**Log written:** 2026-04-07T09:34:35  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 39935 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 39199 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.6s |
+| 39200 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 39204 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.66s |
+| 39209 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.73s |
+| 39214 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.79s |
+| 39239 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+66.09s |
+| 39264 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+106.4s |
+| 39266 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 39270 | peak energy — 1.6604e+00 |
+| 39289 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+146.69s |
+| 39290 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 39298 | peak tension N1 (Signal Timing) — +0.8241 |
+| 39314 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+187.0s |
+| 39332 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 39339 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+227.35s |
+| 39340 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 39364 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+267.66s |
+| 39369 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+275.72s |
+| 39374 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+283.79s |
+| 39935 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 39270
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 39290
+- N1 (Signal Timing): +0.8241 at tick 39298
+- N2 (Approaching Traffic): +0.8477 at tick 39332
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T09:54:13
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T09:34:35  
+**Log written:** 2026-04-07T09:54:13  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 40671 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 39935 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 39936 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 39940 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.6s |
+| 39945 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.61s |
+| 39950 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.62s |
+| 39975 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.64s |
+| 40000 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.67s |
+| 40002 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 40006 | peak energy — 1.6604e+00 |
+| 40025 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+145.7s |
+| 40026 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 40034 | peak tension N1 (Signal Timing) — +0.8241 |
+| 40050 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+185.72s |
+| 40068 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 40075 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+225.76s |
+| 40076 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 40100 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+265.78s |
+| 40105 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+273.79s |
+| 40110 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+281.8s |
+| 40671 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 40006
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 40026
+- N1 (Signal Timing): +0.8241 at tick 40034
+- N2 (Approaching Traffic): +0.8477 at tick 40068
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
+## Run — 2026-04-07T10:13:52
+
+**Scenario:** stadium_shock  
+**Run started:** 2026-04-07T09:54:13  
+**Log written:** 2026-04-07T10:13:52  
+**Duration:** 736 ticks (73.6s wall at 1x speed)  
+**Ticks at log time:** 41407 (sim_step 736)
+
+### Parameters
+
+| Parameter | Value |
+|-----------|-------|
+| strand_strength | 1.0 |
+| propagation_rate | 1.0 |
+| damping_coefficient | 0.3 |
+| dt | 0.05 |
+| num_intervals | 36 |
+| steps_per_interval | 5 |
+| onset_interval | 6 |
+| onset_duration_intervals | 2 |
+| peak_duration_intervals | 14 |
+| recovery_duration_intervals | 6 |
+| peak_reduction_fraction | 0.5 |
+
+### Timeline
+
+| Tick | Event |
+|------|-------|
+| 40671 | perturbation injected — sim_step=0, delta=[-0.065 -0.035 -0.001], t+1.59s |
+| 40672 | run start — energy=3.0710e-03, tensions=[-0.0648, -0.0352, -0.0011] |
+| 40676 | perturbation injected — sim_step=5, delta=[+0.099 -0.001 +0.024], t+9.6s |
+| 40681 | perturbation injected — sim_step=10, delta=[+0.008 +0.006 -0.016], t+17.61s |
+| 40686 | perturbation injected — sim_step=15, delta=[-0.011 -0.103 -0.045], t+25.62s |
+| 40711 | perturbation injected — sim_step=40, delta=[+0.070 -0.033 +0.133], t+65.65s |
+| 40736 | perturbation injected — sim_step=65, delta=[+0.016 -0.231 +0.392], t+105.68s |
+| 40738 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8027, velocity=-0.8068 |
+| 40742 | peak energy — 1.6604e+00 |
+| 40761 | perturbation injected — sim_step=90, delta=[+0.131 -0.053 -0.055], t+145.72s |
+| 40762 | peak tension N0 (Intersection Throughput) — +0.5543 |
+| 40770 | peak tension N1 (Signal Timing) — +0.8241 |
+| 40786 | perturbation injected — sim_step=115, delta=[+0.131 -0.061 -0.056], t+185.75s |
+| 40804 | peak tension N2 (Approaching Traffic) — +0.8477 |
+| 40811 | perturbation injected — sim_step=140, delta=[+0.034 -0.023 +0.138], t+225.77s |
+| 40812 | INCOHERENCE — N2 (Approaching Traffic), tension=+0.8357, velocity=-0.6282 |
+| 40836 | perturbation injected — sim_step=165, delta=[-0.020 -0.026 +0.081], t+265.81s |
+| 40841 | perturbation injected — sim_step=170, delta=[+0.030 -0.000 +0.071], t+273.82s |
+| 40846 | perturbation injected — sim_step=175, delta=[-0.087 +0.051 +0.003], t+281.83s |
+| 41407 | snapshot — energy=1.0000e-04, total_tension=0.6157, tensions=[0.2051, 0.205, 0.2055] |
+
+### Summary Statistics
+
+**Energy trajectory:**
+- Start: 3.0710e-03
+- Peak: 1.6604e+00 at tick 40742
+- Final: 1.0000e-04
+- Total dissipated (peak -> final): 1.6603e+00
+
+**Peak tension per node:**
+- N0 (Intersection Throughput): +0.5543 at tick 40762
+- N1 (Signal Timing): +0.8241 at tick 40770
+- N2 (Approaching Traffic): +0.8477 at tick 40804
+
+**Perturbations injected:** 36 (across 736 sim steps)
+
+**Incoherence events:** 2 total (N2=2)
+
+**Recovery (energy to 1% of peak):** ~332 ticks (33.2s at 1x speed)
+
+### Qualitative Assessment
+
+_(Fill in manually after observation.)_
+
+- Wave propagation character:
+- Damping behavior observed:
+- Node most affected:
+- Recovery quality:
+- Notes:
+
+---
