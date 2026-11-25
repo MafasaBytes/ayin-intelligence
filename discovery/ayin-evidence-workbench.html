@@ -1,0 +1,2013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayin Intelligence // Dataset Ingestion & Evidence Workbench</title>
+  <style>
+    :root {
+      --aw-bg-void: #070a0e;
+      --aw-bg-chrome: #0b0f15;
+      --aw-bg-panel: #111720;
+      --aw-bg-raised: #18222d;
+      --aw-bg-hover: #1f2c3a;
+      --aw-bg-active: #253647;
+      --aw-border: #233140;
+      --aw-border-subtle: #17222d;
+      --aw-text-bright: #f0f5fa;
+      --aw-text-main: #cdd8e4;
+      --aw-text-muted: #8294a6;
+      --aw-text-faint: #526373;
+      --aw-cyan: #44c7d4;
+      --aw-cyan-border: #23767f;
+      --aw-cyan-bg: rgba(68, 199, 212, 0.12);
+      --aw-green: #34d399;
+      --aw-green-border: #1a6b4e;
+      --aw-green-bg: rgba(52, 211, 153, 0.12);
+      --aw-amber: #f59e0b;
+      --aw-amber-border: #87570b;
+      --aw-amber-bg: rgba(245, 158, 11, 0.12);
+      --aw-red: #ef4444;
+      --aw-red-border: #8b2222;
+      --aw-red-bg: rgba(239, 68, 68, 0.14);
+      --aw-font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --aw-font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--aw-bg-void);
+      color: var(--aw-text-main);
+      font-family: var(--aw-font-ui);
+      font-size: 13px;
+      line-height: 1.45;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Workbench Shell */
+    .aw-app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background: var(--aw-bg-chrome);
+    }
+
+    /* ZONE 1: Global Context Header */
+    .aw-header {
+      height: 48px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      gap: 12px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .aw-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .aw-brand-lockup {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .aw-brand-name {
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--aw-text-bright);
+    }
+
+    .aw-brand-separator {
+      color: var(--aw-text-faint);
+      font-family: var(--aw-font-mono);
+      font-weight: 400;
+    }
+
+    .aw-surface-title {
+      font-size: 12px;
+      letter-spacing: 0.03em;
+      color: var(--aw-text-muted);
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .aw-header-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+    }
+
+    .aw-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-main);
+      white-space: nowrap;
+    }
+
+    .aw-chip-key {
+      color: var(--aw-text-muted);
+    }
+
+    .aw-chip-val {
+      color: var(--aw-text-bright);
+      font-weight: 500;
+    }
+
+    .aw-chip.status-validated {
+      border-color: var(--aw-green-border);
+      background: var(--aw-green-bg);
+      color: var(--aw-green);
+    }
+
+    .aw-chip.status-validated .aw-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--aw-green);
+      box-shadow: 0 0 6px var(--aw-green);
+    }
+
+    .aw-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .aw-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      background: var(--aw-bg-raised);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-main);
+      font-size: 11px;
+      font-family: var(--aw-font-mono);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .aw-btn:hover {
+      background: var(--aw-bg-hover);
+      border-color: var(--aw-cyan-border);
+      color: var(--aw-text-bright);
+    }
+
+    .aw-btn-primary {
+      background: var(--aw-cyan-bg);
+      border-color: var(--aw-cyan-border);
+      color: var(--aw-cyan);
+      font-weight: 600;
+    }
+
+    .aw-btn-primary:hover {
+      background: rgba(68, 199, 212, 0.22);
+      border-color: var(--aw-cyan);
+      color: #ffffff;
+      box-shadow: 0 0 8px rgba(68, 199, 212, 0.3);
+    }
+
+    /* Workspace Body */
+    .aw-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Icon Activity Rail */
+    .aw-activity-rail {
+      width: 44px;
+      background: var(--aw-bg-chrome);
+      border-right: 1px solid var(--aw-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .aw-rail-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--aw-text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .aw-rail-btn:hover {
+      background: var(--aw-bg-raised);
+      color: var(--aw-text-bright);
+    }
+
+    .aw-rail-btn.active {
+      background: var(--aw-cyan-bg);
+      border-color: var(--aw-cyan-border);
+      color: var(--aw-cyan);
+    }
+
+    /* ZONE 2: Left Navigation & Hierarchy Rail */
+    .aw-left-panel {
+      width: 290px;
+      background: var(--aw-bg-panel);
+      border-right: 1px solid var(--aw-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .aw-panel-section {
+      border-bottom: 1px solid var(--aw-border);
+    }
+
+    .aw-section-header {
+      padding: 9px 12px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border-subtle);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--aw-text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+    }
+
+    .aw-source-list {
+      display: flex;
+      flex-direction: column;
+      padding: 6px;
+      gap: 4px;
+      list-style: none;
+    }
+
+    .aw-source-item {
+      padding: 8px 10px;
+      border-radius: 4px;
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .aw-source-item:hover {
+      background: var(--aw-bg-raised);
+    }
+
+    .aw-source-item.active {
+      background: var(--aw-bg-raised);
+      border-color: var(--aw-cyan-border);
+      box-shadow: inset 2px 0 0 var(--aw-cyan);
+    }
+
+    .aw-source-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .aw-source-id {
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--aw-text-bright);
+    }
+
+    .aw-source-type-badge {
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      background: var(--aw-bg-void);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-muted);
+    }
+
+    .aw-source-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--aw-text-main);
+    }
+
+    /* Ladder Pipeline */
+    .aw-pipeline-ladder {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+    }
+
+    .aw-rung {
+      color: var(--aw-text-faint);
+    }
+
+    .aw-rung.passed {
+      color: var(--aw-green);
+    }
+
+    .aw-rung.active {
+      color: var(--aw-cyan);
+      font-weight: 600;
+    }
+
+    .aw-rung.failed {
+      color: var(--aw-red);
+      font-weight: 600;
+    }
+
+    .aw-ladder-arrow {
+      color: var(--aw-text-faint);
+      font-size: 9px;
+    }
+
+    /* Mechanical Assembly Tree */
+    .aw-tree {
+      padding: 8px 6px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+    }
+
+    .aw-tree-node {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 6px;
+      border-radius: 3px;
+      cursor: pointer;
+      color: var(--aw-text-main);
+      user-select: none;
+    }
+
+    .aw-tree-node:hover {
+      background: var(--aw-bg-raised);
+    }
+
+    .aw-tree-node.selected {
+      background: var(--aw-cyan-bg);
+      border: 1px solid var(--aw-cyan-border);
+      color: var(--aw-cyan);
+    }
+
+    .aw-tree-indent-1 { padding-left: 18px; }
+    .aw-tree-indent-2 { padding-left: 32px; }
+    .aw-tree-indent-3 { padding-left: 46px; }
+
+    .aw-tree-icon {
+      color: var(--aw-text-muted);
+      font-size: 11px;
+    }
+
+    /* ZONE 3: Central Multi-Modal Evidence Canvas */
+    .aw-canvas-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--aw-bg-void);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .aw-canvas-toolbar {
+      height: 40px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .aw-canvas-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--aw-text-bright);
+      font-weight: 500;
+    }
+
+    .aw-canvas-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .aw-canvas-viewport {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background-color: #06090d;
+      background-image: 
+        linear-gradient(rgba(44, 62, 80, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(44, 62, 80, 0.15) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    #aw-3d-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+    }
+
+    #aw-3d-canvas:active {
+      cursor: grabbing;
+    }
+
+    /* 3D Overlays */
+    .aw-3d-badge-overlay {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: rgba(11, 15, 21, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--aw-border);
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .aw-3d-badge-overlay .title {
+      color: var(--aw-cyan);
+      font-weight: 600;
+    }
+
+    .aw-3d-badge-overlay .sub {
+      color: var(--aw-text-muted);
+    }
+
+    .aw-axes-indicator {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      width: 60px;
+      height: 60px;
+      pointer-events: none;
+    }
+
+    /* Alternative Modality Sheets */
+    .aw-modality-container {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Tabular Extracted Sheet (CSV S-01) */
+    .aw-data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .aw-data-table th {
+      background: var(--aw-bg-chrome);
+      padding: 8px 12px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--aw-text-muted);
+      border-bottom: 1px solid var(--aw-border);
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+
+    .aw-data-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--aw-border-subtle);
+      color: var(--aw-text-main);
+    }
+
+    .aw-data-table tr:hover td {
+      background: var(--aw-bg-raised);
+    }
+
+    .aw-data-table tr.selected td {
+      background: var(--aw-cyan-bg);
+      color: var(--aw-cyan);
+      border-bottom-color: var(--aw-cyan-border);
+    }
+
+    /* Quarantined Diagnostic Card (PDF S-03) */
+    .aw-diagnostic-card {
+      max-width: 680px;
+      margin: 40px auto;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-red-border);
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .aw-diagnostic-header {
+      background: var(--aw-red-bg);
+      border-bottom: 1px solid var(--aw-red-border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--aw-red);
+      font-family: var(--aw-font-mono);
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .aw-diagnostic-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 12px;
+    }
+
+    .aw-diagnostic-code {
+      background: var(--aw-bg-void);
+      border: 1px solid var(--aw-border);
+      border-radius: 4px;
+      padding: 12px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      color: var(--aw-amber);
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* ZONE 4: Right Inspector & Epistemic Ledger */
+    .aw-right-panel {
+      width: 340px;
+      background: var(--aw-bg-panel);
+      border-left: 1px solid var(--aw-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+
+    .aw-tabs {
+      display: flex;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      flex-shrink: 0;
+    }
+
+    .aw-tab-btn {
+      flex: 1;
+      padding: 9px 8px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--aw-text-muted);
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .aw-tab-btn:hover {
+      color: var(--aw-text-bright);
+      background: var(--aw-bg-raised);
+    }
+
+    .aw-tab-btn.active {
+      color: var(--aw-cyan);
+      border-bottom-color: var(--aw-cyan);
+      background: var(--aw-bg-panel);
+    }
+
+    .aw-tab-content {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .aw-fact-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .aw-fact-title {
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--aw-text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--aw-border-subtle);
+      padding-bottom: 4px;
+    }
+
+    .aw-fact-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 12px;
+      gap: 8px;
+    }
+
+    .aw-fact-key {
+      color: var(--aw-text-muted);
+      font-size: 11px;
+    }
+
+    .aw-fact-val {
+      font-family: var(--aw-font-mono);
+      color: var(--aw-text-bright);
+      font-size: 11px;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .aw-alert-box {
+      padding: 10px 12px;
+      border-radius: 4px;
+      background: var(--aw-amber-bg);
+      border: 1px solid var(--aw-amber-border);
+      color: var(--aw-amber);
+      font-size: 11px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    .aw-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .aw-badge-bound {
+      background: var(--aw-green-bg);
+      border: 1px solid var(--aw-green-border);
+      color: var(--aw-green);
+    }
+
+    .aw-badge-unresolved {
+      background: var(--aw-amber-bg);
+      border: 1px solid var(--aw-amber-border);
+      color: var(--aw-amber);
+    }
+
+    .aw-badge-quarantined {
+      background: var(--aw-red-bg);
+      border: 1px solid var(--aw-red-border);
+      color: var(--aw-red);
+    }
+
+    /* ZONE 5: Audit, Provenance & Decision Footer */
+    .aw-footer {
+      height: 42px;
+      background: var(--aw-bg-chrome);
+      border-top: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+      z-index: 20;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+    }
+
+    .aw-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .aw-raw-tag {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--aw-text-muted);
+    }
+
+    .aw-raw-hash {
+      color: var(--aw-cyan);
+      background: var(--aw-bg-void);
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--aw-border);
+      letter-spacing: 0.02em;
+    }
+
+    .aw-copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--aw-text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+
+    .aw-copy-btn:hover {
+      color: var(--aw-text-bright);
+      background: var(--aw-bg-raised);
+    }
+
+    .aw-toast {
+      position: fixed;
+      bottom: 54px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--aw-cyan-bg);
+      border: 1px solid var(--aw-cyan-border);
+      color: var(--aw-cyan);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      z-index: 100;
+    }
+
+    .aw-toast.visible {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Modal / Drawer for Staging Assertions */
+    .aw-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 7, 10, 0.75);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .aw-modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .aw-modal-card {
+      width: 500px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-border);
+      border-radius: 6px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .aw-modal-header {
+      padding: 12px 16px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--aw-font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--aw-text-bright);
+    }
+
+    .aw-modal-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .aw-form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .aw-form-label {
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      color: var(--aw-text-muted);
+      text-transform: uppercase;
+    }
+
+    .aw-form-input, .aw-form-select {
+      background: var(--aw-bg-void);
+      border: 1px solid var(--aw-border);
+      border-radius: 4px;
+      padding: 6px 10px;
+      color: var(--aw-text-bright);
+      font-family: var(--aw-font-mono);
+      font-size: 12px;
+    }
+
+    .aw-form-input:focus, .aw-form-select:focus {
+      outline: none;
+      border-color: var(--aw-cyan);
+      box-shadow: 0 0 0 1px var(--aw-cyan);
+    }
+
+    .aw-modal-footer {
+      padding: 12px 16px;
+      background: var(--aw-bg-chrome);
+      border-top: 1px solid var(--aw-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="aw-app">
+    <!-- ZONE 1: Global Context Header -->
+    <header class="aw-header">
+      <div class="aw-header-left">
+        <div class="aw-brand-lockup">
+          <span class="aw-brand-name">Ayin Intelligence</span>
+          <span class="aw-brand-separator">//</span>
+          <span class="aw-surface-title">Dataset Ingestion & Evidence Workbench</span>
+        </div>
+      </div>
+      <div class="aw-header-meta">
+        <div class="aw-chip">
+          <span class="aw-chip-key">MODEL:</span>
+          <span class="aw-chip-val" id="aw-head-model">mrv_b8f03e1c</span>
+        </div>
+        <div class="aw-chip">
+          <span class="aw-chip-key">EXTRACTOR:</span>
+          <span class="aw-chip-val" id="aw-head-extractor">cadquery-ocp 7.9.3</span>
+        </div>
+        <div class="aw-chip status-validated" id="aw-head-status-chip">
+          <span class="aw-status-dot"></span>
+          <span class="aw-chip-val" id="aw-head-status">LEVEL 3 VALIDATED</span>
+        </div>
+        <div class="aw-chip">
+          <span class="aw-chip-key">LIFECYCLE:</span>
+          <span class="aw-chip-val" id="aw-head-lifecycle">AS_DESIGNED</span>
+        </div>
+      </div>
+      <div class="aw-header-right">
+        <button class="aw-btn" id="btn-reconcile" title="Open Cross-Source Reconciler">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+          Reconciler (SN-001)
+        </button>
+        <button class="aw-btn aw-btn-primary" id="btn-stage-binding-top">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Stage Assertion
+        </button>
+      </div>
+    </header>
+
+    <!-- Workspace Body -->
+    <div class="aw-body">
+      <!-- Icon Activity Rail -->
+      <nav class="aw-activity-rail" aria-label="Activity Rail">
+        <button class="aw-rail-btn active" title="Ingestion Sources" data-view="sources">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </button>
+        <button class="aw-rail-btn" title="Assembly Tree" data-view="tree">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </button>
+        <button class="aw-rail-btn" title="Identity Ledger" data-view="ledger">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </button>
+        <button class="aw-rail-btn" title="System Settings" data-view="settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </nav>
+
+      <!-- ZONE 2: Left Navigation & Hierarchy Rail -->
+      <aside class="aw-left-panel" aria-label="Ingestion Navigation">
+        <div class="aw-panel-section">
+          <div class="aw-section-header">
+            <span>Ingestion Sources</span>
+            <span style="color: var(--aw-cyan)">4 Active</span>
+          </div>
+          <ul class="aw-source-list" id="aw-sources-container">
+            <!-- Rendered by JS -->
+          </ul>
+        </div>
+
+        <div class="aw-panel-section" style="flex: 1;">
+          <div class="aw-section-header">
+            <span id="aw-hierarchy-title">Mechanical Assembly Tree</span>
+            <span style="font-size: 10px; color: var(--aw-text-faint)">XCAF PART 21</span>
+          </div>
+          <div class="aw-tree" id="aw-tree-container">
+            <!-- Rendered by JS based on active source -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- ZONE 3: Central Multi-Modal Evidence Canvas -->
+      <main class="aw-canvas-area" aria-label="Evidence Viewport">
+        <div class="aw-canvas-toolbar">
+          <div class="aw-canvas-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            <span id="aw-canvas-headline">Level 3 glTF / GLB Derivative · Part 21 Units: mm (Declared)</span>
+          </div>
+          <div class="aw-canvas-controls">
+            <button class="aw-btn" id="btn-toggle-wireframe" title="Toggle Wireframe">Wireframe</button>
+            <button class="aw-btn" id="btn-reset-view" title="Reset Camera View">Reset 3D</button>
+          </div>
+        </div>
+
+        <div class="aw-canvas-viewport" id="aw-canvas-viewport">
+          <!-- 3D Canvas element -->
+          <canvas id="aw-3d-canvas"></canvas>
+
+          <!-- 3D Badge Overlay -->
+          <div class="aw-3d-badge-overlay" id="aw-3d-overlay">
+            <span class="title" id="aw-3d-badge-title">Toolhead Assembly (Extruder + Heater Block)</span>
+            <span class="sub" id="aw-3d-badge-sub">Bounding Box Highlight: Hotend_Heater_Block</span>
+          </div>
+
+          <!-- HTML Modality View (Table / PDF / API failure) -->
+          <div class="aw-modality-container" id="aw-modality-view" style="display: none;"></div>
+        </div>
+      </main>
+
+      <!-- ZONE 4: Right Inspector & Epistemic Ledger -->
+      <aside class="aw-right-panel" aria-label="Inspector & Binding Ledger">
+        <div class="aw-tabs">
+          <button class="aw-tab-btn active" data-tab="properties">Extracted Properties</button>
+          <button class="aw-tab-btn" data-tab="binding">Kernel Binding</button>
+          <button class="aw-tab-btn" data-tab="reconciliation">Reconciliation</button>
+        </div>
+
+        <!-- Tab 1: Extracted Properties -->
+        <div class="aw-tab-content" id="tab-properties">
+          <div class="aw-fact-group">
+            <span class="aw-fact-title">Spatial Metrics (L0–L2)</span>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Bounding Box:</span>
+              <span class="aw-fact-val" id="fact-bbox">220 x 220 x 250 mm</span>
+            </div>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Volume:</span>
+              <span class="aw-fact-val" id="fact-volume">14,230 mm³</span>
+            </div>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Centroid:</span>
+              <span class="aw-fact-val" id="fact-centroid">[110.0, 110.0, 12.5]</span>
+            </div>
+          </div>
+
+          <div class="aw-alert-box" id="fact-alert-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span id="fact-alert-text">PMI/GD&T: 14 tokens detected (uninterpreted)</span>
+          </div>
+
+          <div class="aw-fact-group">
+            <span class="aw-fact-title">Toolchain Fingerprint</span>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Extractor:</span>
+              <span class="aw-fact-val" id="fact-extractor">cadquery-ocp 7.9.3</span>
+            </div>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Config Hash:</span>
+              <span class="aw-fact-val" id="fact-config-hash">df1e6ef6478d93b4</span>
+            </div>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Derivative SHA:</span>
+              <span class="aw-fact-val" id="fact-deriv-hash">6c833cdf3957...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Kernel Binding Ledger -->
+        <div class="aw-tab-content" id="tab-binding" style="display: none;">
+          <div class="aw-fact-group">
+            <span class="aw-fact-title">Explicit Binding Decision (IB-001)</span>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Source Subject:</span>
+              <span class="aw-fact-val" id="bind-subject">Hotend_Heater_Block</span>
+            </div>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Canonical Anchor:</span>
+              <span class="aw-fact-val" id="bind-anchor">ent_heater_block_01</span>
+            </div>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Referent Kind:</span>
+              <span class="aw-fact-val">physical_instance</span>
+            </div>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Resolution Status:</span>
+              <span id="bind-status-badge"><span class="aw-badge aw-badge-bound">Bound</span></span>
+            </div>
+            <div class="aw-fact-row">
+              <span class="aw-fact-key">Epistemic Badge:</span>
+              <span class="aw-fact-val" style="color: var(--aw-green)">[VERIFIED]</span>
+            </div>
+          </div>
+
+          <div class="aw-alert-box" style="background: rgba(245, 158, 11, 0.08); border-color: var(--aw-amber-border); color: var(--aw-amber);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            <div>
+              <strong>ADOPTION: DERIVED_NOT_ADOPTED</strong><br>
+              Extracted geometry candidate has not been promoted to canonical model truth.
+            </div>
+          </div>
+
+          <button class="aw-btn aw-btn-primary" id="btn-open-stage-modal" style="width: 100%; justify-content: center; padding: 8px;">
+            Stage New Binding Assertion
+          </button>
+        </div>
+
+        <!-- Tab 3: Reconciliation Matrix (SN-001) -->
+        <div class="aw-tab-content" id="tab-reconciliation" style="display: none;">
+          <div class="aw-fact-group">
+            <span class="aw-fact-title">Cross-Source Findings (Oracle Multiset)</span>
+            <div class="aw-alert-box" style="margin-bottom: 8px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div>
+                <strong>quantity_not_reconcilable</strong><br>
+                BOM EXT-100 specifies quantity "4", but STEP assembly registers only 1 instance.
+              </div>
+            </div>
+            <div class="aw-alert-box" style="background: var(--aw-cyan-bg); border-color: var(--aw-cyan-border); color: var(--aw-cyan); margin-bottom: 8px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <div>
+                <strong>corroborated_by_all_mapped_sources</strong><br>
+                Extruder anchor is corroborated by both BOM and STEP geometry definitions.
+              </div>
+            </div>
+            <div class="aw-alert-box" style="background: rgba(239, 68, 68, 0.08); border-color: var(--aw-red-border); color: var(--aw-red);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              <div>
+                <strong>duplicate_source_label_not_identity</strong><br>
+                "Corner bracket" appears on both BRK-400 and BRK-401. Distinct subjects.
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ZONE 5: Audit, Provenance & Decision Footer -->
+    <footer class="aw-footer">
+      <div class="aw-footer-left">
+        <div class="aw-raw-tag">
+          <span>Raw Record ID:</span>
+          <span class="aw-raw-hash" id="aw-footer-raw-id">bf4c84d44f569cd712d9281aa2f8d428</span>
+          <button class="aw-copy-btn" id="btn-copy-hash" title="Copy full SHA-256 ID">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+        </div>
+        <div class="aw-chip" style="font-size: 10px;">
+          <span class="aw-chip-key">RAW STORE:</span>
+          <span class="aw-chip-val" style="color: var(--aw-green)">IMMUTABLE (WRITE-ONCE)</span>
+        </div>
+      </div>
+      <div class="aw-footer-right" style="display: flex; gap: 8px;">
+        <button class="aw-btn" id="btn-view-raw-envelope">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Inspect Raw Envelope
+        </button>
+        <button class="aw-btn aw-btn-primary" id="btn-action-primary">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Stage Binding Assertion
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="aw-toast" id="aw-toast">Copied Raw Record ID to clipboard!</div>
+
+  <!-- Modal / Drawer for Staging Assertions -->
+  <div class="aw-modal-backdrop" id="modal-stage-binding">
+    <div class="aw-modal-card">
+      <div class="aw-modal-header">
+        <span>Stage Identity Binding Assertion (IB-001)</span>
+        <button class="aw-copy-btn" id="modal-close" style="font-size: 16px;">&times;</button>
+      </div>
+      <div class="aw-modal-body">
+        <div class="aw-form-row">
+          <label class="aw-form-label">Source Subject Locator</label>
+          <input type="text" class="aw-form-input" id="modal-input-subject" value="Hotend_Heater_Block" readonly>
+        </div>
+        <div class="aw-form-row">
+          <label class="aw-form-label">Target Canonical Anchor ID (UUID)</label>
+          <input type="text" class="aw-form-input" id="modal-input-anchor" value="ent_heater_block_01">
+        </div>
+        <div class="aw-form-row">
+          <label class="aw-form-label">Referent Kind</label>
+          <select class="aw-form-select" id="modal-select-kind">
+            <option value="physical_instance">physical_instance</option>
+            <option value="logical_instance">logical_instance</option>
+            <option value="type_definition">type_definition</option>
+            <option value="unknown">unknown</option>
+          </select>
+        </div>
+        <div class="aw-form-row">
+          <label class="aw-form-label">Epistemic Status</label>
+          <select class="aw-form-select" id="modal-select-epistemic">
+            <option value="verified">[VERIFIED] Ground truth verified</option>
+            <option value="sample">[SAMPLE] Sample demo data</option>
+            <option value="reputed">[REPUTED] Reputed candidate</option>
+          </select>
+        </div>
+        <div class="aw-form-row">
+          <label class="aw-form-label">Decision Authority / Engineer Notes</label>
+          <input type="text" class="aw-form-input" placeholder="e.g. Verified against physical toolhead revision C">
+        </div>
+      </div>
+      <div class="aw-modal-footer">
+        <button class="aw-btn" id="modal-btn-cancel">Cancel</button>
+        <button class="aw-btn aw-btn-primary" id="modal-btn-commit">Commit Assertion to Ledger</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Benchmark Records Dataset (Aligned with README & operation-house-keeping demo-printer)
+    const benchmarkSources = [
+      {
+        id: "S-02",
+        name: "Assembly geometry",
+        type: "STEP CAD",
+        rawRecordId: "bf4c84d44f569cd712d9281aa2f8d428",
+        fileSize: "14.2 MB",
+        sha256: "080bc250c6eba3e6bdf88167043835dac0261621a7abe373a6de3130e48e8474",
+        extractor: "cadquery-ocp 7.9.3",
+        status: "LEVEL 3 VALIDATED",
+        lifecycle: "AS_DESIGNED",
+        modality: "CAD",
+        pipeline: ["declared", "available", "configured", "connected", "validated"],
+        pipelineIndex: 5, // all passed
+        tree: [
+          { id: "node-root", name: "Assembly_Root", indent: 0, icon: "v" },
+          { id: "node-frame", name: "Frame_Subassembly", indent: 1, icon: ">" },
+          { id: "node-toolhead", name: "Toolhead_Mount", indent: 1, icon: "v" },
+          { id: "node-stepper", name: "Stepper_Extruder", indent: 2, icon: "▪" },
+          { id: "node-heater", name: "Hotend_Heater_Block", indent: 2, icon: "▪", selected: true }
+        ],
+        properties: {
+          bbox: "220 x 220 x 250 mm",
+          volume: "14,230 mm³",
+          centroid: "[110.0, 110.0, 12.5]",
+          alert: "PMI/GD&T: 14 tokens detected (uninterpreted)",
+          configHash: "df1e6ef6478d93b4",
+          derivHash: "6c833cdf39570684"
+        },
+        binding: {
+          subject: "Hotend_Heater_Block",
+          anchor: "ent_heater_block_01",
+          status: "Bound",
+          badge: "[VERIFIED]",
+          adoption: "DERIVED_NOT_ADOPTED"
+        }
+      },
+      {
+        id: "S-01",
+        name: "Assembly BOM",
+        type: "CSV",
+        rawRecordId: "acc5f289912d91be96e52ad8d44580b7",
+        fileSize: "4.8 KB",
+        sha256: "400f03e619e0f84c4d76211b228eb9ed8cb751d25f62b653ff727c7b30f3a090",
+        extractor: "csv_extractor 1.1.0",
+        status: "SUCCEEDED",
+        lifecycle: "AS_DESIGNED",
+        modality: "BOM",
+        pipeline: ["declared", "available", "configured", "connected", "validated"],
+        pipelineIndex: 5,
+        tree: [
+          { id: "bom-prn", name: "PRN-000 (Printer assembly)", indent: 0, icon: "v" },
+          { id: "bom-ext", name: "EXT-100 (Extruder unit - Qty 4)", indent: 1, icon: "▪" },
+          { id: "bom-cbl", name: "CBL-300 (Wiring harness)", indent: 1, icon: "▪" },
+          { id: "bom-brk400", name: "BRK-400 (Corner bracket)", indent: 1, icon: "▪" },
+          { id: "bom-brk401", name: "BRK-401 (Corner bracket)", indent: 1, icon: "▪" },
+          { id: "bom-brk500", name: "Row 12: Mounting bracket", indent: 1, icon: "▪", selected: true }
+        ],
+        properties: {
+          bbox: "N/A (Tabular BOM)",
+          volume: "N/A",
+          centroid: "N/A",
+          alert: "Quantity mismatch: EXT-100 declares 4 units vs 1 in CAD",
+          configHash: "433d72ff12ad11dd",
+          derivHash: "4b205f3349bc6c80"
+        },
+        binding: {
+          subject: "CSV · Row 12 (Mounting bracket)",
+          anchor: "ent_mounting_bracket_01",
+          status: "Bound",
+          badge: "[SAMPLE BINDING]",
+          adoption: "ADOPTED"
+        }
+      },
+      {
+        id: "S-03",
+        name: "Service manual",
+        type: "PDF",
+        rawRecordId: "9df382a1708e1b9a246831dce15928ea",
+        fileSize: "2.4 MB",
+        sha256: "7c14a2bf40d80112985160892c55416df9892cbe3412ab456e7921a9c1234567",
+        extractor: "pdf_extractor 2.0.4",
+        status: "QUARANTINED",
+        lifecycle: "AS_MAINTAINED",
+        modality: "PDF_QUARANTINE",
+        pipeline: ["declared", "available", "configured", "connected", "failed"],
+        pipelineIndex: 4, // failed at extraction rung
+        tree: [
+          { id: "pdf-doc", name: "Document: Service_Manual_Rev3.pdf", indent: 0, icon: "v" },
+          { id: "pdf-diag", name: "Quarantine Record: QR-03", indent: 1, icon: "!", selected: true },
+          { id: "pdf-raw", name: "Retained Payload: R-03.pdf", indent: 1, icon: "▪" }
+        ],
+        properties: {
+          bbox: "CropBox [0.0, 0.0, 612.0, 792.0] pt",
+          volume: "N/A",
+          centroid: "N/A",
+          alert: "EXTRACT_PDF_PASSWORD_REQUIRED: Extraction stopped before Phase B",
+          configHash: "882bf4e1a0c9183d",
+          derivHash: "NONE (Quarantined)"
+        },
+        binding: {
+          subject: "Quarantined Service Manual",
+          anchor: "UNAVAILABLE",
+          status: "Unavailable",
+          badge: "[QUARANTINED]",
+          adoption: "NONE"
+        }
+      },
+      {
+        id: "S-04",
+        name: "Operational snapshot attempt",
+        type: "API Stream",
+        rawRecordId: "NONE_CAPTURED",
+        fileSize: "0 B",
+        sha256: "NONE (Acquisition Failed)",
+        extractor: "moonraker_adapter 1.0",
+        status: "ACQUISITION FAILED",
+        lifecycle: "AS_BUILT",
+        modality: "API_FAILED",
+        pipeline: ["declared", "available", "configured", "failed"],
+        pipelineIndex: 3, // failed at acquisition
+        tree: [
+          { id: "api-root", name: "Endpoint: moonraker.local:7125", indent: 0, icon: "v" },
+          { id: "api-attempt", name: "Attempt #1 (Connection Refused)", indent: 1, icon: "!", selected: true }
+        ],
+        properties: {
+          bbox: "N/A",
+          volume: "N/A",
+          centroid: "N/A",
+          alert: "ConnectorStatusReport: Connection refused on port 7125",
+          configHash: "N/A",
+          derivHash: "N/A"
+        },
+        binding: {
+          subject: "Operational Snapshot Attempt",
+          anchor: "UNAVAILABLE",
+          status: "Unavailable",
+          badge: "[FAILED ATTEMPT]",
+          adoption: "NONE"
+        }
+      }
+    ];
+
+    let activeSource = benchmarkSources[0]; // Start with S-02 STEP
+    let isWireframe = false;
+
+    // DOM Elements
+    const sourcesContainer = document.getElementById("aw-sources-container");
+    const treeContainer = document.getElementById("aw-tree-container");
+    const canvasViewport = document.getElementById("aw-canvas-viewport");
+    const canvas3D = document.getElementById("aw-3d-canvas");
+    const modalityView = document.getElementById("aw-modality-view");
+    const overlay3D = document.getElementById("aw-3d-overlay");
+
+    // Header elements
+    const headModel = document.getElementById("aw-head-model");
+    const headExtractor = document.getElementById("aw-head-extractor");
+    const headStatus = document.getElementById("aw-head-status");
+    const headStatusChip = document.getElementById("aw-head-status-chip");
+    const headLifecycle = document.getElementById("aw-head-lifecycle");
+    const canvasHeadline = document.getElementById("aw-canvas-headline");
+    const footerRawId = document.getElementById("aw-footer-raw-id");
+
+    // Inspector elements
+    const factBbox = document.getElementById("fact-bbox");
+    const factVolume = document.getElementById("fact-volume");
+    const factCentroid = document.getElementById("fact-centroid");
+    const factAlertText = document.getElementById("fact-alert-text");
+    const factExtractor = document.getElementById("fact-extractor");
+    const factConfigHash = document.getElementById("fact-config-hash");
+    const factDerivHash = document.getElementById("fact-deriv-hash");
+    const bindSubject = document.getElementById("bind-subject");
+    const bindAnchor = document.getElementById("bind-anchor");
+    const bindStatusBadge = document.getElementById("bind-status-badge");
+
+    // Render Source List
+    function renderSources() {
+      sourcesContainer.innerHTML = "";
+      benchmarkSources.forEach(src => {
+        const li = document.createElement("li");
+        li.className = "aw-source-item" + (src.id === activeSource.id ? " active" : "");
+        li.onclick = () => selectSource(src);
+
+        // Build Pipeline Ladder HTML
+        let ladderHtml = "";
+        const rungs = ["declared", "available", "configured", "connected", "validated"];
+        rungs.forEach((r, idx) => {
+          let cls = "aw-rung";
+          if (idx < src.pipelineIndex - 1) cls += " passed";
+          else if (idx === src.pipelineIndex - 1) {
+            cls += (src.pipeline[idx] === "failed" ? " failed" : " passed");
+          }
+          ladderHtml += `<span class="${cls}">${r.slice(0, 4)}</span>`;
+          if (idx < rungs.length - 1) ladderHtml += `<span class="aw-ladder-arrow">→</span>`;
+        });
+
+        li.innerHTML = `
+          <div class="aw-source-item-top">
+            <span class="aw-source-id">${src.id}</span>
+            <span class="aw-source-type-badge">${src.type}</span>
+          </div>
+          <div class="aw-source-title">${src.name}</div>
+          <div class="aw-pipeline-ladder">${ladderHtml}</div>
+        `;
+        sourcesContainer.appendChild(li);
+      });
+    }
+
+    // Render Assembly Tree
+    function renderTree() {
+      treeContainer.innerHTML = "";
+      document.getElementById("aw-hierarchy-title").textContent = 
+        activeSource.modality === "CAD" ? "Mechanical Assembly Tree" :
+        activeSource.modality === "BOM" ? "BOM Containment Tree" : "Source Hierarchy";
+
+      activeSource.tree.forEach(node => {
+        const div = document.createElement("div");
+        div.className = `aw-tree-node aw-tree-indent-${node.indent}` + (node.selected ? " selected" : "");
+        div.innerHTML = `
+          <span class="aw-tree-icon">${node.icon}</span>
+          <span>${node.name}</span>
+        `;
+        div.onclick = () => {
+          activeSource.tree.forEach(n => n.selected = false);
+          node.selected = true;
+          renderTree();
+          // Update binding target
+          bindSubject.textContent = node.name;
+        };
+        treeContainer.appendChild(div);
+      });
+    }
+
+    // Update Details and Viewport based on selected source
+    function selectSource(src) {
+      activeSource = src;
+      renderSources();
+      renderTree();
+
+      // Update Header
+      headExtractor.textContent = src.extractor;
+      headStatus.textContent = src.status;
+      headLifecycle.textContent = src.lifecycle;
+      footerRawId.textContent = src.rawRecordId;
+
+      if (src.status === "LEVEL 3 VALIDATED" || src.status === "SUCCEEDED") {
+        headStatusChip.className = "aw-chip status-validated";
+      } else {
+        headStatusChip.className = "aw-chip";
+        headStatusChip.style.borderColor = src.status === "QUARANTINED" ? "var(--aw-red-border)" : "var(--aw-amber-border)";
+        headStatusChip.style.color = src.status === "QUARANTINED" ? "var(--aw-red)" : "var(--aw-amber)";
+      }
+
+      // Update Inspector
+      factBbox.textContent = src.properties.bbox;
+      factVolume.textContent = src.properties.volume;
+      factCentroid.textContent = src.properties.centroid;
+      factAlertText.textContent = src.properties.alert;
+      factExtractor.textContent = src.extractor;
+      factConfigHash.textContent = src.properties.configHash;
+      factDerivHash.textContent = src.properties.derivHash;
+
+      bindSubject.textContent = src.binding.subject;
+      bindAnchor.textContent = src.binding.anchor;
+
+      const badgeCls = src.binding.status === "Bound" ? "aw-badge-bound" :
+                       src.binding.status === "Unresolved" ? "aw-badge-unresolved" : "aw-badge-quarantined";
+      bindStatusBadge.innerHTML = `<span class="aw-badge ${badgeCls}">${src.binding.status}</span>`;
+
+      // Switch Modality Canvas
+      if (src.modality === "CAD") {
+        canvas3D.style.display = "block";
+        overlay3D.style.display = "flex";
+        modalityView.style.display = "none";
+        canvasHeadline.textContent = "Level 3 glTF / GLB Derivative · Part 21 Units: mm (Declared)";
+        document.getElementById("btn-toggle-wireframe").style.display = "inline-flex";
+        document.getElementById("btn-reset-view").style.display = "inline-flex";
+      } else if (src.modality === "BOM") {
+        canvas3D.style.display = "none";
+        overlay3D.style.display = "none";
+        modalityView.style.display = "flex";
+        canvasHeadline.textContent = "Extracted BOM Records · Source Locator: CSV (Declared Header)";
+        document.getElementById("btn-toggle-wireframe").style.display = "none";
+        document.getElementById("btn-reset-view").style.display = "none";
+        renderBOMTable();
+      } else if (src.modality === "PDF_QUARANTINE") {
+        canvas3D.style.display = "none";
+        overlay3D.style.display = "none";
+        modalityView.style.display = "flex";
+        canvasHeadline.textContent = "Quarantine Record: QR-03 · Parse Error Diagnostic";
+        document.getElementById("btn-toggle-wireframe").style.display = "none";
+        document.getElementById("btn-reset-view").style.display = "none";
+        renderPDFQuarantine();
+      } else if (src.modality === "API_FAILED") {
+        canvas3D.style.display = "none";
+        overlay3D.style.display = "none";
+        modalityView.style.display = "flex";
+        canvasHeadline.textContent = "Acquisition Attempt Failed · Zero Raw Bytes Captured";
+        document.getElementById("btn-toggle-wireframe").style.display = "none";
+        document.getElementById("btn-reset-view").style.display = "none";
+        renderAPIFailure();
+      }
+    }
+
+    // Render BOM Table (S-01)
+    function renderBOMTable() {
+      modalityView.innerHTML = `
+        <table class="aw-data-table">
+          <thead>
+            <tr>
+              <th>Row</th>
+              <th>Item No</th>
+              <th>Description</th>
+              <th>Quantity</th>
+              <th>Unit</th>
+              <th>Parent Ref</th>
+              <th>Binding Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>PRN-000</td>
+              <td>Printer assembly (Root)</td>
+              <td>1</td>
+              <td>piece</td>
+              <td>-</td>
+              <td><span class="aw-badge aw-badge-bound">C-00 (Root)</span></td>
+            </tr>
+            <tr style="background: rgba(245, 158, 11, 0.08);">
+              <td>2</td>
+              <td>EXT-100</td>
+              <td>Extruder unit</td>
+              <td style="color: var(--aw-amber); font-weight: 600;">4 ⚠️ (Mismatch)</td>
+              <td>piece</td>
+              <td>PRN-000</td>
+              <td><span class="aw-badge aw-badge-bound">ent_extruder_01</span></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>CBL-300</td>
+              <td>Wiring harness</td>
+              <td>1</td>
+              <td>piece</td>
+              <td>PRN-000</td>
+              <td><span class="aw-badge aw-badge-unresolved">Unmapped</span></td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td>BRK-400</td>
+              <td>Corner bracket</td>
+              <td>1</td>
+              <td>piece</td>
+              <td>PRN-000</td>
+              <td><span class="aw-badge aw-badge-unresolved">Unmapped</span></td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>BRK-401</td>
+              <td>Corner bracket</td>
+              <td>1</td>
+              <td>piece</td>
+              <td>PRN-000</td>
+              <td><span class="aw-badge aw-badge-unresolved">Duplicate Label</span></td>
+            </tr>
+            <tr class="selected">
+              <td>12</td>
+              <td>BRK-500</td>
+              <td>Mounting bracket</td>
+              <td>1</td>
+              <td>piece</td>
+              <td>PRN-000</td>
+              <td><span class="aw-badge aw-badge-bound">Component C-01</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="aw-alert-box" style="background: var(--aw-cyan-bg); border-color: var(--aw-cyan-border); color: var(--aw-cyan);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div>
+            <strong>Selected Row 12: Mounting Bracket</strong><br>
+            Cell Locator: <code>CSV · Row 12</code> · Explicit sample binding established to <code>Component C-01</code>.
+          </div>
+        </div>
+      `;
+    }
+
+    // Render PDF Quarantine Diagnostic (S-03)
+    function renderPDFQuarantine() {
+      modalityView.innerHTML = `
+        <div class="aw-diagnostic-card">
+          <div class="aw-diagnostic-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span>Extraction Quarantined: EXTRACT_PDF_PASSWORD_REQUIRED</span>
+          </div>
+          <div class="aw-diagnostic-body">
+            <p>The extractor encountered an encrypted document structure. Extraction stopped prior to Phase B rendering. An atomic completion checkpoint was not established.</p>
+            <div class="aw-diagnostic-code">
+ERROR: [DS-003] Extractor 'pdf_extractor' version 2.0.4 failed on checkpoint verification.<br>
+Traceback (redacted):<br>
+  File "&lt;store&gt;/extractors/pdf_worker.py", line 142, in extract_phase_a<br>
+    raise PasswordRequiredError("Document encryption flags set; empty-password bypass failed.")<br>
+QuarantineRecord: QR-03 committed to &lt;store&gt;/quarantine/acc5f289912.json
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--aw-border); padding-top: 12px;">
+              <span style="font-family: var(--aw-font-mono); font-size: 11px; color: var(--aw-green);">
+                ✓ Raw Payload Preserved: R-03.pdf (2.4 MB, SHA-256 Verified)
+              </span>
+              <button class="aw-btn" onclick="showToast('Opened raw payload envelope R-03.pdf')">Download Raw Payload</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Render API Failure (S-04)
+    function renderAPIFailure() {
+      modalityView.innerHTML = `
+        <div class="aw-diagnostic-card" style="border-color: var(--aw-border);">
+          <div class="aw-diagnostic-header" style="background: var(--aw-bg-raised); color: var(--aw-amber); border-color: var(--aw-border);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Acquisition Failed: No Payload Captured</span>
+          </div>
+          <div class="aw-diagnostic-body">
+            <p>The connector attempted acquisition from the declared operational API endpoint, but network connection could not be established. Extraction did not run.</p>
+            <div class="aw-diagnostic-code">
+ConnectorStatusReport (Rung: connected -> FAILED):<br>
+Target: http://moonraker.local:7125/printer/objects/query<br>
+Status: URLError(ConnectionRefusedError(111, 'Connection refused'))<br>
+Result: 0 bytes captured. Raw store commit skipped.
+            </div>
+            <div style="font-family: var(--aw-font-mono); font-size: 11px; color: var(--aw-text-muted);">
+              Notice: Unlike S-03 (where raw payload is retained), S-04 failed before the raw store boundary. No raw envelope exists.
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Interactive 3D Canvas Renderer (Software 3D Engine for Toolhead Assembly)
+    const ctx = canvas3D.getContext("2d");
+    let angleX = -0.35;
+    let angleY = 0.55;
+    let isDragging = false;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+    let zoom = 1.0;
+
+    function resizeCanvas() {
+      canvas3D.width = canvasViewport.clientWidth;
+      canvas3D.height = canvasViewport.clientHeight;
+      draw3DScene();
+    }
+    window.addEventListener("resize", resizeCanvas);
+
+    // 3D Geometry Definitions (Printer Toolhead: Stepper, Heatsink, Heater Block, Mounting Bracket)
+    const parts = [
+      // 1. Back Mounting Bracket (Dark Steel)
+      {
+        name: "Mounting_Plate",
+        color: "#2a3440",
+        wireColor: "#47596d",
+        type: "box",
+        min: [-70, -60, -50],
+        max: [-50, 70, 50]
+      },
+      // 2. Stepper Motor (Black Anodized Block)
+      {
+        name: "Stepper_Extruder",
+        color: "#182028",
+        wireColor: "#324354",
+        type: "box",
+        min: [-50, -42, -42],
+        max: [0, 42, 42]
+      },
+      // 3. Extruder Cooling Heatsink (Silver Machined Aluminum Fins)
+      {
+        name: "Heatsink_Cooling_Fins",
+        color: "#7e90a0",
+        wireColor: "#a3b5c6",
+        type: "box",
+        min: [0, -30, -30],
+        max: [45, 30, 30]
+      },
+      // 4. Hotend Heater Block (Selected Target - Highlighted)
+      {
+        name: "Hotend_Heater_Block",
+        color: "#5b6e80",
+        wireColor: "#859bb0",
+        type: "box",
+        min: [10, -55, -20],
+        max: [40, -32, 20],
+        isHeaterBlock: true
+      },
+      // 5. Dual Guide Rods
+      {
+        name: "Guide_Rod_Left",
+        color: "#b0c4de",
+        wireColor: "#d0e4fe",
+        type: "box",
+        min: [16, -32, -10],
+        max: [22, -30, -5]
+      },
+      {
+        name: "Guide_Rod_Right",
+        color: "#b0c4de",
+        wireColor: "#d0e4fe",
+        type: "box",
+        min: [28, -32, -10],
+        max: [34, -30, -5]
+      }
+    ];
+
+    function project(x, y, z, cx, cy) {
+      // Rotation around Y
+      let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+      let x1 = x * cosY + z * sinY;
+      let z1 = -x * sinY + z * cosY;
+
+      // Rotation around X
+      let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+      let y2 = y * cosX - z1 * sinX;
+      let z2 = y * sinX + z1 * cosX;
+
+      // Perspective Projection
+      let cameraDistance = 380;
+      let scale = (cameraDistance / (cameraDistance + z2)) * 1.8 * zoom;
+
+      return {
+        x: cx + x1 * scale,
+        y: cy - y2 * scale,
+        z: z2,
+        scale: scale
+      };
+    }
+
+    function drawBox(p, cx, cy) {
+      const [x0, y0, z0] = p.min;
+      const [x1, y1, z1] = p.max;
+
+      const corners = [
+        [x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0],
+        [x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]
+      ];
+
+      const proj = corners.map(c => project(c[0], c[1], c[2], cx, cy));
+
+      // 6 Faces (with normal for simple back-face culling/shading)
+      const faces = [
+        { idx: [0, 1, 2, 3], normal: [0, 0, -1] }, // Front
+        { idx: [5, 4, 7, 6], normal: [0, 0, 1] },  // Back
+        { idx: [4, 0, 3, 7], normal: [-1, 0, 0] }, // Left
+        { idx: [1, 5, 6, 2], normal: [1, 0, 0] },  // Right
+        { idx: [3, 2, 6, 7], normal: [0, 1, 0] },  // Top
+        { idx: [4, 5, 1, 0], normal: [0, -1, 0] }  // Bottom
+      ];
+
+      // Sort faces by depth
+      faces.forEach(f => {
+        let avgZ = (proj[f.idx[0]].z + proj[f.idx[1]].z + proj[f.idx[2]].z + proj[f.idx[3]].z) / 4;
+        f.avgZ = avgZ;
+      });
+      faces.sort((a, b) => b.avgZ - a.avgZ);
+
+      // Light direction
+      const lx = 0.57, ly = 0.57, lz = -0.57;
+
+      faces.forEach(f => {
+        // Compute rotated normal
+        let cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+        let nx1 = f.normal[0] * cosY + f.normal[2] * sinY;
+        let nz1 = -f.normal[0] * sinY + f.normal[2] * cosY;
+        let cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+        let ny2 = f.normal[1] * cosX - nz1 * sinX;
+        let nz2 = f.normal[1] * sinX + nz1 * cosX;
+
+        // Back-face cull check
+        if (nz2 < -0.05) return;
+
+        // Simple diffuse shading
+        let dot = Math.max(0.2, (nx1 * lx + ny2 * ly + nz2 * lz));
+        ctx.beginPath();
+        ctx.moveTo(proj[f.idx[0]].x, proj[f.idx[0]].y);
+        ctx.lineTo(proj[f.idx[1]].x, proj[f.idx[1]].y);
+        ctx.lineTo(proj[f.idx[2]].x, proj[f.idx[2]].y);
+        ctx.lineTo(proj[f.idx[3]].x, proj[f.idx[3]].y);
+        ctx.closePath();
+
+        if (isWireframe) {
+          ctx.strokeStyle = p.wireColor;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = shadeColor(p.color, dot);
+          ctx.fill();
+          ctx.strokeStyle = p.wireColor;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      });
+
+      // If Hotend Heater Block, draw NEON CYAN 3D BOUNDING BOX!
+      if (p.isHeaterBlock) {
+        drawCyanBoundingBox(p, cx, cy);
+      }
+    }
+
+    function drawCyanBoundingBox(p, cx, cy) {
+      const pad = 5;
+      const x0 = p.min[0] - pad, y0 = p.min[1] - pad, z0 = p.min[2] - pad;
+      const x1 = p.max[0] + pad, y1 = p.max[1] + pad, z1 = p.max[2] + pad;
+
+      const corners = [
+        [x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0],
+        [x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]
+      ];
+
+      const proj = corners.map(c => project(c[0], c[1], c[2], cx, cy));
+
+      const edges = [
+        [0, 1], [1, 2], [2, 3], [3, 0], // front
+        [4, 5], [5, 6], [6, 7], [7, 4], // back
+        [0, 4], [1, 5], [2, 6], [3, 7]  // connectors
+      ];
+
+      ctx.save();
+      ctx.strokeStyle = "rgba(68, 199, 212, 0.9)";
+      ctx.lineWidth = 2;
+      ctx.shadowColor = "#44c7d4";
+      ctx.shadowBlur = 8;
+
+      edges.forEach(([i, j]) => {
+        ctx.beginPath();
+        ctx.moveTo(proj[i].x, proj[i].y);
+        ctx.lineTo(proj[j].x, proj[j].y);
+        ctx.stroke();
+      });
+
+      // Translucent cyan volume fill
+      ctx.fillStyle = "rgba(68, 199, 212, 0.12)";
+      const faces = [[0, 1, 2, 3], [4, 5, 6, 7], [0, 4, 7, 3], [1, 5, 6, 2], [3, 2, 6, 7], [0, 1, 5, 4]];
+      faces.forEach(f => {
+        ctx.beginPath();
+        ctx.moveTo(proj[f[0]].x, proj[f[0]].y);
+        ctx.lineTo(proj[f[1]].x, proj[f[1]].y);
+        ctx.lineTo(proj[f[2]].x, proj[f[2]].y);
+        ctx.lineTo(proj[f[3]].x, proj[f[3]].y);
+        ctx.closePath();
+        ctx.fill();
+      });
+
+      ctx.restore();
+    }
+
+    function shadeColor(hex, factor) {
+      let r = parseInt(hex.slice(1, 3), 16);
+      let g = parseInt(hex.slice(3, 5), 16);
+      let b = parseInt(hex.slice(5, 7), 16);
+      r = Math.min(255, Math.floor(r * factor));
+      g = Math.min(255, Math.floor(g * factor));
+      b = Math.min(255, Math.floor(b * factor));
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    function drawAxes(cx, cy) {
+      const ax = 50, ay = canvas3D.height - 50;
+      const len = 28;
+      const ox = project(len, 0, 0, 0, 0);
+      const oy = project(0, len, 0, 0, 0);
+      const oz = project(0, 0, len, 0, 0);
+
+      ctx.save();
+      ctx.lineWidth = 2;
+
+      // X - Red
+      ctx.strokeStyle = "#ef4444";
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(ax + (ox.x * 0.3), ay + (ox.y * 0.3));
+      ctx.stroke();
+
+      // Y - Green
+      ctx.strokeStyle = "#22c55e";
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(ax + (oy.x * 0.3), ay + (oy.y * 0.3));
+      ctx.stroke();
+
+      // Z - Blue
+      ctx.strokeStyle = "#3b82f6";
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(ax + (oz.x * 0.3), ay + (oz.y * 0.3));
+      ctx.stroke();
+
+      ctx.font = "9px monospace";
+      ctx.fillStyle = "#ef4444"; ctx.fillText("X", ax + (ox.x * 0.3) + 4, ay + (ox.y * 0.3));
+      ctx.fillStyle = "#22c55e"; ctx.fillText("Y", ax + (oy.x * 0.3) + 4, ay + (oy.y * 0.3));
+      ctx.fillStyle = "#3b82f6"; ctx.fillText("Z", ax + (oz.x * 0.3) + 4, ay + (oz.y * 0.3));
+      ctx.restore();
+    }
+
+    function draw3DScene() {
+      if (activeSource.modality !== "CAD") return;
+      ctx.clearRect(0, 0, canvas3D.width, canvas3D.height);
+
+      const cx = canvas3D.width / 2;
+      const cy = canvas3D.height / 2;
+
+      // Draw each component part
+      parts.forEach(p => drawBox(p, cx, cy));
+
+      // Draw 3D Axes widget in bottom-left corner
+      drawAxes(cx, cy);
+    }
+
+    // Orbit and Mouse Interaction for 3D Viewport
+    canvas3D.addEventListener("mousedown", e => {
+      isDragging = true;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+    });
+
+    window.addEventListener("mouseup", () => { isDragging = false; });
+
+    window.addEventListener("mousemove", e => {
+      if (!isDragging) return;
+      const dx = e.clientX - lastMouseX;
+      const dy = e.clientY - lastMouseY;
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+
+      angleY += dx * 0.01;
+      angleX += dy * 0.01;
+      draw3DScene();
+    });
+
+    canvas3D.addEventListener("wheel", e => {
+      e.preventDefault();
+      zoom += e.deltaY * -0.001;
+      zoom = Math.max(0.5, Math.min(2.5, zoom));
+      draw3DScene();
+    });
+
+    document.getElementById("btn-toggle-wireframe").onclick = () => {
+      isWireframe = !isWireframe;
+      draw3DScene();
+    };
+
+    document.getElementById("btn-reset-view").onclick = () => {
+      angleX = -0.35;
+      angleY = 0.55;
+      zoom = 1.0;
+      draw3DScene();
+    };
+
+    // Right Inspector Tabs
+    document.querySelectorAll(".aw-tab-btn").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".aw-tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const tabKey = btn.dataset.tab;
+        document.getElementById("tab-properties").style.display = tabKey === "properties" ? "flex" : "none";
+        document.getElementById("tab-binding").style.display = tabKey === "binding" ? "flex" : "none";
+        document.getElementById("tab-reconciliation").style.display = tabKey === "reconciliation" ? "flex" : "none";
+      };
+    });
+
+    // Toast Notification helper
+    function showToast(msg) {
+      const toast = document.getElementById("aw-toast");
+      toast.textContent = msg;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2600);
+    }
+
+    document.getElementById("btn-copy-hash").onclick = () => {
+      navigator.clipboard.writeText(activeSource.rawRecordId);
+      showToast("Copied Raw Record ID: " + activeSource.rawRecordId);
+    };
+
+    // Modal controls for Staging Assertions
+    const modal = document.getElementById("modal-stage-binding");
+    function openModal() {
+      document.getElementById("modal-input-subject").value = bindSubject.textContent;
+      document.getElementById("modal-input-anchor").value = bindAnchor.textContent;
+      modal.classList.add("open");
+    }
+    function closeModal() {
+      modal.classList.remove("open");
+    }
+
+    document.getElementById("btn-stage-binding-top").onclick = openModal;
+    document.getElementById("btn-open-stage-modal").onclick = openModal;
+    document.getElementById("btn-action-primary").onclick = openModal;
+    document.getElementById("modal-close").onclick = closeModal;
+    document.getElementById("modal-btn-cancel").onclick = closeModal;
+    document.getElementById("modal-btn-commit").onclick = () => {
+      closeModal();
+      showToast("Binding assertion appended to ledger!");
+      bindStatusBadge.innerHTML = `<span class="aw-badge aw-badge-bound">Bound</span>`;
+    };
+
+    document.getElementById("btn-reconcile").onclick = () => {
+      document.querySelector('[data-tab="reconciliation"]').click();
+    };
+
+    document.getElementById("btn-view-raw-envelope").onclick = () => {
+      showToast("Loaded immutable envelope for " + activeSource.id);
+    };
+
+    // Initialize
+    renderSources();
+    renderTree();
+    resizeCanvas();
+    draw3DScene();
+  </script>
+</body>
+</html>

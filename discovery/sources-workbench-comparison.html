@@ -1,0 +1,722 @@
+<div id="ayin-sources-discovery" class="viz-carousel" aria-label="Sources workbench layout comparison">
+  <section data-variant="Persistent source details" aria-label="Layout A, persistent source details"></section>
+  <section data-variant="Source details on demand" aria-label="Layout B, source details on demand" hidden></section>
+</div>
+
+<template id="ayin-sources-shell">
+  <div class="aw-shell">
+    <header class="aw-header">
+      <span class="aw-product">Ayin Intelligence</span>
+      <h1>Sources workbench</h1>
+    </header>
+    <div class="aw-context-bar">
+      <p class="aw-context" aria-live="polite">
+        <span class="aw-context-label">Selected source</span>
+        <span class="aw-id aw-context-id" data-part="selected-id"></span>
+        <span data-part="selected-source"></span>
+      </p>
+      <span class="aw-sample">Sample data</span>
+    </div>
+    <div class="aw-desk">
+      <nav class="aw-rail" aria-label="Sample sources">
+        <div class="aw-source-panel">
+          <h2 class="aw-panel-heading">Source records</h2>
+          <ul class="aw-source-list" data-part="sources"></ul>
+        </div>
+        <div class="aw-rail-details" data-part="rail-details"></div>
+      </nav>
+      <section class="aw-canvas" aria-label="Evidence canvas">
+        <header class="aw-canvas-heading">
+          <h2>Evidence canvas</h2>
+          <div class="aw-on-demand" data-part="on-demand" hidden>
+            <button class="aw-button" type="button" data-action="details" aria-expanded="false">
+              Source details <i data-lucide="chevron-down" aria-hidden="true"></i>
+            </button>
+          </div>
+        </header>
+        <div class="aw-evidence">
+          <div class="aw-preview" data-evidence="S-01">
+            <h3 class="aw-preview-caption">Extracted BOM</h3>
+            <div class="aw-record-sheet">
+              <div class="aw-index-heading" aria-hidden="true">
+                <span>Row</span>
+                <span>Description</span>
+              </div>
+              <button class="aw-evidence-item" type="button" data-action="item" aria-expanded="false">
+                <span class="aw-id">Row 12</span>
+                <span>Mounting bracket</span>
+                <span class="aw-item-action" data-part="item-label">Open</span>
+              </button>
+              <dl class="aw-inline-detail aw-facts" data-part="item-detail" hidden>
+                <div><dt>Source locator</dt><dd class="aw-id">CSV · Row 12</dd></div>
+                <div><dt>Description</dt><dd>Mounting bracket</dd></div>
+              </dl>
+            </div>
+          </div>
+          <div class="aw-preview" data-evidence="S-02" hidden>
+            <h3 class="aw-preview-caption">Assembly evidence</h3>
+            <div class="aw-record-sheet">
+              <dl class="aw-occurrence">
+                <dt>Assembly occurrence</dt>
+                <dd>
+                  <span class="aw-occurrence-source">Assembly geometry (STEP)</span>
+                  <span class="aw-occurrence-node">Mounting bracket</span>
+                </dd>
+              </dl>
+              <dl class="aw-facts">
+                <div><dt>3D preview</dt><dd>The 3D derivative is unavailable.</dd></div>
+              </dl>
+            </div>
+          </div>
+          <div class="aw-preview" data-evidence="S-03" hidden>
+            <h3 class="aw-preview-caption">Parse diagnostic</h3>
+            <div class="aw-record-sheet">
+              <dl class="aw-facts">
+                <div><dt>Diagnostic</dt><dd><span class="aw-state aw-attention">Parse error</span></dd></div>
+                <div><dt>Extraction stopped</dt><dd>The service manual was quarantined. No extracted item is available.</dd></div>
+              </dl>
+            </div>
+          </div>
+          <div class="aw-preview" data-evidence="S-04" hidden>
+            <h3 class="aw-preview-caption">Acquisition attempt</h3>
+            <div class="aw-record-sheet">
+              <dl class="aw-facts">
+                <div><dt>Acquisition</dt><dd><span class="aw-state aw-attention">Failed</span></dd></div>
+                <div><dt>Raw payload</dt><dd>No raw payload captured</dd></div>
+                <div><dt>Extraction</dt><dd>Extraction did not run after acquisition failed.</dd></div>
+              </dl>
+            </div>
+          </div>
+          <div aria-live="polite">
+            <section class="aw-raw" data-part="raw" hidden>
+              <h3>Retained raw record</h3>
+              <dl class="aw-facts">
+                <div><dt>Raw record ID</dt><dd class="aw-id" data-part="raw-id"></dd></div>
+                <div><dt>Source record</dt><dd data-part="raw-source"></dd></div>
+              </dl>
+            </section>
+          </div>
+        </div>
+      </section>
+      <aside class="aw-inspector" aria-label="Component binding inspector">
+        <h2 class="aw-panel-heading">Component binding</h2>
+        <div class="aw-binding-content" aria-live="polite">
+          <dl class="aw-facts aw-binding-facts">
+            <div>
+              <dt>Status</dt>
+              <dd><span class="aw-state aw-binding-status" data-part="binding-status"></span></dd>
+            </div>
+            <div data-part="component-row" hidden>
+              <dt>Component</dt>
+              <dd class="aw-id" data-part="component-id"></dd>
+            </div>
+          </dl>
+          <p class="aw-body-copy" data-part="binding-copy"></p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</template>
+
+<template id="ayin-sources-details">
+  <section class="aw-details" aria-label="Source details">
+    <h3 class="aw-panel-heading">Source details</h3>
+    <dl class="aw-stacked-facts">
+      <div><dt>Raw retention</dt><dd data-part="retention"></dd></div>
+      <div><dt>Extraction outcome</dt><dd data-part="extraction"></dd></div>
+    </dl>
+    <button class="aw-button" type="button" data-action="raw" aria-expanded="false">Open raw record</button>
+  </section>
+</template>
+
+<style>
+  @font-face {
+    font-family: "Ayin Inter";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: "Ayin JetBrains Mono";
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url("https://fonts.gstatic.com/s/jetbrainsmono/v24/tDbv2o-flEEny0FZhsfKu5WU4zr3E_BX0PnT8RD8yKwBNntkaToggR7BYRbKPxDcwg.woff2") format("woff2");
+  }
+
+  #ayin-sources-discovery .aw-shell {
+    --aw-font-ui: "Ayin Inter", Inter, system-ui, sans-serif;
+    --aw-font-data: "Ayin JetBrains Mono", "JetBrains Mono", ui-monospace, monospace;
+    --aw-chrome: #0f161e;
+    --aw-panel: #111820;
+    --aw-raised: #19242e;
+    --aw-hover: #202d38;
+    --aw-line: #343e48;
+    --aw-text: #edf3f6;
+    --aw-quiet: #bbc6cf;
+    --aw-cyan: #7de5ee;
+    --aw-cyan-line: #448894;
+    --aw-selection: #1b343d;
+    --aw-attention: #f5d295;
+    --aw-warning: #382a17;
+    container-type: inline-size;
+    color-scheme: dark;
+    background: var(--aw-chrome);
+    color: var(--aw-text);
+    font: 400 .875rem/1.45 var(--aw-font-ui);
+    border: 1px solid var(--aw-line);
+    border-radius: 5px;
+  }
+  #ayin-sources-discovery .aw-shell *,
+  #ayin-sources-discovery .aw-shell *::before,
+  #ayin-sources-discovery .aw-shell *::after { box-sizing: border-box; }
+  #ayin-sources-discovery .aw-shell [hidden] { display: none !important; }
+  #ayin-sources-discovery .aw-shell :is(h1,h2,h3,p,ul,dl,dd) { margin: 0; }
+  #ayin-sources-discovery .aw-shell :is(h1,h2,h3) { color: var(--aw-text); font-weight: 550; }
+
+  #ayin-sources-discovery .aw-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    min-block-size: 42px;
+    padding: 8px 12px;
+    border-block-end: 1px solid var(--aw-line);
+  }
+  #ayin-sources-discovery .aw-product,
+  #ayin-sources-discovery .aw-header h1 {
+    font-size: 1rem;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  #ayin-sources-discovery .aw-product {
+    font-weight: 650;
+    letter-spacing: .015em;
+  }
+  #ayin-sources-discovery .aw-header h1 {
+    color: var(--aw-quiet);
+    font-weight: 500;
+  }
+  #ayin-sources-discovery .aw-header h1::before {
+    content: "//";
+    margin-inline-end: 12px;
+    color: var(--aw-quiet);
+    font: 400 .8125rem var(--aw-font-data);
+  }
+
+  #ayin-sources-discovery .aw-context-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px 12px;
+    min-block-size: 42px;
+    padding: 7px 10px;
+  }
+  #ayin-sources-discovery .aw-context {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+  }
+  #ayin-sources-discovery .aw-context-label,
+  #ayin-sources-discovery .aw-sample { color: var(--aw-quiet); }
+  #ayin-sources-discovery .aw-context-id,
+  #ayin-sources-discovery .aw-sample,
+  #ayin-sources-discovery .aw-state {
+    display: inline-block;
+    padding: 1px 6px;
+    border: 1px solid var(--aw-line);
+    border-radius: 4px;
+  }
+  #ayin-sources-discovery .aw-context-id,
+  #ayin-sources-discovery .aw-binding-status[data-status="Bound"] {
+    border-color: var(--aw-cyan-line);
+    background: var(--aw-selection);
+    color: var(--aw-cyan);
+  }
+
+  #ayin-sources-discovery .aw-desk {
+    display: grid;
+    grid-template-columns: minmax(184px, 1.04fr) minmax(0, 2.55fr) minmax(182px, 1.02fr);
+    gap: 8px;
+    min-block-size: 544px;
+    padding: 0 8px 8px;
+  }
+  #ayin-sources-discovery .aw-rail {
+    min-inline-size: 0;
+    display: grid;
+    align-content: start;
+    gap: 8px;
+  }
+  #ayin-sources-discovery :is(.aw-source-panel, .aw-canvas, .aw-inspector, .aw-details) {
+    min-inline-size: 0;
+    border: 1px solid var(--aw-line);
+    border-radius: 5px;
+    background: var(--aw-panel);
+  }
+  #ayin-sources-discovery .aw-shell :is(.aw-panel-heading, .aw-canvas-heading h2) {
+    font: 500 .75rem/1.4 var(--aw-font-data);
+    letter-spacing: .025em;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+  #ayin-sources-discovery .aw-shell .aw-panel-heading {
+    padding: 8px 10px;
+    border-block-end: 1px solid var(--aw-line);
+  }
+
+  #ayin-sources-discovery .aw-source-list {
+    display: grid;
+    gap: 2px;
+    padding: 5px;
+    list-style: none;
+  }
+  #ayin-sources-discovery .aw-shell button { font: inherit; color: var(--aw-text); }
+  #ayin-sources-discovery .aw-shell :is(
+    .aw-id, .aw-context-label, .aw-source-meta, .aw-sample, .aw-state,
+    .aw-button, .aw-preview-caption, .aw-index-heading, .aw-item-action, dt
+  ) {
+    font-family: var(--aw-font-data);
+    font-size: .75rem;
+    font-variant-ligatures: none;
+    font-variant-numeric: slashed-zero tabular-nums;
+  }
+  #ayin-sources-discovery .aw-shell button:focus-visible {
+    outline: 2px solid var(--aw-cyan);
+    outline-offset: 1px;
+  }
+  #ayin-sources-discovery .aw-source {
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr);
+    align-items: start;
+    gap: 8px;
+    width: 100%;
+    min-block-size: 42px;
+    padding: 5px 6px;
+    text-align: start;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: transparent;
+  }
+  #ayin-sources-discovery .aw-source svg {
+    width: 15px;
+    height: 15px;
+    margin-block-start: 2px;
+    color: var(--aw-quiet);
+  }
+  #ayin-sources-discovery .aw-shell .aw-source { font-size: .8125rem; }
+  #ayin-sources-discovery .aw-source-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 7px;
+    color: var(--aw-quiet);
+  }
+  #ayin-sources-discovery .aw-source-meta .aw-type {
+    padding-inline-start: 7px;
+    border-inline-start: 1px solid var(--aw-line);
+  }
+  #ayin-sources-discovery .aw-source:hover,
+  #ayin-sources-discovery .aw-button:hover,
+  #ayin-sources-discovery .aw-evidence-item:hover { background: var(--aw-hover); }
+  #ayin-sources-discovery .aw-source[aria-current="true"],
+  #ayin-sources-discovery .aw-evidence-item[aria-expanded="true"],
+  #ayin-sources-discovery .aw-button[aria-expanded="true"] {
+    border-color: var(--aw-cyan-line);
+    background: var(--aw-selection);
+  }
+  #ayin-sources-discovery .aw-source[aria-current="true"] :is(.aw-source-meta, svg) {
+    color: var(--aw-cyan);
+  }
+
+  #ayin-sources-discovery .aw-canvas {
+    display: flex;
+    flex-direction: column;
+  }
+  #ayin-sources-discovery .aw-canvas-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 8px;
+    min-block-size: 49px;
+    padding: 6px 8px 6px 10px;
+    border-block-end: 1px solid var(--aw-line);
+  }
+  #ayin-sources-discovery .aw-on-demand { position: relative; flex-shrink: 0; }
+  #ayin-sources-discovery .aw-on-demand .aw-details {
+    position: absolute;
+    z-index: 2;
+    inset-block-start: calc(100% + 6px);
+    inset-inline-end: 0;
+    width: min(17rem, calc(100cqi - 38px));
+    background: var(--aw-raised);
+  }
+  #ayin-sources-discovery .aw-on-demand .aw-details h3 { display: none; }
+  #ayin-sources-discovery .aw-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-block-size: 32px;
+    padding: 4px 7px;
+    border: 1px solid var(--aw-line);
+    border-radius: 4px;
+    background: var(--aw-raised);
+  }
+  #ayin-sources-discovery .aw-button svg { width: 14px; height: 14px; }
+  #ayin-sources-discovery .aw-on-demand > .aw-button[aria-expanded="true"] svg { rotate: 180deg; }
+  #ayin-sources-discovery .aw-stacked-facts { padding: 1px 10px 0; }
+  #ayin-sources-discovery .aw-stacked-facts > div {
+    padding: 7px 0;
+    border-block-end: 1px solid var(--aw-line);
+  }
+  #ayin-sources-discovery .aw-stacked-facts dt { color: var(--aw-quiet); }
+  #ayin-sources-discovery .aw-stacked-facts dd { margin-block-start: 3px; }
+  #ayin-sources-discovery .aw-details .aw-button { margin: 8px 10px 10px; }
+  #ayin-sources-discovery .aw-details:has(.aw-button[hidden]) .aw-stacked-facts { padding-block-end: 5px; }
+  #ayin-sources-discovery .aw-details:has(.aw-button[hidden]) .aw-stacked-facts > div:last-child { border-block-end: 0; }
+
+  #ayin-sources-discovery .aw-evidence {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-block-size: 390px;
+    border-end-start-radius: 4px;
+    border-end-end-radius: 4px;
+    background-color: var(--aw-chrome);
+    background-image:
+      linear-gradient(rgb(155 182 204 / .075) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(155 182 204 / .075) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: center;
+  }
+  #ayin-sources-discovery .aw-preview {
+    flex: 1;
+    min-inline-size: 0;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 15px;
+    padding: 10px 14px 20px;
+  }
+  #ayin-sources-discovery .aw-shell .aw-preview-caption {
+    justify-self: start;
+    padding: 4px 7px;
+    border: 1px solid var(--aw-line);
+    border-radius: 3px;
+    background: var(--aw-panel);
+    color: var(--aw-quiet);
+    font-weight: 500;
+  }
+  #ayin-sources-discovery .aw-record-sheet,
+  #ayin-sources-discovery .aw-raw {
+    background: var(--aw-panel);
+    border: 1px solid var(--aw-line);
+    border-radius: 4px;
+  }
+  #ayin-sources-discovery .aw-record-sheet {
+    align-self: start;
+    width: min(100%, 28rem);
+    margin-inline: auto;
+    margin-block-start: clamp(22px, 15cqi, 146px);
+  }
+  #ayin-sources-discovery .aw-index-heading,
+  #ayin-sources-discovery .aw-evidence-item {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    padding: 6px 8px;
+    text-align: start;
+  }
+  #ayin-sources-discovery .aw-index-heading {
+    background: var(--aw-raised);
+    color: var(--aw-quiet);
+    border-block-end: 1px solid var(--aw-line);
+    border-start-start-radius: 3px;
+    border-start-end-radius: 3px;
+  }
+  #ayin-sources-discovery .aw-evidence-item {
+    min-block-size: 43px;
+    background: var(--aw-panel);
+    border: 1px solid transparent;
+    border-radius: 3px;
+  }
+  #ayin-sources-discovery .aw-item-action { color: var(--aw-cyan); }
+  #ayin-sources-discovery .aw-facts > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    align-items: baseline;
+    gap: 7px;
+    padding: 8px 9px;
+    border-block-end: 1px solid var(--aw-line);
+  }
+  #ayin-sources-discovery .aw-facts > div:last-child { border-block-end: 0; }
+  #ayin-sources-discovery .aw-facts dt { color: var(--aw-quiet); }
+  #ayin-sources-discovery .aw-facts :is(dt, dd) { overflow-wrap: anywhere; }
+  #ayin-sources-discovery .aw-inline-detail { border-block-start: 1px solid var(--aw-line); }
+  #ayin-sources-discovery .aw-occurrence {
+    display: grid;
+    gap: 6px;
+    padding: 10px;
+    border-block-end: 1px solid var(--aw-line);
+  }
+  #ayin-sources-discovery .aw-occurrence dt { color: var(--aw-quiet); }
+  #ayin-sources-discovery .aw-occurrence-source {
+    display: block;
+    color: var(--aw-quiet);
+  }
+  #ayin-sources-discovery .aw-occurrence-node {
+    position: relative;
+    display: block;
+    margin-block-start: 5px;
+    margin-inline-start: 17px;
+    padding: 5px 8px;
+    border: 1px solid var(--aw-cyan-line);
+    border-radius: 3px;
+    background: var(--aw-selection);
+    color: var(--aw-cyan);
+  }
+  #ayin-sources-discovery .aw-occurrence-node::before {
+    position: absolute;
+    content: "";
+    inset-inline-start: -13px;
+    inset-block-start: -5px;
+    width: 12px;
+    height: calc(50% + 6px);
+    border-inline-start: 1px solid var(--aw-cyan-line);
+    border-block-end: 1px solid var(--aw-cyan-line);
+  }
+  #ayin-sources-discovery .aw-raw { margin: 0 14px 12px; }
+  #ayin-sources-discovery .aw-raw h3 {
+    padding: 7px 9px;
+    border-block-end: 1px solid var(--aw-line);
+    font-size: .8125rem;
+  }
+  #ayin-sources-discovery .aw-attention,
+  #ayin-sources-discovery .aw-binding-status[data-status="Unresolved"] {
+    color: var(--aw-attention);
+    background: var(--aw-warning);
+    border-color: #785e36;
+  }
+  #ayin-sources-discovery .aw-binding-facts {
+    background: var(--aw-raised);
+    border-block-end: 1px solid var(--aw-line);
+  }
+  #ayin-sources-discovery .aw-binding-facts > div { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); }
+  #ayin-sources-discovery .aw-binding-status { color: var(--aw-quiet); }
+  #ayin-sources-discovery .aw-body-copy {
+    padding: 9px 10px;
+    color: var(--aw-quiet);
+  }
+
+  @media (pointer: coarse) {
+    #ayin-sources-discovery :is(.aw-button, .aw-source, .aw-evidence-item) { min-block-size: 44px; }
+    #ayin-sources-discovery .aw-canvas-heading { min-block-size: 57px; }
+  }
+  @container (max-width: 755px) {
+    #ayin-sources-discovery .aw-desk {
+      grid-template-columns: 172px minmax(0, 1fr);
+      grid-template-rows: 1fr auto;
+      min-block-size: 600px;
+    }
+    #ayin-sources-discovery .aw-rail { grid-row: span 2; }
+    #ayin-sources-discovery .aw-inspector { min-block-size: 135px; }
+  }
+  @container (max-width: 530px) {
+    #ayin-sources-discovery .aw-desk { display: flex; flex-direction: column; min-block-size: 56rem; }
+    #ayin-sources-discovery .aw-source-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #ayin-sources-discovery .aw-evidence { min-block-size: 260px; }
+    #ayin-sources-discovery .aw-preview { padding-inline: 8px; }
+    #ayin-sources-discovery .aw-raw { margin-inline: 8px; }
+    #ayin-sources-discovery .aw-inspector { min-block-size: 113px; }
+  }
+  @container (max-width: 340px) {
+    #ayin-sources-discovery .aw-context-label { flex-basis: 100%; }
+    #ayin-sources-discovery .aw-source { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+    #ayin-sources-discovery .aw-index-heading,
+    #ayin-sources-discovery .aw-evidence-item { padding-inline: 5px; gap: 5px; }
+  }
+</style>
+
+<script>
+  (() => {
+    const root = document.getElementById("ayin-sources-discovery");
+    const shell = document.getElementById("ayin-sources-shell");
+    const sourceDetails = document.getElementById("ayin-sources-details");
+    const records = [
+      {
+        id: "S-01", name: "Assembly BOM", type: "CSV", icon: "table-2", raw: "R-01",
+        retention: "Retained as R-01",
+        extraction: "Succeeded. Row 12 describes a mounting bracket.",
+        status: "Bound", component: "C-01",
+        binding: "Explicit sample binding from row 12 to component C-01."
+      },
+      {
+        id: "S-02", name: "Assembly geometry", type: "STEP", icon: "box", raw: "R-02",
+        retention: "Retained as R-02",
+        extraction: "Partial. An assembly occurrence for the mounting bracket is available. The 3D derivative is unavailable.",
+        status: "Unresolved",
+        binding: "The similar label gives the engineer a lead, and an explicit binding decision is still needed."
+      },
+      {
+        id: "S-03", name: "Service manual", type: "PDF", icon: "file-text", raw: "R-03",
+        retention: "Retained as R-03",
+        extraction: "Quarantined after a parse error. A diagnostic is available.",
+        status: "Unavailable",
+        binding: "This record has no extracted item to inspect for binding."
+      },
+      {
+        id: "S-04", name: "Operational snapshot attempt", type: "", icon: "activity", raw: null,
+        retention: "No raw payload captured",
+        extraction: "Extraction did not run after acquisition failed.",
+        status: "Unavailable",
+        binding: "Unavailable for this attempt."
+      }
+    ];
+
+    function sourceName(record) {
+      const type = record.type ? " (" + record.type + ")" : "";
+      return record.name + type;
+    }
+
+    function sourceLabel(record) {
+      return record.id + " · " + sourceName(record);
+    }
+
+    function mount(variant, index) {
+      variant.append(shell.content.cloneNode(true));
+      const part = (name) => variant.querySelector('[data-part="' + name + '"]');
+      const action = (name) => variant.querySelector('[data-action="' + name + '"]');
+      const onDemand = part("on-demand");
+      const details = sourceDetails.content.firstElementChild.cloneNode(true);
+      const detailsControl = action("details");
+      const isOnDemand = index === 1;
+      const prefix = "ayin-workbench-" + (index + 1) + "-";
+      let record = records[0];
+      let itemOpen = false;
+      let rawOpen = false;
+
+      details.id = prefix + "details";
+      detailsControl.setAttribute("aria-controls", details.id);
+      details.hidden = isOnDemand;
+      onDemand.hidden = !isOnDemand;
+      (isOnDemand ? onDemand : part("rail-details")).append(details);
+      part("rail-details").hidden = isOnDemand;
+
+      const rawControl = action("raw");
+      const itemControl = action("item");
+      part("raw").id = prefix + "raw";
+      part("item-detail").id = prefix + "locator";
+      rawControl.setAttribute("aria-controls", part("raw").id);
+      itemControl.setAttribute("aria-controls", part("item-detail").id);
+
+      const sourceButtons = records.map((entry) => {
+        const listItem = document.createElement("li");
+        const button = document.createElement("button");
+        const icon = document.createElement("i");
+        const meta = document.createElement("span");
+        const id = document.createElement("span");
+        const label = document.createElement("span");
+        button.type = "button";
+        button.className = "aw-source cursor-interaction";
+        button.setAttribute("aria-label", sourceLabel(entry));
+        icon.setAttribute("data-lucide", entry.icon);
+        icon.setAttribute("aria-hidden", "true");
+        meta.className = "aw-source-meta";
+        id.className = "aw-id aw-source-id";
+        id.textContent = entry.id;
+        meta.append(id);
+        label.textContent = entry.name;
+        if (entry.type) {
+          const type = document.createElement("span");
+          type.className = "aw-type";
+          type.textContent = entry.type;
+          meta.append(type);
+        }
+        label.append(meta);
+        button.append(icon, label);
+        button.addEventListener("click", () => {
+          if (entry !== record) {
+            record = entry;
+            itemOpen = false;
+            rawOpen = false;
+            render();
+          }
+          if (isOnDemand) setDetails(false);
+        });
+        listItem.append(button);
+        part("sources").append(listItem);
+        return button;
+      });
+
+      function setDetails(open) {
+        details.hidden = !open;
+        detailsControl.setAttribute("aria-expanded", String(open));
+      }
+
+      function render() {
+        sourceButtons.forEach((button, i) => {
+          button.setAttribute("aria-current", String(records[i] === record));
+        });
+        variant.querySelectorAll("[data-evidence]").forEach((view) => {
+          view.hidden = view.dataset.evidence !== record.id;
+        });
+        part("selected-id").textContent = record.id;
+        part("selected-source").textContent = sourceName(record);
+        part("retention").textContent = record.retention;
+        part("extraction").textContent = record.extraction;
+        part("binding-status").textContent = record.status;
+        part("binding-status").dataset.status = record.status;
+        part("component-row").hidden = !record.component;
+        part("component-id").textContent = record.component ?? "";
+        part("binding-copy").textContent = record.binding;
+        part("item-detail").hidden = !itemOpen;
+        itemControl.setAttribute("aria-expanded", String(itemOpen));
+        part("item-label").textContent = itemOpen ? "Close" : "Open";
+        part("raw").hidden = !rawOpen;
+        rawControl.hidden = !record.raw;
+        rawControl.setAttribute("aria-expanded", String(rawOpen));
+        rawControl.textContent = rawOpen ? "Close raw record" : "Open raw record";
+        part("raw-id").textContent = record.raw ?? "";
+        part("raw-source").textContent = sourceLabel(record);
+      }
+
+      itemControl.addEventListener("click", () => {
+        itemOpen = !itemOpen;
+        render();
+      });
+      rawControl.addEventListener("click", () => {
+        rawOpen = !rawOpen;
+        render();
+        if (isOnDemand) {
+          setDetails(false);
+          detailsControl.focus();
+        }
+      });
+
+      if (isOnDemand) {
+        detailsControl.addEventListener("click", () => setDetails(details.hidden));
+        document.addEventListener("click", (event) => {
+          if (!details.hidden && !onDemand.contains(event.target)) setDetails(false);
+        });
+        variant.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !details.hidden) {
+            event.preventDefault();
+            setDetails(false);
+            detailsControl.focus();
+          }
+        });
+      }
+
+      variant.querySelectorAll(".aw-shell button").forEach((button) => {
+        button.classList.add("cursor-interaction");
+      });
+      render();
+    }
+
+    root.querySelectorAll(":scope > [data-variant]").forEach(mount);
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  })();
+</script>

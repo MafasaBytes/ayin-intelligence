@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayin Intelligence — Sources Workbench A/B Visual Discovery Studio</title>
+  <style>
+    :root {
+      --aw-bg-void: #06090d;
+      --aw-bg-chrome: #0b0f15;
+      --aw-bg-panel: #111720;
+      --aw-bg-raised: #18222d;
+      --aw-bg-hover: #1f2c3a;
+      --aw-border: #233140;
+      --aw-border-subtle: #17222d;
+      --aw-text-bright: #f0f5fa;
+      --aw-text-main: #cdd8e4;
+      --aw-text-muted: #8294a6;
+      --aw-text-faint: #526373;
+      --aw-cyan: #44c7d4;
+      --aw-cyan-border: #23767f;
+      --aw-cyan-bg: rgba(68, 199, 212, 0.12);
+      --aw-green: #34d399;
+      --aw-green-border: #1a6b4e;
+      --aw-green-bg: rgba(52, 211, 153, 0.12);
+      --aw-amber: #f59e0b;
+      --aw-amber-border: #87570b;
+      --aw-amber-bg: rgba(245, 158, 11, 0.12);
+      --aw-red: #ef4444;
+      --aw-red-border: #8b2222;
+      --aw-red-bg: rgba(239, 68, 68, 0.14);
+      --aw-font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --aw-font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--aw-bg-void);
+      color: var(--aw-text-main);
+      font-family: var(--aw-font-ui);
+      font-size: 13px;
+      line-height: 1.45;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Studio Header */
+    .studio-bar {
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      padding: 10px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .studio-title-lockup {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .studio-title {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--aw-text-bright);
+    }
+
+    .studio-tag {
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 3px;
+      background: var(--aw-cyan-bg);
+      border: 1px solid var(--aw-cyan-border);
+      color: var(--aw-cyan);
+    }
+
+    .studio-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--aw-bg-panel);
+      padding: 3px;
+      border-radius: 5px;
+      border: 1px solid var(--aw-border);
+    }
+
+    .control-label {
+      padding: 0 6px;
+      color: var(--aw-text-muted);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .btn-toggle {
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--aw-text-muted);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-toggle:hover {
+      background: var(--aw-bg-raised);
+      color: var(--aw-text-bright);
+    }
+
+    .btn-toggle.active {
+      background: var(--aw-cyan-bg);
+      border-color: var(--aw-cyan-border);
+      color: var(--aw-cyan);
+      font-weight: 600;
+    }
+
+    /* Explanation Banner */
+    .studio-banner {
+      background: var(--aw-bg-panel);
+      border-bottom: 1px solid var(--aw-border);
+      padding: 10px 20px;
+      font-size: 12px;
+      color: var(--aw-text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .banner-highlight {
+      color: var(--aw-cyan);
+      font-weight: 600;
+    }
+
+    /* Main Viewport Container */
+    .studio-viewport-wrap {
+      flex: 1;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: auto;
+    }
+
+    /* 1376 × 768 Desktop Frame */
+    .aw-desktop-frame {
+      width: 1376px;
+      height: 768px;
+      background: var(--aw-bg-chrome);
+      border: 1px solid var(--aw-border);
+      border-radius: 6px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    /* Header */
+    .aw-header {
+      height: 44px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+
+    .aw-brand-lockup {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .aw-brand-name {
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--aw-text-bright);
+    }
+
+    .aw-brand-sep {
+      color: var(--aw-text-faint);
+      font-family: var(--aw-font-mono);
+    }
+
+    .aw-surface-title {
+      font-size: 12px;
+      letter-spacing: 0.03em;
+      color: var(--aw-text-muted);
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .aw-header-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+    }
+
+    .aw-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-main);
+    }
+
+    .aw-chip-key { color: var(--aw-text-muted); }
+    .aw-chip-val { color: var(--aw-text-bright); font-weight: 500; }
+
+    .aw-chip.status-validated {
+      border-color: var(--aw-green-border);
+      background: var(--aw-green-bg);
+      color: var(--aw-green);
+    }
+
+    .aw-chip.status-warn {
+      border-color: var(--aw-amber-border);
+      background: var(--aw-amber-bg);
+      color: var(--aw-amber);
+    }
+
+    .aw-chip.status-alert {
+      border-color: var(--aw-red-border);
+      background: var(--aw-red-bg);
+      color: var(--aw-red);
+    }
+
+    .aw-sample-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-muted);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+    }
+
+    /* Context Bar */
+    .aw-context-bar {
+      height: 38px;
+      background: var(--aw-bg-panel);
+      border-bottom: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .aw-context-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .aw-context-label { color: var(--aw-text-muted); }
+
+    .aw-id-badge {
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--aw-cyan-bg);
+      border: 1px solid var(--aw-cyan-border);
+      color: var(--aw-cyan);
+      font-weight: 600;
+    }
+
+    /* Main Workspace Desk */
+    .aw-desk {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr) 300px;
+      background: var(--aw-bg-chrome);
+      overflow: hidden;
+    }
+
+    /* Left Rail */
+    .aw-rail {
+      background: var(--aw-bg-panel);
+      border-right: 1px solid var(--aw-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .aw-panel-heading {
+      padding: 9px 12px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border-subtle);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--aw-text-muted);
+      font-weight: 600;
+    }
+
+    .aw-source-list {
+      list-style: none;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .aw-source-item {
+      padding: 8px 10px;
+      border-radius: 4px;
+      background: transparent;
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--aw-text-main);
+      font-size: 12px;
+      transition: all 0.15s ease;
+    }
+
+    .aw-source-item:hover { background: var(--aw-bg-raised); }
+
+    .aw-source-item.active {
+      background: var(--aw-bg-raised);
+      border-color: var(--aw-cyan-border);
+      color: var(--aw-cyan);
+      font-weight: 500;
+    }
+
+    .aw-source-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .aw-source-id {
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .aw-source-type {
+      margin-left: auto;
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      color: var(--aw-text-muted);
+    }
+
+    /* VARIANT A: Persistent Source Details Card */
+    .aw-rail-details {
+      background: var(--aw-bg-panel);
+      border-top: 1px solid var(--aw-border);
+      border-bottom: 1px solid var(--aw-border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .aw-stacked-facts {
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .aw-stacked-facts dt {
+      color: var(--aw-text-muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      font-family: var(--aw-font-mono);
+    }
+
+    .aw-stacked-facts dd {
+      color: var(--aw-text-bright);
+      font-size: 11px;
+      margin-top: 2px;
+    }
+
+    .aw-button {
+      margin: 8px 12px 12px;
+      padding: 5px 10px;
+      border-radius: 4px;
+      background: var(--aw-bg-raised);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-main);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .aw-button:hover {
+      background: var(--aw-bg-hover);
+      border-color: var(--aw-cyan-border);
+      color: var(--aw-text-bright);
+    }
+
+    /* Hierarchy Tree */
+    .aw-tree {
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      flex: 1;
+    }
+
+    .aw-tree-node {
+      padding: 3px 6px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--aw-text-main);
+    }
+
+    .aw-tree-node.selected {
+      background: var(--aw-cyan-bg);
+      border: 1px solid var(--aw-cyan-border);
+      color: var(--aw-cyan);
+    }
+
+    /* Central Canvas */
+    .aw-canvas {
+      display: flex;
+      flex-direction: column;
+      background: var(--aw-bg-void);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .aw-canvas-heading {
+      height: 38px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--aw-text-muted);
+      font-weight: 600;
+      position: relative;
+    }
+
+    .aw-on-demand-wrapper {
+      position: relative;
+    }
+
+    .aw-on-demand-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: var(--aw-bg-raised);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-main);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .aw-on-demand-trigger.open {
+      background: var(--aw-cyan-bg);
+      border-color: var(--aw-cyan-border);
+      color: var(--aw-cyan);
+      font-weight: 600;
+    }
+
+    .aw-on-demand-popover {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      width: 290px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-cyan-border);
+      border-radius: 6px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .aw-popover-header {
+      padding: 8px 12px;
+      background: var(--aw-bg-raised);
+      border-bottom: 1px solid var(--aw-border);
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--aw-cyan);
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .aw-evidence {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-color: #06090d;
+      background-image: 
+        linear-gradient(rgba(44, 62, 80, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(44, 62, 80, 0.15) 1px, transparent 1px);
+      background-size: 28px 28px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .aw-preview-card {
+      width: 500px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-border);
+      border-radius: 6px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .aw-preview-caption {
+      padding: 10px 14px;
+      background: var(--aw-bg-raised);
+      border-bottom: 1px solid var(--aw-border);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--aw-text-bright);
+      text-transform: uppercase;
+    }
+
+    .aw-index-heading {
+      display: grid;
+      grid-template-columns: 80px minmax(0, 1fr) 60px;
+      padding: 8px 12px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      color: var(--aw-text-muted);
+      text-transform: uppercase;
+    }
+
+    .aw-evidence-item {
+      display: grid;
+      grid-template-columns: 80px minmax(0, 1fr) 60px;
+      padding: 10px 12px;
+      align-items: center;
+      background: var(--aw-bg-panel);
+      border: none;
+      width: 100%;
+      text-align: left;
+      color: var(--aw-text-bright);
+      font-size: 12px;
+      border-bottom: 1px solid var(--aw-border-subtle);
+    }
+
+    .aw-evidence-item .aw-id {
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      color: var(--aw-cyan);
+    }
+
+    .aw-item-action {
+      color: var(--aw-cyan);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      text-align: right;
+    }
+
+    .aw-inline-detail {
+      padding: 12px 14px;
+      background: var(--aw-bg-raised);
+      border-top: 1px solid var(--aw-border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .aw-detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .aw-detail-row dt { color: var(--aw-text-muted); font-family: var(--aw-font-mono); font-size: 10px; text-transform: uppercase; }
+    .aw-detail-row dd { color: var(--aw-text-bright); font-family: var(--aw-font-mono); font-size: 11px; }
+
+    /* Right Inspector */
+    .aw-inspector {
+      background: var(--aw-bg-panel);
+      border-left: 1px solid var(--aw-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .aw-binding-content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .aw-facts {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--aw-bg-raised);
+      border: 1px solid var(--aw-border);
+      border-radius: 4px;
+      padding: 12px;
+    }
+
+    .aw-fact-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    .aw-fact-row dt { color: var(--aw-text-muted); font-family: var(--aw-font-mono); font-size: 10px; text-transform: uppercase; }
+    .aw-fact-row dd { color: var(--aw-text-bright); font-family: var(--aw-font-mono); }
+
+    .aw-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .aw-badge-bound {
+      background: var(--aw-cyan-bg);
+      border: 1px solid var(--aw-cyan-border);
+      color: var(--aw-cyan);
+    }
+
+    .aw-badge-warn {
+      background: var(--aw-amber-bg);
+      border: 1px solid var(--aw-amber-border);
+      color: var(--aw-amber);
+    }
+
+    .aw-badge-quiet {
+      background: var(--aw-bg-void);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-muted);
+    }
+
+    .aw-body-copy {
+      color: var(--aw-text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    .aw-footer {
+      height: 42px;
+      background: var(--aw-bg-chrome);
+      border-top: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+    }
+
+    .aw-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--aw-text-muted);
+    }
+
+    .aw-hash-pill {
+      background: var(--aw-bg-void);
+      border: 1px solid var(--aw-border);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--aw-cyan);
+    }
+
+    .aw-footer-right {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* 3D Canvas element */
+    #aw-3d-canvas {
+      width: 100%;
+      height: 100%;
+      display: none;
+      cursor: grab;
+    }
+  </style>
+</head>
+<body>
+  <!-- Studio Navigation Bar -->
+  <div class="studio-bar">
+    <div class="studio-title-lockup">
+      <span class="studio-title">Ayin Intelligence</span>
+      <span class="studio-tag">Visual Discovery Studio</span>
+    </div>
+
+    <div class="studio-controls">
+      <!-- Variant Switcher -->
+      <div class="control-group">
+        <span class="control-label">A/B Variant:</span>
+        <button class="btn-toggle active" id="btn-var-a" onclick="setVariant('A')">A: Persistent Rail</button>
+        <button class="btn-toggle" id="btn-var-b-closed" onclick="setVariant('B-closed')">B: On-Demand (Closed)</button>
+        <button class="btn-toggle" id="btn-var-b-open" onclick="setVariant('B-open')">B: On-Demand (Open)</button>
+      </div>
+
+      <!-- State Switcher -->
+      <div class="control-group">
+        <span class="control-label">State:</span>
+        <button class="btn-toggle active" id="btn-state-s01" onclick="setState('S-01')">S-01 (BOM)</button>
+        <button class="btn-toggle" id="btn-state-s02" onclick="setState('S-02')">S-02 (STEP)</button>
+        <button class="btn-toggle" id="btn-state-s03" onclick="setState('S-03')">S-03 (PDF)</button>
+        <button class="btn-toggle" id="btn-state-s04" onclick="setState('S-04')">S-04 (API)</button>
+        <button class="btn-toggle" id="btn-state-3d" onclick="setState('3D')" style="color: var(--aw-cyan);">Illustrative 3D</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Banner -->
+  <div class="studio-banner">
+    <div>
+      <span class="banner-highlight" id="banner-title">Variant A · Persistent Source Details</span>:
+      <span id="banner-desc">Selected record's raw retention and extraction summary is permanently visible in the left rail. Framed at exact 1376 × 768 desktop viewport.</span>
+    </div>
+    <div style="font-family: var(--aw-font-mono); font-size: 11px;">
+      <a href="variant-a.html" target="_blank" style="color: var(--aw-cyan); text-decoration: none; margin-right: 12px;">Open Standalone A ↗</a>
+      <a href="variant-b.html" target="_blank" style="color: var(--aw-cyan); text-decoration: none; margin-right: 12px;">Open Standalone B ↗</a>
+      <a href="illustrative-3d-preview.html" target="_blank" style="color: var(--aw-cyan); text-decoration: none;">Open 3D Preview ↗</a>
+    </div>
+  </div>
+
+  <!-- Viewport Area (1376 × 768 Desktop Frame) -->
+  <div class="studio-viewport-wrap">
+    <div class="aw-desktop-frame" id="desktop-frame">
+      <!-- Header -->
+      <header class="aw-header">
+        <div class="aw-brand-lockup">
+          <span class="aw-brand-name">Ayin Intelligence</span>
+          <span class="aw-brand-sep">//</span>
+          <span class="aw-surface-title">Sources workbench</span>
+        </div>
+        <div class="aw-header-meta">
+          <div class="aw-chip"><span class="aw-chip-key">MODEL:</span><span class="aw-chip-val">mrv_b8f03e1c</span></div>
+          <div class="aw-chip"><span class="aw-chip-key">EXTRACTOR:</span><span class="aw-chip-val" id="head-extractor">csv_extractor 1.1.0</span></div>
+          <div class="aw-chip status-validated" id="head-status-chip"><span class="aw-chip-val" id="head-status">SUCCEEDED</span></div>
+          <div class="aw-chip"><span class="aw-chip-key">LIFECYCLE:</span><span class="aw-chip-val" id="head-lifecycle">AS_DESIGNED</span></div>
+        </div>
+        <div>
+          <span class="aw-sample-badge">Sample data</span>
+        </div>
+      </header>
+
+      <!-- Context Bar -->
+      <div class="aw-context-bar">
+        <div class="aw-context-item">
+          <span class="aw-context-label">Selected source:</span>
+          <span class="aw-id-badge" id="ctx-id">S-01</span>
+          <span id="ctx-name">Assembly BOM (CSV)</span>
+        </div>
+        <div class="aw-context-item">
+          <span style="color: var(--aw-text-muted); font-family: var(--aw-font-mono); font-size: 11px;" id="ctx-variant-note">Variant A · Persistent Details</span>
+        </div>
+      </div>
+
+      <!-- Main Workspace Desk -->
+      <div class="aw-desk">
+        <!-- Left Rail -->
+        <nav class="aw-rail" aria-label="Sample sources">
+          <h2 class="aw-panel-heading">Source records</h2>
+          <ul class="aw-source-list" id="rail-source-list">
+            <!-- Source items -->
+          </ul>
+
+          <!-- VARIANT A: Persistent Source Details in Left Rail (Hidden in Variant B) -->
+          <section class="aw-rail-details" id="rail-details-card" aria-label="Source details">
+            <h3 class="aw-panel-heading">Source details</h3>
+            <dl class="aw-stacked-facts">
+              <div>
+                <dt>Raw retention</dt>
+                <dd id="rail-detail-retention">Retained as R-01</dd>
+              </div>
+              <div>
+                <dt>Extraction outcome</dt>
+                <dd id="rail-detail-extraction">Succeeded. Row 12 describes a mounting bracket.</dd>
+              </div>
+            </dl>
+            <button class="aw-button" type="button">Open raw record</button>
+          </section>
+
+          <!-- Hierarchy Tree -->
+          <h3 class="aw-panel-heading" id="rail-hierarchy-heading">Hierarchy</h3>
+          <div class="aw-tree" id="rail-tree">
+            <!-- Tree nodes -->
+          </div>
+        </nav>
+
+        <!-- Center Evidence Canvas -->
+        <section class="aw-canvas" aria-label="Evidence canvas">
+          <header class="aw-canvas-heading">
+            <h2 id="canvas-heading-text">Evidence canvas</h2>
+
+            <!-- VARIANT B: On-Demand Control (Hidden in Variant A) -->
+            <div class="aw-on-demand-wrapper" id="canvas-on-demand-wrap" style="display: none;">
+              <button class="aw-on-demand-trigger" id="canvas-on-demand-btn" type="button" aria-expanded="false" onclick="toggleVariantBPopover()">
+                <span>Source details</span>
+                <span style="font-size: 9px;" id="canvas-on-demand-caret">▾</span>
+              </button>
+
+              <div class="aw-on-demand-popover" id="canvas-on-demand-popover" style="display: none;" role="dialog">
+                <div class="aw-popover-header">
+                  <span>Source details</span>
+                  <span style="font-size: 10px; color: var(--aw-text-muted);" id="popover-source-id">S-01</span>
+                </div>
+                <dl class="aw-stacked-facts">
+                  <div>
+                    <dt>Raw retention</dt>
+                    <dd id="popover-retention">Retained as R-01</dd>
+                  </div>
+                  <div>
+                    <dt>Extraction outcome</dt>
+                    <dd id="popover-extraction">Succeeded. Row 12 describes a mounting bracket.</dd>
+                  </div>
+                </dl>
+                <div style="padding: 0 12px 10px;">
+                  <button class="aw-button" style="width: 100%; margin: 0;">Open raw record</button>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <div class="aw-evidence" id="canvas-evidence-area">
+            <!-- Dynamic Evidence Content rendered here -->
+            <div class="aw-preview-card" id="evidence-card">
+              <!-- Rendered by JS -->
+            </div>
+            <canvas id="aw-3d-canvas"></canvas>
+          </div>
+        </section>
+
+        <!-- Right Inspector -->
+        <aside class="aw-inspector" aria-label="Component binding inspector">
+          <h2 class="aw-panel-heading">Component binding</h2>
+          <div class="aw-binding-content">
+            <dl class="aw-facts">
+              <div class="aw-fact-row">
+                <dt>Status</dt>
+                <dd><span class="aw-badge aw-badge-bound" id="insp-status-badge">Bound</span></dd>
+              </div>
+              <div class="aw-fact-row" id="insp-comp-row">
+                <dt>Component</dt>
+                <dd style="color: var(--aw-cyan); font-weight: 600;" id="insp-comp-val">C-01</dd>
+              </div>
+            </dl>
+            <p class="aw-body-copy" id="insp-copy">
+              Explicit sample binding from row 12 to component C-01.
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Provenance Footer -->
+      <footer class="aw-footer">
+        <div class="aw-footer-left">
+          <span>Raw Record ID:</span>
+          <span class="aw-hash-pill" id="footer-raw-id">R-01</span>
+          <span style="color: var(--aw-text-faint);">·</span>
+          <span style="color: var(--aw-green);" id="footer-store-status">Write-Once Store: IMMUTABLE</span>
+        </div>
+        <div class="aw-footer-right">
+          <button class="aw-button" style="margin: 0;">Open raw record</button>
+          <button class="aw-button" style="margin: 0; background: var(--aw-cyan-bg); border-color: var(--aw-cyan-border); color: var(--aw-cyan);">Stage Binding Assertion</button>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // State Store
+    let currentVariant = "A"; // 'A', 'B-closed', 'B-open'
+    let currentState = "S-01"; // 'S-01', 'S-02', 'S-03', 'S-04', '3D'
+
+    const records = {
+      "S-01": {
+        id: "S-01", name: "Assembly BOM", type: "CSV", raw: "R-01",
+        extractor: "csv_extractor 1.1.0", status: "SUCCEEDED", statusKind: "validated",
+        retention: "Retained as R-01",
+        extraction: "Succeeded. Row 12 describes a mounting bracket.",
+        bindingStatus: "Bound", badgeKind: "bound", component: "C-01",
+        bindingCopy: "Explicit sample binding from row 12 to component C-01.",
+        hierarchyTitle: "BOM Containment",
+        tree: [
+          { label: "▾ PRN-000 (Printer assembly)", indent: 0 },
+          { label: "▪ EXT-100 (Extruder unit)", indent: 18 },
+          { label: "▪ CBL-300 (Wiring harness)", indent: 18 },
+          { label: "▪ BRK-400 (Corner bracket)", indent: 18 },
+          { label: "▪ BRK-401 (Corner bracket)", indent: 18 },
+          { label: "▪ Row 12: Mounting bracket", indent: 18, selected: true }
+        ],
+        cardHtml: `
+          <h3 class="aw-preview-caption">Extracted BOM</h3>
+          <div class="aw-index-heading">
+            <span>Row</span>
+            <span>Description</span>
+            <span style="text-align: right;">Action</span>
+          </div>
+          <button class="aw-evidence-item" type="button">
+            <span class="aw-id">Row 12</span>
+            <span>Mounting bracket</span>
+            <span class="aw-item-action">Close</span>
+          </button>
+          <dl class="aw-inline-detail">
+            <div class="aw-detail-row">
+              <dt>Source locator</dt>
+              <dd>CSV · Row 12</dd>
+            </div>
+            <div class="aw-detail-row">
+              <dt>Description</dt>
+              <dd>Mounting bracket</dd>
+            </div>
+          </dl>
+        `
+      },
+      "S-02": {
+        id: "S-02", name: "Assembly geometry", type: "STEP", raw: "R-02",
+        extractor: "cadquery-ocp 7.9.3", status: "PARTIAL (LEVEL 2)", statusKind: "warn",
+        retention: "Retained as R-02",
+        extraction: "Partial. An assembly occurrence for the mounting bracket is available. The 3D derivative is unavailable.",
+        bindingStatus: "Unresolved", badgeKind: "warn", component: null,
+        bindingCopy: "The similar label gives the engineer a lead, and an explicit binding decision is still needed.",
+        hierarchyTitle: "Mechanical Assembly Tree",
+        tree: [
+          { label: "▾ Assembly_Root", indent: 0 },
+          { label: "▸ Frame_Subassembly", indent: 18 },
+          { label: "▾ Toolhead_Mount", indent: 18 },
+          { label: "▪ Stepper_Extruder", indent: 32 },
+          { label: "▪ Mounting bracket (Occurrence)", indent: 32, selected: true }
+        ],
+        cardHtml: `
+          <h3 class="aw-preview-caption">Assembly evidence</h3>
+          <div style="padding: 14px 16px; border-bottom: 1px solid var(--aw-border);">
+            <div style="font-size: 10px; color: var(--aw-text-muted); text-transform: uppercase; font-family: var(--aw-font-mono);">Assembly occurrence</div>
+            <div style="font-size: 13px; color: var(--aw-text-bright); margin-top: 4px; font-weight: 500;">
+              Assembly geometry (STEP) &gt; <span style="color: var(--aw-cyan); background: var(--aw-cyan-bg); padding: 2px 6px; border-radius: 3px; border: 1px solid var(--aw-cyan-border);">Mounting bracket</span>
+            </div>
+          </div>
+          <div style="padding: 14px 16px; background: var(--aw-bg-raised);">
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px;">
+              <span style="color: var(--aw-text-muted); text-transform: uppercase; font-family: var(--aw-font-mono);">3D Preview</span>
+              <span style="color: var(--aw-amber); font-weight: 600;">The 3D derivative is unavailable.</span>
+            </div>
+            <div style="font-size: 11px; color: var(--aw-text-muted); margin-top: 8px; line-height: 1.4;">
+              Notice: Levels 0-2 structural manifest succeeded honestly. Mesh generation was skipped or unavailable.
+            </div>
+          </div>
+        `
+      },
+      "S-03": {
+        id: "S-03", name: "Service manual", type: "PDF", raw: "R-03",
+        extractor: "pdf_extractor 2.0.4", status: "QUARANTINED", statusKind: "alert",
+        retention: "Retained as R-03",
+        extraction: "Quarantined after a parse error. A diagnostic is available.",
+        bindingStatus: "Unavailable", badgeKind: "quiet", component: null,
+        bindingCopy: "This record has no extracted item to inspect for binding.",
+        hierarchyTitle: "PDF Manifest",
+        tree: [
+          { label: "▾ Service_Manual.pdf", indent: 0 },
+          { label: "! Quarantine Record QR-03", indent: 18, selected: true },
+          { label: "▪ Retained Raw Payload R-03", indent: 18 }
+        ],
+        cardHtml: `
+          <h3 class="aw-preview-caption" style="border-left: 3px solid var(--aw-red);">Parse diagnostic (Quarantined)</h3>
+          <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="color: var(--aw-text-muted); font-size: 11px; font-family: var(--aw-font-mono); text-transform: uppercase;">Diagnostic</span>
+              <span style="color: var(--aw-red); font-family: var(--aw-font-mono); font-weight: 600;">Parse error (Quarantined)</span>
+            </div>
+            <div style="font-size: 12px; color: var(--aw-text-bright); line-height: 1.45; background: var(--aw-bg-raised); padding: 10px; border-radius: 4px; border: 1px solid var(--aw-border);">
+              The service manual was quarantined. Extraction stopped before Phase B. No extracted item is available.
+            </div>
+            <div style="font-size: 11px; color: var(--aw-green); font-family: var(--aw-font-mono);">
+              ✓ Raw payload retained as R-03 and remains inspectable.
+            </div>
+          </div>
+        `
+      },
+      "S-04": {
+        id: "S-04", name: "Operational snapshot attempt", type: "API", raw: "None captured",
+        extractor: "moonraker_adapter 1.0", status: "ACQUISITION FAILED", statusKind: "alert",
+        retention: "No raw payload captured",
+        extraction: "Extraction did not run after acquisition failed.",
+        bindingStatus: "Unavailable", badgeKind: "quiet", component: null,
+        bindingCopy: "Unavailable for this attempt.",
+        hierarchyTitle: "Operational Endpoint",
+        tree: [
+          { label: "▾ http://moonraker.local:7125", indent: 0 },
+          { label: "! Attempt #1 (Failed)", indent: 18, selected: true }
+        ],
+        cardHtml: `
+          <h3 class="aw-preview-caption" style="border-left: 3px solid var(--aw-red);">Acquisition attempt</h3>
+          <div style="padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+              <span style="color: var(--aw-text-muted); font-size: 11px; font-family: var(--aw-font-mono); text-transform: uppercase;">Acquisition</span>
+              <span style="color: var(--aw-red); font-family: var(--aw-font-mono); font-weight: 600;">Failed (Connection Refused)</span>
+            </div>
+            <div style="font-size: 12px; color: var(--aw-text-bright); line-height: 1.45; background: var(--aw-bg-raised); padding: 10px; border-radius: 4px; border: 1px solid var(--aw-border);">
+              No raw payload captured. Extraction did not run after acquisition failed.
+            </div>
+            <div style="font-size: 11px; color: var(--aw-text-faint); font-family: var(--aw-font-mono);">
+              Comparison Note: S-04 stopped before raw store persistence, unlike S-03 which preserved raw R-03.
+            </div>
+          </div>
+        `
+      }
+    };
+
+    function setVariant(v) {
+      currentVariant = v;
+      document.getElementById("btn-var-a").className = "btn-toggle" + (v === "A" ? " active" : "");
+      document.getElementById("btn-var-b-closed").className = "btn-toggle" + (v === "B-closed" ? " active" : "");
+      document.getElementById("btn-var-b-open").className = "btn-toggle" + (v === "B-open" ? " active" : "");
+      render();
+    }
+
+    function setState(s) {
+      currentState = s;
+      document.querySelectorAll("[id^='btn-state-']").forEach(b => b.classList.remove("active"));
+      if (s === "S-01") document.getElementById("btn-state-s01").classList.add("active");
+      if (s === "S-02") document.getElementById("btn-state-s02").classList.add("active");
+      if (s === "S-03") document.getElementById("btn-state-s03").classList.add("active");
+      if (s === "S-04") document.getElementById("btn-state-s04").classList.add("active");
+      if (s === "3D") document.getElementById("btn-state-3d").classList.add("active");
+      render();
+    }
+
+    function toggleVariantBPopover() {
+      if (currentVariant === "B-closed") setVariant("B-open");
+      else if (currentVariant === "B-open") setVariant("B-closed");
+    }
+
+    function render() {
+      const is3D = currentState === "3D";
+      const rec = records[currentState] || records["S-01"];
+
+      // Update Banner text
+      if (currentVariant === "A") {
+        document.getElementById("banner-title").textContent = "Variant A · Persistent Source Details";
+        document.getElementById("banner-desc").textContent = "The selected record's raw retention and extraction summary is permanently displayed in the left rail.";
+        document.getElementById("ctx-variant-note").textContent = "Variant A · Persistent Details";
+      } else if (currentVariant === "B-closed") {
+        document.getElementById("banner-title").textContent = "Variant B · Source Details On Demand (Closed)";
+        document.getElementById("banner-desc").textContent = "The summary is tucked behind the 'Source details ▾' control beside the canvas heading, maximizing left rail height.";
+        document.getElementById("ctx-variant-note").textContent = "Variant B · Details On Demand (Closed)";
+      } else {
+        document.getElementById("banner-title").textContent = "Variant B · Source Details On Demand (Open State)";
+        document.getElementById("banner-desc").textContent = "The anchored popover overlay is open, revealing the identical retention and extraction facts without rail clutter.";
+        document.getElementById("ctx-variant-note").textContent = "Variant B · Details On Demand [OPEN POPOVER]";
+      }
+
+      // Variant A vs B controls visibility
+      const railDetailsCard = document.getElementById("rail-details-card");
+      const canvasOnDemandWrap = document.getElementById("canvas-on-demand-wrap");
+      const canvasOnDemandBtn = document.getElementById("canvas-on-demand-btn");
+      const canvasOnDemandCaret = document.getElementById("canvas-on-demand-caret");
+      const canvasOnDemandPopover = document.getElementById("canvas-on-demand-popover");
+
+      if (currentVariant === "A") {
+        railDetailsCard.style.display = "flex";
+        canvasOnDemandWrap.style.display = "none";
+      } else {
+        railDetailsCard.style.display = "none";
+        canvasOnDemandWrap.style.display = "block";
+        const isOpen = currentVariant === "B-open";
+        canvasOnDemandBtn.className = "aw-on-demand-trigger" + (isOpen ? " open" : "");
+        canvasOnDemandBtn.setAttribute("aria-expanded", String(isOpen));
+        canvasOnDemandCaret.textContent = isOpen ? "▴" : "▾";
+        canvasOnDemandPopover.style.display = isOpen ? "flex" : "none";
+      }
+
+      // Header & Context Bar
+      if (is3D) {
+        document.getElementById("head-extractor").textContent = "cadquery-ocp 7.9.3";
+        document.getElementById("head-status").textContent = "ILLUSTRATIVE PREVIEW";
+        document.getElementById("head-status-chip").className = "aw-chip status-validated";
+        document.getElementById("ctx-id").textContent = "PREVIEW";
+        document.getElementById("ctx-name").textContent = "Illustrative 3D Toolhead";
+        document.getElementById("canvas-heading-text").textContent = "Illustrative 3D preview";
+      } else {
+        document.getElementById("head-extractor").textContent = rec.extractor;
+        document.getElementById("head-status").textContent = rec.status;
+        document.getElementById("head-status-chip").className = "aw-chip status-" + rec.statusKind;
+        document.getElementById("ctx-id").textContent = rec.id;
+        document.getElementById("ctx-name").textContent = rec.name + " (" + rec.type + ")";
+        document.getElementById("canvas-heading-text").textContent = "Evidence canvas";
+      }
+
+      // Left Rail Source list
+      const railSourceList = document.getElementById("rail-source-list");
+      railSourceList.innerHTML = Object.values(records).map(r => `
+        <li class="aw-source-item ${r.id === currentState && !is3D ? 'active' : ''}" onclick="setState('${r.id}')">
+          <div class="aw-source-meta">
+            <span class="aw-source-id">${r.id}</span>
+            <span>${r.name}</span>
+            <span class="aw-source-type">${r.type}</span>
+          </div>
+        </li>
+      `).join("");
+
+      // Details facts
+      document.getElementById("rail-detail-retention").textContent = rec.retention;
+      document.getElementById("rail-detail-extraction").textContent = rec.extraction;
+      document.getElementById("popover-source-id").textContent = rec.id;
+      document.getElementById("popover-retention").textContent = rec.retention;
+      document.getElementById("popover-extraction").textContent = rec.extraction;
+
+      // Tree
+      document.getElementById("rail-hierarchy-heading").textContent = is3D ? "Mechanical Assembly Tree" : rec.hierarchyTitle;
+      const treeContainer = document.getElementById("rail-tree");
+      if (is3D) {
+        treeContainer.innerHTML = `
+          <div class="aw-tree-node">▾ Assembly_Root</div>
+          <div class="aw-tree-node" style="padding-left: 18px;">▸ Frame_Subassembly</div>
+          <div class="aw-tree-node" style="padding-left: 18px;">▾ Toolhead_Mount</div>
+          <div class="aw-tree-node" style="padding-left: 32px;">▪ Stepper_Extruder</div>
+          <div class="aw-tree-node selected" style="padding-left: 32px;">▪ Hotend_Heater_Block</div>
+        `;
+      } else {
+        treeContainer.innerHTML = rec.tree.map(n => `
+          <div class="aw-tree-node ${n.selected ? 'selected' : ''}" style="padding-left: ${n.indent}px;">
+            ${n.label}
+          </div>
+        `).join("");
+      }
+
+      // Central Canvas
+      const evidenceCard = document.getElementById("evidence-card");
+      const canvas3D = document.getElementById("aw-3d-canvas");
+
+      if (is3D) {
+        evidenceCard.style.display = "none";
+        canvas3D.style.display = "block";
+        init3D();
+      } else {
+        evidenceCard.style.display = "flex";
+        canvas3D.style.display = "none";
+        evidenceCard.innerHTML = rec.cardHtml;
+      }
+
+      // Right Inspector
+      const badge = document.getElementById("insp-status-badge");
+      badge.textContent = is3D ? "Verified" : rec.bindingStatus;
+      badge.className = "aw-badge aw-badge-" + (is3D ? "bound" : rec.badgeKind);
+
+      const compRow = document.getElementById("insp-comp-row");
+      if (rec.component && !is3D) {
+        compRow.style.display = "flex";
+        document.getElementById("insp-comp-val").textContent = rec.component;
+      } else {
+        compRow.style.display = "none";
+      }
+
+      document.getElementById("insp-copy").textContent = is3D ? 
+        "Demonstrates approved cyan bounding-box direction. Kept separate from S-02 evidence." : rec.bindingCopy;
+
+      // Footer
+      document.getElementById("footer-raw-id").textContent = is3D ? "ILLUSTRATIVE" : rec.raw;
+      document.getElementById("footer-store-status").textContent = rec.raw === "None captured" ? 
+        "Raw Store: ZERO BYTES CAPTURED" : "Write-Once Store: IMMUTABLE";
+      document.getElementById("footer-store-status").style.color = rec.raw === "None captured" ? "var(--aw-amber)" : "var(--aw-green)";
+    }
+
+    // 3D Engine for Illustrative View
+    let ctx3d, angleX = -0.35, angleY = 0.55;
+    const parts = [
+      { color: "#2a3440", wire: "#47596d", min: [-70, -60, -50], max: [-50, 70, 50] },
+      { color: "#182028", wire: "#324354", min: [-50, -42, -42], max: [0, 42, 42] },
+      { color: "#7e90a0", wire: "#a3b5c6", min: [0, -30, -30], max: [45, 30, 30] },
+      { color: "#5b6e80", wire: "#859bb0", min: [10, -55, -20], max: [40, -32, 20], target: true },
+      { color: "#b0c4de", wire: "#d0e4fe", min: [16, -32, -10], max: [22, -30, -5] },
+      { color: "#b0c4de", wire: "#d0e4fe", min: [28, -32, -10], max: [34, -30, -5] }
+    ];
+
+    function init3D() {
+      const c = document.getElementById("aw-3d-canvas");
+      c.width = c.parentElement.clientWidth;
+      c.height = c.parentElement.clientHeight;
+      ctx3d = c.getContext("2d");
+      draw3D();
+    }
+
+    function project(x, y, z, cx, cy) {
+      let cy1 = Math.cos(angleY), sy1 = Math.sin(angleY);
+      let x1 = x * cy1 + z * sy1, z1 = -x * sy1 + z * cy1;
+      let cx1 = Math.cos(angleX), sx1 = Math.sin(angleX);
+      let y2 = y * cx1 - z1 * sx1, z2 = y * sx1 + z1 * cx1;
+      let scale = (380 / (380 + z2)) * 1.8;
+      return { x: cx + x1 * scale, y: cy - y2 * scale, z: z2 };
+    }
+
+    function draw3D() {
+      if (!ctx3d || currentState !== "3D") return;
+      const c = document.getElementById("aw-3d-canvas");
+      ctx3d.clearRect(0, 0, c.width, c.height);
+      const cx = c.width / 2, cy = c.height / 2;
+
+      parts.forEach(p => {
+        const [x0, y0, z0] = p.min, [x1, y1, z1] = p.max;
+        const corners = [
+          [x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0],
+          [x0, y0, z1], [x1, y0, z1], [x1, y1, z1], [x0, y1, z1]
+        ].map(pt => project(pt[0], pt[1], pt[2], cx, cy));
+
+        const faces = [
+          { idx: [0, 1, 2, 3], norm: [0, 0, -1] },
+          { idx: [5, 4, 7, 6], norm: [0, 0, 1] },
+          { idx: [4, 0, 3, 7], norm: [-1, 0, 0] },
+          { idx: [1, 5, 6, 2], norm: [1, 0, 0] },
+          { idx: [3, 2, 6, 7], norm: [0, 1, 0] },
+          { idx: [4, 5, 1, 0], norm: [0, -1, 0] }
+        ];
+
+        faces.forEach(f => {
+          f.avgZ = (corners[f.idx[0]].z + corners[f.idx[1]].z + corners[f.idx[2]].z + corners[f.idx[3]].z) / 4;
+        });
+        faces.sort((a, b) => b.avgZ - a.avgZ);
+
+        faces.forEach(f => {
+          let cy1 = Math.cos(angleY), sy1 = Math.sin(angleY);
+          let nx = f.norm[0] * cy1 + f.norm[2] * sy1, nz1 = -f.norm[0] * sy1 + f.norm[2] * cy1;
+          let cx1 = Math.cos(angleX), sx1 = Math.sin(angleX);
+          let ny = f.norm[1] * cx1 - nz1 * sx1, nz = f.norm[1] * sx1 + nz1 * cx1;
+          if (nz < -0.05) return;
+
+          let dot = Math.max(0.2, (nx * 0.57 + ny * 0.57 - nz * 0.57));
+          ctx3d.beginPath();
+          ctx3d.moveTo(corners[f.idx[0]].x, corners[f.idx[0]].y);
+          ctx3d.lineTo(corners[f.idx[1]].x, corners[f.idx[1]].y);
+          ctx3d.lineTo(corners[f.idx[2]].x, corners[f.idx[2]].y);
+          ctx3d.lineTo(corners[f.idx[3]].x, corners[f.idx[3]].y);
+          ctx3d.closePath();
+
+          let r = parseInt(p.color.slice(1,3), 16), g = parseInt(p.color.slice(3,5), 16), b = parseInt(p.color.slice(5,7), 16);
+          ctx3d.fillStyle = `rgb(${Math.floor(r * dot)}, ${Math.floor(g * dot)}, ${Math.floor(b * dot)})`;
+          ctx3d.fill();
+          ctx3d.strokeStyle = p.wire;
+          ctx3d.lineWidth = 0.8;
+          ctx3d.stroke();
+        });
+
+        if (p.target) {
+          const pad = 5;
+          const boxCorners = [
+            [x0-pad, y0-pad, z0-pad], [x1+pad, y0-pad, z0-pad], [x1+pad, y1+pad, z0-pad], [x0-pad, y1+pad, z0-pad],
+            [x0-pad, y0-pad, z1+pad], [x1+pad, y0-pad, z1+pad], [x1+pad, y1+pad, z1+pad], [x0-pad, y1+pad, z1+pad]
+          ].map(pt => project(pt[0], pt[1], pt[2], cx, cy));
+
+          const edges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+          ctx3d.save();
+          ctx3d.strokeStyle = "#44c7d4";
+          ctx3d.lineWidth = 2;
+          ctx3d.shadowColor = "#44c7d4";
+          ctx3d.shadowBlur = 8;
+          edges.forEach(([i,j]) => {
+            ctx3d.beginPath();
+            ctx3d.moveTo(boxCorners[i].x, boxCorners[i].y);
+            ctx3d.lineTo(boxCorners[j].x, boxCorners[j].y);
+            ctx3d.stroke();
+          });
+          ctx3d.restore();
+        }
+      });
+    }
+
+    // Initialize
+    render();
+  </script>
+</body>
+</html>

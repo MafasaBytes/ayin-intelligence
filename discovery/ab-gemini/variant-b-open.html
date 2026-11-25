@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayin Intelligence — Variant B: Source Details On Demand (Open State, 1376 × 768)</title>
+  <style>
+    :root {
+      --aw-bg-void: #070a0e;
+      --aw-bg-chrome: #0b0f15;
+      --aw-bg-panel: #111720;
+      --aw-bg-raised: #18222d;
+      --aw-bg-hover: #1f2c3a;
+      --aw-border: #233140;
+      --aw-border-subtle: #17222d;
+      --aw-text-bright: #f0f5fa;
+      --aw-text-main: #cdd8e4;
+      --aw-text-muted: #8294a6;
+      --aw-text-faint: #526373;
+      --aw-cyan: #44c7d4;
+      --aw-cyan-border: #23767f;
+      --aw-cyan-bg: rgba(68, 199, 212, 0.12);
+      --aw-green: #34d399;
+      --aw-green-border: #1a6b4e;
+      --aw-green-bg: rgba(52, 211, 153, 0.12);
+      --aw-amber: #f59e0b;
+      --aw-amber-border: #87570b;
+      --aw-amber-bg: rgba(245, 158, 11, 0.12);
+      --aw-font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --aw-font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--aw-bg-void);
+      color: var(--aw-text-main);
+      font-family: var(--aw-font-ui);
+      font-size: 13px;
+      line-height: 1.45;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* 1376 × 768 Desktop Viewport Frame */
+    .aw-desktop-frame {
+      width: 1376px;
+      height: 768px;
+      background: var(--aw-bg-chrome);
+      border: 1px solid var(--aw-border);
+      border-radius: 6px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Header */
+    .aw-header {
+      height: 44px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+
+    .aw-brand-lockup {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .aw-brand-name {
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--aw-text-bright);
+    }
+
+    .aw-brand-sep {
+      color: var(--aw-text-faint);
+      font-family: var(--aw-font-mono);
+    }
+
+    .aw-surface-title {
+      font-size: 12px;
+      letter-spacing: 0.03em;
+      color: var(--aw-text-muted);
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .aw-header-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+    }
+
+    .aw-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-main);
+    }
+
+    .aw-chip-key { color: var(--aw-text-muted); }
+    .aw-chip-val { color: var(--aw-text-bright); font-weight: 500; }
+
+    .aw-chip.status-validated {
+      border-color: var(--aw-green-border);
+      background: var(--aw-green-bg);
+      color: var(--aw-green);
+    }
+
+    .aw-sample-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-muted);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+    }
+
+    /* Context Bar */
+    .aw-context-bar {
+      height: 38px;
+      background: var(--aw-bg-panel);
+      border-bottom: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .aw-context-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .aw-context-label { color: var(--aw-text-muted); }
+
+    .aw-id-badge {
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      background: var(--aw-cyan-bg);
+      border: 1px solid var(--aw-cyan-border);
+      color: var(--aw-cyan);
+      font-weight: 600;
+    }
+
+    /* Main Workspace Desk */
+    .aw-desk {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr) 300px;
+      background: var(--aw-bg-chrome);
+      overflow: hidden;
+    }
+
+    /* Left Rail */
+    .aw-rail {
+      background: var(--aw-bg-panel);
+      border-right: 1px solid var(--aw-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .aw-panel-heading {
+      padding: 9px 12px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border-subtle);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--aw-text-muted);
+      font-weight: 600;
+    }
+
+    .aw-source-list {
+      list-style: none;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .aw-source-item {
+      padding: 8px 10px;
+      border-radius: 4px;
+      background: transparent;
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      color: var(--aw-text-main);
+      font-size: 12px;
+    }
+
+    .aw-source-item.active {
+      background: var(--aw-bg-raised);
+      border-color: var(--aw-cyan-border);
+      color: var(--aw-cyan);
+      font-weight: 500;
+    }
+
+    .aw-source-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .aw-source-id {
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .aw-source-type {
+      margin-left: auto;
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      color: var(--aw-text-muted);
+    }
+
+    /* Hierarchy Tree in Left Rail (Full height in Variant B) */
+    .aw-tree {
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      flex: 1;
+    }
+
+    .aw-tree-node {
+      padding: 3px 6px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--aw-text-main);
+    }
+
+    .aw-tree-node.selected {
+      background: var(--aw-cyan-bg);
+      border: 1px solid var(--aw-cyan-border);
+      color: var(--aw-cyan);
+    }
+
+    /* Central Canvas */
+    .aw-canvas {
+      display: flex;
+      flex-direction: column;
+      background: var(--aw-bg-void);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Canvas Heading with VARIANT B On-Demand Control */
+    .aw-canvas-heading {
+      height: 38px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--aw-text-muted);
+      font-weight: 600;
+      position: relative;
+    }
+
+    .aw-on-demand-wrapper {
+      position: relative;
+    }
+
+    .aw-on-demand-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: var(--aw-cyan-bg);
+      border: 1px solid var(--aw-cyan-border);
+      color: var(--aw-cyan);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* VARIANT B: Anchored On-Demand Popover Card (OPEN STATE) */
+    .aw-on-demand-popover {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      width: 290px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-cyan-border);
+      border-radius: 6px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: popIn 0.15s ease-out;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .aw-popover-header {
+      padding: 8px 12px;
+      background: var(--aw-bg-raised);
+      border-bottom: 1px solid var(--aw-border);
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--aw-cyan);
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .aw-stacked-facts {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .aw-stacked-facts dt {
+      color: var(--aw-text-muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      font-family: var(--aw-font-mono);
+    }
+
+    .aw-stacked-facts dd {
+      color: var(--aw-text-bright);
+      font-size: 11px;
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    .aw-button {
+      padding: 5px 10px;
+      border-radius: 4px;
+      background: var(--aw-bg-raised);
+      border: 1px solid var(--aw-border);
+      color: var(--aw-text-main);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .aw-button:hover {
+      background: var(--aw-bg-hover);
+      border-color: var(--aw-cyan-border);
+      color: var(--aw-text-bright);
+    }
+
+    .aw-evidence {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-color: #06090d;
+      background-image: 
+        linear-gradient(rgba(44, 62, 80, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(44, 62, 80, 0.15) 1px, transparent 1px);
+      background-size: 28px 28px;
+      overflow-y: auto;
+    }
+
+    .aw-preview-card {
+      width: 480px;
+      background: var(--aw-bg-panel);
+      border: 1px solid var(--aw-border);
+      border-radius: 6px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .aw-preview-caption {
+      padding: 10px 14px;
+      background: var(--aw-bg-raised);
+      border-bottom: 1px solid var(--aw-border);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--aw-text-bright);
+      text-transform: uppercase;
+    }
+
+    .aw-index-heading {
+      display: grid;
+      grid-template-columns: 80px minmax(0, 1fr) 60px;
+      padding: 8px 12px;
+      background: var(--aw-bg-chrome);
+      border-bottom: 1px solid var(--aw-border);
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      color: var(--aw-text-muted);
+      text-transform: uppercase;
+    }
+
+    .aw-evidence-item {
+      display: grid;
+      grid-template-columns: 80px minmax(0, 1fr) 60px;
+      padding: 10px 12px;
+      align-items: center;
+      background: var(--aw-bg-panel);
+      border: none;
+      width: 100%;
+      text-align: left;
+      color: var(--aw-text-bright);
+      font-size: 12px;
+      border-bottom: 1px solid var(--aw-border-subtle);
+    }
+
+    .aw-evidence-item .aw-id {
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      color: var(--aw-cyan);
+    }
+
+    .aw-item-action {
+      color: var(--aw-cyan);
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+      text-align: right;
+    }
+
+    .aw-inline-detail {
+      padding: 12px 14px;
+      background: var(--aw-bg-raised);
+      border-top: 1px solid var(--aw-border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .aw-detail-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .aw-detail-row dt { color: var(--aw-text-muted); font-family: var(--aw-font-mono); font-size: 10px; text-transform: uppercase; }
+    .aw-detail-row dd { color: var(--aw-text-bright); font-family: var(--aw-font-mono); font-size: 11px; }
+
+    /* Right Inspector */
+    .aw-inspector {
+      background: var(--aw-bg-panel);
+      border-left: 1px solid var(--aw-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .aw-binding-content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .aw-facts {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: var(--aw-bg-raised);
+      border: 1px solid var(--aw-border);
+      border-radius: 4px;
+      padding: 12px;
+    }
+
+    .aw-fact-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    .aw-fact-row dt { color: var(--aw-text-muted); font-family: var(--aw-font-mono); font-size: 10px; text-transform: uppercase; }
+    .aw-fact-row dd { color: var(--aw-text-bright); font-family: var(--aw-font-mono); }
+
+    .aw-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-family: var(--aw-font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .aw-badge-bound {
+      background: var(--aw-cyan-bg);
+      border: 1px solid var(--aw-cyan-border);
+      color: var(--aw-cyan);
+    }
+
+    .aw-body-copy {
+      color: var(--aw-text-muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    .aw-footer {
+      height: 42px;
+      background: var(--aw-bg-chrome);
+      border-top: 1px solid var(--aw-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+      font-family: var(--aw-font-mono);
+      font-size: 11px;
+    }
+
+    .aw-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--aw-text-muted);
+    }
+
+    .aw-hash-pill {
+      background: var(--aw-bg-void);
+      border: 1px solid var(--aw-border);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--aw-cyan);
+    }
+
+    .aw-footer-right {
+      display: flex;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Fixed 1376 × 768 Desktop Frame -->
+  <div class="aw-desktop-frame">
+    <!-- Header -->
+    <header class="aw-header">
+      <div class="aw-brand-lockup">
+        <span class="aw-brand-name">Ayin Intelligence</span>
+        <span class="aw-brand-sep">//</span>
+        <span class="aw-surface-title">Sources workbench</span>
+      </div>
+      <div class="aw-header-meta">
+        <div class="aw-chip"><span class="aw-chip-key">MODEL:</span><span class="aw-chip-val">mrv_b8f03e1c</span></div>
+        <div class="aw-chip"><span class="aw-chip-key">EXTRACTOR:</span><span class="aw-chip-val">csv_extractor 1.1.0</span></div>
+        <div class="aw-chip status-validated"><span class="aw-chip-val">SUCCEEDED</span></div>
+        <div class="aw-chip"><span class="aw-chip-key">LIFECYCLE:</span><span class="aw-chip-val">AS_DESIGNED</span></div>
+      </div>
+      <div>
+        <span class="aw-sample-badge">Sample data</span>
+      </div>
+    </header>
+
+    <!-- Context Bar -->
+    <div class="aw-context-bar">
+      <div class="aw-context-item">
+        <span class="aw-context-label">Selected source:</span>
+        <span class="aw-id-badge">S-01</span>
+        <span>Assembly BOM (CSV)</span>
+      </div>
+      <div class="aw-context-item">
+        <span style="color: var(--aw-cyan); font-family: var(--aw-font-mono); font-size: 11px;">Variant B · Details On Demand [OPEN STATE]</span>
+      </div>
+    </div>
+
+    <!-- Main Workspace Desk -->
+    <div class="aw-desk">
+      <!-- Left Rail (Variant B: Full height dedicated to Source Records and Hierarchy) -->
+      <nav class="aw-rail" aria-label="Sample sources">
+        <h2 class="aw-panel-heading">Source records</h2>
+        <ul class="aw-source-list">
+          <li class="aw-source-item active">
+            <div class="aw-source-meta">
+              <span class="aw-source-id">S-01</span>
+              <span>Assembly BOM</span>
+              <span class="aw-source-type">CSV</span>
+            </div>
+          </li>
+          <li class="aw-source-item">
+            <div class="aw-source-meta">
+              <span class="aw-source-id">S-02</span>
+              <span>Assembly geometry</span>
+              <span class="aw-source-type">STEP</span>
+            </div>
+          </li>
+          <li class="aw-source-item">
+            <div class="aw-source-meta">
+              <span class="aw-source-id">S-03</span>
+              <span>Service manual</span>
+              <span class="aw-source-type">PDF</span>
+            </div>
+          </li>
+          <li class="aw-source-item">
+            <div class="aw-source-meta">
+              <span class="aw-source-id">S-04</span>
+              <span>Operational snapshot attempt</span>
+              <span class="aw-source-type">API</span>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Full-Height Hierarchy Tree (Preserved in Variant B) -->
+        <h3 class="aw-panel-heading">BOM Containment</h3>
+        <div class="aw-tree">
+          <div class="aw-tree-node">▾ PRN-000 (Printer assembly)</div>
+          <div class="aw-tree-node" style="padding-left: 18px;">▪ EXT-100 (Extruder unit)</div>
+          <div class="aw-tree-node" style="padding-left: 18px;">▪ CBL-300 (Wiring harness)</div>
+          <div class="aw-tree-node" style="padding-left: 18px;">▪ BRK-400 (Corner bracket)</div>
+          <div class="aw-tree-node" style="padding-left: 18px;">▪ BRK-401 (Corner bracket)</div>
+          <div class="aw-tree-node selected" style="padding-left: 18px;">▪ Row 12: Mounting bracket</div>
+        </div>
+      </nav>
+
+      <!-- Center Evidence Canvas (With Active Open Popover) -->
+      <section class="aw-canvas" aria-label="Evidence canvas">
+        <header class="aw-canvas-heading">
+          <h2>Evidence canvas</h2>
+          <!-- VARIANT B: Labeled Control Beside Heading (OPEN STATE) -->
+          <div class="aw-on-demand-wrapper">
+            <button class="aw-on-demand-trigger" type="button" aria-expanded="true" onclick="window.location.href='variant-b.html'">
+              <span>Source details</span>
+              <span style="font-size: 9px; color: var(--aw-cyan);">▴</span>
+            </button>
+
+            <!-- ANCHORED DETAILS POPOVER -->
+            <div class="aw-on-demand-popover" role="dialog" aria-label="Source details popover">
+              <div class="aw-popover-header">
+                <span>Source details</span>
+                <span style="font-size: 10px; color: var(--aw-text-muted);">S-01</span>
+              </div>
+              <dl class="aw-stacked-facts">
+                <div>
+                  <dt>Raw retention</dt>
+                  <dd>Retained as R-01</dd>
+                </div>
+                <div>
+                  <dt>Extraction outcome</dt>
+                  <dd>Succeeded. Row 12 describes a mounting bracket.</dd>
+                </div>
+              </dl>
+              <div style="padding: 0 12px 10px;">
+                <button class="aw-button" style="width: 100%;">Open raw record</button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="aw-evidence">
+          <div class="aw-preview-card">
+            <h3 class="aw-preview-caption">Extracted BOM</h3>
+            <div class="aw-index-heading">
+              <span>Row</span>
+              <span>Description</span>
+              <span style="text-align: right;">Action</span>
+            </div>
+            <button class="aw-evidence-item" type="button">
+              <span class="aw-id">Row 12</span>
+              <span>Mounting bracket</span>
+              <span class="aw-item-action">Close</span>
+            </button>
+            <dl class="aw-inline-detail">
+              <div class="aw-detail-row">
+                <dt>Source locator</dt>
+                <dd>CSV · Row 12</dd>
+              </div>
+              <div class="aw-detail-row">
+                <dt>Description</dt>
+                <dd>Mounting bracket</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Inspector -->
+      <aside class="aw-inspector" aria-label="Component binding inspector">
+        <h2 class="aw-panel-heading">Component binding</h2>
+        <div class="aw-binding-content">
+          <dl class="aw-facts">
+            <div class="aw-fact-row">
+              <dt>Status</dt>
+              <dd><span class="aw-badge aw-badge-bound">Bound</span></dd>
+            </div>
+            <div class="aw-fact-row">
+              <dt>Component</dt>
+              <dd style="color: var(--aw-cyan); font-weight: 600;">C-01</dd>
+            </div>
+          </dl>
+          <p class="aw-body-copy">
+            Explicit sample binding from row 12 to component C-01.
+          </p>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Provenance Footer -->
+    <footer class="aw-footer">
+      <div class="aw-footer-left">
+        <span>Raw Record ID:</span>
+        <span class="aw-hash-pill">R-01</span>
+        <span style="color: var(--aw-text-faint);">·</span>
+        <span style="color: var(--aw-green);">Write-Once Store: IMMUTABLE</span>
+      </div>
+      <div class="aw-footer-right">
+        <button class="aw-button">Open raw record</button>
+        <button class="aw-button" style="background: var(--aw-cyan-bg); border-color: var(--aw-cyan-border); color: var(--aw-cyan);">Stage Binding Assertion</button>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
